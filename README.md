@@ -1,5 +1,5 @@
 # Curso de Genómica de Hongos: Filogenómica
- Madrid 05.2019
+ *Madrid 05.2019*
 
 ## 1. Introducción
 o
