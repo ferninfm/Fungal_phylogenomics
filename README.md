@@ -7,9 +7,11 @@ pero todavia no
 ## 2. Métodos y objetivos
 o
 ## 3. Tutorial I. FreeBayes
-o
+https://github.com/ekg/freebayes
 ## 4. Tutorial II. Uno rapidito basado en  BUSCO
-o
+No olvidarse del outgroup
+## 5. Tutorial IIa. Uno bestia basado en Blast recíprocos
+No olvidarse del outgroup
 ## 5. Tutorial III.  Inferencia filogenética sobre miles de genes. Compromisos y alternativas
 o
 ### Introducción
