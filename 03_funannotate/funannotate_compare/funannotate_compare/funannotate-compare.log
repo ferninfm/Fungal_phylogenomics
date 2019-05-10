@@ -1,0 +1,8 @@
+[05/07/19 23:11:58]: /usr/local/src/funannotate/bin/funannotate-compare.py -i X1_annotated X2_annotated X3_annotated X4_annotated X5_annotated X6_annotated X7_annotated X8_annotated X9_annotated --outgroup xanthoria_parietina.dikarya --cpus 30
+
+[05/07/19 23:11:59]: OS: linux2, 32 cores, ~ 198 GB RAM. Python: 2.7.16
+[05/07/19 23:11:59]: Running funannotate v1.5.3-21ad095
+[05/07/19 23:11:59]: Input files/folders: ['X1_annotated', 'X2_annotated', 'X3_annotated', 'X4_annotated', 'X5_annotated', 'X6_annotated', 'X7_annotated', 'X8_annotated', 'X9_annotated']
+
+[05/07/19 23:11:59]: Now parsing 9 genomes
+[05/07/19 23:11:59]: Error, X1_annotated is not a funannotate folder and does not seem to be a GenBank file.

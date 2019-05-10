@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="funannotate comparative genomics output" content="">
+    <meta name="Jonathan Palmer" content="">
+    <title>Funannotate</title>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/starter-template.css" rel="stylesheet">
+    <script src="js/ie-emulation-modes-warning.js"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+          </button>
+          <a class="navbar-brand" href="index.html">Funannotate</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="stats.html">Stats</a></li>
+            <li><a href="phylogeny.html">Phylogeny</a></li>
+            <li><a href="orthologs.html">Orthologs</a></li>
+            <li><a href="interpro.html">InterPro</a></li>
+            <li><a href="pfam.html">PFAM</a></li>
+            <li><a href="merops.html">Merops</a></li>
+            <li><a href="cazy.html">CAZymes</a></li>
+            <li><a href="cogs.html">COGs</a></li>
+            <li><a href="signalp.html">SignalP</a></li>
+            <li><a href="tf.html">TFs</a></li>
+            <li><a href="secmet.html">SecMet</a></li>
+            <li><a href="go.html">GO</a></li>
+            <li><a href="citation.html">Cite</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="starter-template">
+        <h2 class="sub-header">Genome Summary Stats</h2>
+          <div class="table-responsive">
+<table border="1" class="dataframe table table-condensed">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>isolate</th>
+      <th>locus_tag</th>
+      <th>Assembly Size</th>
+      <th>Largest Scaffold</th>
+      <th>Average Scaffold</th>
+      <th>Num Scaffolds</th>
+      <th>Scaffold N50</th>
+      <th>Percent GC</th>
+      <th>Num Genes</th>
+      <th>Num Proteins</th>
+      <th>Num tRNA</th>
+      <th>Unique Proteins</th>
+      <th>Prots atleast 1 ortholog</th>
+      <th>Single-copy orthologs</th>
+    </tr>
+    <tr>
+      <th>species</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Caloplaca sp X1</th>
+      <td>None</td>
+      <td>X1</td>
+      <td>41,842,980 bp</td>
+      <td>1,930,395 bp</td>
+      <td>316,992 bp</td>
+      <td>132</td>
+      <td>620,234 bp</td>
+      <td>44.03%</td>
+      <td>9,409</td>
+      <td>9,347</td>
+      <td>62</td>
+      <td>540</td>
+      <td>8,807</td>
+      <td>5,069</td>
+    </tr>
+    <tr>
+      <th>Caloplaca sp X2</th>
+      <td>None</td>
+      <td>X2</td>
+      <td>64,376,408 bp</td>
+      <td>1,050,356 bp</td>
+      <td>75,382 bp</td>
+      <td>854</td>
+      <td>196,784 bp</td>
+      <td>47.30%</td>
+      <td>16,101</td>
+      <td>15,878</td>
+      <td>223</td>
+      <td>4,349</td>
+      <td>11,513</td>
+      <td>5,069</td>
+    </tr>
+    <tr>
+      <th>Caloplaca sp X3</th>
+      <td>None</td>
+      <td>X3</td>
+      <td>60,788,422 bp</td>
+      <td>1,101,243 bp</td>
+      <td>93,234 bp</td>
+      <td>652</td>
+      <td>281,844 bp</td>
+      <td>53.01%</td>
+      <td>17,813</td>
+      <td>17,591</td>
+      <td>222</td>
+      <td>3,399</td>
+      <td>14,191</td>
+      <td>5,069</td>
+    </tr>
+    <tr>
+      <th>Caloplaca sp X4</th>
+      <td>None</td>
+      <td>X4</td>
+      <td>44,927,455 bp</td>
+      <td>2,035,253 bp</td>
+      <td>148,766 bp</td>
+      <td>302</td>
+      <td>567,884 bp</td>
+      <td>42.37%</td>
+      <td>9,153</td>
+      <td>8,997</td>
+      <td>156</td>
+      <td>473</td>
+      <td>8,524</td>
+      <td>5,069</td>
+    </tr>
+    <tr>
+      <th>Caloplaca sp X5</th>
+      <td>None</td>
+      <td>X5</td>
+      <td>84,864,773 bp</td>
+      <td>1,072,771 bp</td>
+      <td>35,272 bp</td>
+      <td>2,406</td>
+      <td>93,224 bp</td>
+      <td>55.08%</td>
+      <td>27,602</td>
+      <td>27,196</td>
+      <td>406</td>
+      <td>11,899</td>
+      <td>15,232</td>
+      <td>5,069</td>
+    </tr>
+    <tr>
+      <th>Caloplaca sp X6</th>
+      <td>None</td>
+      <td>X6</td>
+      <td>50,190,010 bp</td>
+      <td>759,902 bp</td>
+      <td>51,689 bp</td>
+      <td>971</td>
+      <td>110,032 bp</td>
+      <td>40.76%</td>
+      <td>8,734</td>
+      <td>8,580</td>
+      <td>154</td>
+      <td>630</td>
+      <td>7,950</td>
+      <td>5,069</td>
+    </tr>
+    <tr>
+      <th>Caloplaca sp X7</th>
+      <td>None</td>
+      <td>X7</td>
+      <td>54,125,948 bp</td>
+      <td>1,187,584 bp</td>
+      <td>90,210 bp</td>
+      <td>600</td>
+      <td>261,001 bp</td>
+      <td>42.67%</td>
+      <td>11,457</td>
+      <td>11,220</td>
+      <td>237</td>
+      <td>1,153</td>
+      <td>10,067</td>
+      <td>5,069</td>
+    </tr>
+    <tr>
+      <th>Caloplaca sp X8</th>
+      <td>None</td>
+      <td>X8</td>
+      <td>56,126,203 bp</td>
+      <td>1,246,919 bp</td>
+      <td>73,850 bp</td>
+      <td>760</td>
+      <td>280,606 bp</td>
+      <td>47.84%</td>
+      <td>15,151</td>
+      <td>14,937</td>
+      <td>214</td>
+      <td>2,037</td>
+      <td>12,898</td>
+      <td>5,069</td>
+    </tr>
+    <tr>
+      <th>Caloplaca sp X9</th>
+      <td>None</td>
+      <td>X9</td>
+      <td>67,013,864 bp</td>
+      <td>1,035,147 bp</td>
+      <td>61,764 bp</td>
+      <td>1,085</td>
+      <td>203,237 bp</td>
+      <td>46.36%</td>
+      <td>13,946</td>
+      <td>13,728</td>
+      <td>218</td>
+      <td>2,605</td>
+      <td>11,121</td>
+      <td>5,069</td>
+    </tr>
+  </tbody>
+</table>
+          </div>  
+      </div>
+
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+    <script src="js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
+

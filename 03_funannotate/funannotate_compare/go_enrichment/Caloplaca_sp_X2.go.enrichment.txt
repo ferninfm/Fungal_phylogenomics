@@ -1,0 +1,4 @@
+fisher module not installed.  Falling back on scipy.stats.fisher_exact
+/usr/local/src/funannotateDB/go.obo: fmt(1.2) rel(2019-04-17) 47,398 GO Terms
+Study: 0 vs. Population 0
+
