@@ -488,7 +488,6 @@ Por otro lado incrementar el numero de sequencias afecta la computación de mane
 ```
 ## 7. Tutorial II.  Un pipeline usando detección de ortólogos a posteriori
 ### 7.1. Pasos preliminares
-#### 7.1.1. Correr funannotate
 He instalado funannotate usando un ambiente de anaconda siguiendo las instrucciones del manual.
 No olvidarse de exportar las siguientes versiones
 ```{bash}
@@ -539,6 +538,42 @@ funannotate predict \
 --cpus 30
 done
 ```
+### 7.3. Usamos el pipeline Orthofinder
+
+En esta sección del tutoriasl vamos a utilizar el pipeline filogenómico Orthofinder (<https://github.com/davidemms/OrthoFinder>). Este pipeline es muy interesante pues extrae loci ortologos usando un algoritmo de *cluster* primero y un procesado *a posteriori* de los árboles filogenéticos.
+
+Además vamos a utilizar este pippeline como introducción a docker <https://www.docker.com>. Docker es un sistema para encapsular un sistema operativo y los ejectubles de un programa de nuestro enterés en un contenedor único que puede ser utilizado en cualquier ordenador y cualquier sistema operativo. Docker a menudo soluciona problemas de dependencias (las librerias de perl suelen ser el horror) y de conflictos de versiones y permite tener un sistema estable y permanente. Tinen también ciertas desventajas respecto a la configuaración nativa de algunas aplicaciones, en especial cuando se requiere usar bases de datos externas de manera intensiva. Hay varios repositorios de contenedores de docker dedicados a la bioinformática, entre los cuales el punto de partida quizas sea biocontainers <https://github.com/BioContainers/containers>.
+
+**Atención pregunta:** En realidad este pipeline no es adecuado para el dataset que vamos a utilizar, que es el mismo que en el ejercicio anterior. Sabrías decirme por qué?
+**Atención recomendación:** Echaos un vistazo a la descripción del pipeline en su pagina web. Es magnífica.
+
+Al turrón! Lo primero que haremos será instalar el container de docker donde está instalado el pipeline orthofinder.
+
+```{bash}
+
+docker pull cmonjeau/orthofinder
+
+```
+Seguidamente correremos el programa usando el siguente script
+
+```{bash}
+mkdir ./02_results
+docker run -it --rm -v "/home/fernando/genomics_course/new/new/02_orthofinder/01_data":/input cmonjeau/orthofinder orthofinder.py -f /input -t 10 -a 10 -S diamond
+docker run -it --rm -v "/home/fernando/genomics_course/new/new/02_orthofinder/02_results":/input cmonjeau/orthofinder trees_for_orthogroups.py /input/ -t 7
+```
+Orthofinder tien varias opciones de alineamiento y reconstrucción filogenética, etc. Hemos utilizado las opciones por defecto con diamond y dendroblast pues son ambos más rápidos. En general, diamond <https://github.com/bbuchfink/diamond> se ha convertido en el nuevo standard para realizar alineaminetos locales, sustituyendo a BLAST que es miles de veces más lento. Hay algunas dudas sobre si los valores reflejados por diamond son equiparables a los de blast original, pero el hecho es que la aceleración que supone ha desterrado el uso de BLAST para comparaciones de aminoacido-aminoacido (blastp) y nucleotido-aminoacido (blastx) en la mayoría de los programas más modernos.
+
+```{bash}
+orthofinder -f \
+ -t 30 \
+ -a 30 \
+ -M dendroblast \
+ -S diamond \
+ -A mafft \
+ -p ./tmp
+````
+**Atención pregunta:** Repasate los archivos de resultados de Orthofinder. Que ocurre con el arbol consenso? Porqué son tan cortas las ramas? (si desactivamos la longitud de las ramas en la visualización del arbol filogenético verás que están ahi). Fijate en cuantos ortólogos de copia única ha identificado. No te resulta extra~õ que sean tan pocos? Fijate en los arboles de la mayoría de grupos ortólogos? por qué tienen tan pocas secuencias? Que puede estar ocurriendo?
+
 ## 8. Tutorial III.  Introducción a funannotate
 
 
@@ -585,27 +620,6 @@ o
 o
 #### Mapear la información en el genóma
 
-## Example III. Departing from proteomes
-https://github.com/davidemms/OrthoFinder
-#
-#
-#
-docker pull cmonjeau/orthofinder
-#
-#
-mkdir ./02_results
-docker run -it --rm -v "/home/fernando/genomics_course/new/new/02_orthofinder/01_data":/input cmonjeau/orthofinder orthofinder.py -f /input -t 10 -a 10 -S diamond
-docker run -it --rm -v "/home/fernando/genomics_course/new/new/02_orthofinder/02_results":/input cmonjeau/orthofinder trees_for_orthogroups.py /input/ -t 7
-#
-#
-#
-orthofinder -f \
- -t 30 \
- -a 30 \
- -M dendroblast \
- -S diamond \
- -A mafft \
- -p ./tmp
 ## Integrate functional annotations
 ```{r}
 pfam<-read.table("/Users/ferninfm/Desktop/eraseme/funannotate_compare/pfam/pfam.results.csv",sep=",",quote="\"",row.names=1,header=TRUE)
