@@ -1,21 +1,140 @@
 ---
-title: "Curso de Genómica de Hongos: Filogenómica"
+title: 'Curso de Genómica de Hongos: Filogenómica'
 author: "Fernando Fernandez Mendoza"
 date: "18/5/2019"
 output:
+  pdf_document: default
+  csl: pnas.csl
   html_document: default
-  word_document: default
   bibliography: bibliography.bib
+  word_document: default
 ---
 
 # 1. Introducción
 
-El término filogenómica fue acuñado por Eisen 1998 @ para referirse al estudio de EISEN1 
-A common goal to all phylogenomic surveys is to provide a reconstruction of the evolutionary history of a taxonomic group using genome-wide data. In some cases reconstructing a phylogeny may be the ultimate goal of the experiment, but more often phylogenies provide a framework to interpret population dynamics, especiation events or provide the background signal to interpret comparative genomic trends.
-Qué es filogenómica?
+El término filogenómica fue acuñado de manera casi coetanea para referirse a dos enfoques o disciplinas científicas diferentes. Primero Eisen en 1998 @Eisen1998 para referirse al estudio de EISEN1 
 
-The protocols commonly used in phylogenetic surveys to select, sanger-sequence, align and estimate a phylogenetic tree with a set of neutral loci are very standarized. In phylogenomics, however there is no single approach or consensus protocol that can be invoqued as a consensus. In fact, due to human and computational limitations, analyzing a high number of loci requieres a series of simplifications and compromises that largely depend on the type of sequencing plattform, of genomic coverage and the purpuse of the survey. The philosophy and methods used for every step are extremely dependent on the type of data acquired and the purpose of the survey. For instance highly refined Bayesian methods of model testing, coestimation of phylogeny and population parameters or even making simple phylogenetic inferences are not available for all types of data and often they do not scale well to cope with genomic datasets extremely limiting their use.
+A common goal to all phylogenomic surveys is to provide a reconstruction of the evolutionary history of a taxonomic group using genome-wide data. In some cases reconstructing a phylogeny may be the ultimate goal of the experiment, but more often phylogenies provide a framework to interpret population dynamics, especiation events or provide the background signal to interpret comparative genomic trends.
+The protocols commonly used in phylogenetic surveys to select, sanger-sequence, align and estimate a phylogenetic tree with a set of neutral loci are very standarized. In phylogenomics, however there is no single approach or consensus protocol that can be invoqued as a consensus. In fact, due to human and computational limitations, analyzing a high number of loci requieres a series of simplifications and compromises that largely depend on the type of sequening plattform, of genomic coverage and the purpuse of the survey. The philosophy and methods used for every step are extremely dependent on the type of data acquired and the purpose of the survey. For instance highly refined Bayesian methods of model testing, coestimation of phylogeny and population parameters or even making simple phylogenetic inferences are not available for all types of data and often they do not scale well to cope with genomic datasets extremely limiting their use.
 In this practical session we provide a succint introduction to different methods used to generate phylogenomic data matrices, and focus on one of them, making use of use of orthology based gene sets which provides a simple and straightforward method that can be used to address multiple background questions and provides a good entry-level approach to phylogenomics. The practical parts are highlighted 
+4.2 Assembling a phylogenomic data matrix
+The student question quoted above on the top of the page may seem naïve, but reflects the first problem one encounters when attempting to reconstruct a phylogeny from a set of genomic samples. As of today, several handbooks CITE CITE provide a good digest guide to phylogenomics, and several pipelines have been published or made available online. Few years back, the student from the quote would have started by googleing “phylogenomics” and “genome alignment” and would have spent a couple of days trying to figure out how to use the output of MAUVE (Darling, Mau, and Perna 2010), before assuming that having the contigs systematically sorted (Rissman et al. 2009) is nice, but that it was not the point at all.
+However, it remains difficult to make well-informed decissions on the design of a phylogenomic survey. First, there is an important terminological gap between the disciplines of phylogenetic systematics and molecular genomics which is often difficult to bridge; the term phylogenomics itself is widely used in the literature in surveys using evolutionary methods of genome annotation CITE and not just extended phylogenetic surveys. Second, there is no single method to assemble a genome-wide phylogenetic data matrix, starting for the genome representation of the library itself. This generates an important deal of noise, as  highly impacting genomic surveys often deal with taxonomic groups other than fungi or algae, and as our neighbouring colleagues working on animals of plants usually engage in well-informed but highly opinionated digressions about their next project during cofee breaks feeding us up with sometimes inadequate information. Third, to complicate it even more, each manuscript uses a slightly different set of scripts or pipelines to atomatize the assembly of a data-matrix. Pipelines that are often developed with a particular target organism in mind, bacteria, animals, humans, fungi... and are not always transferable to other organisms, especially lichens, where lichenized-fungi, their photobionts, and all the complex biotic community forming the lichen system provide advantaghes and dissadvantages on their own.
+4.4.1 DNA alignment based resequencing pipelines
+The simplest way to assemble a datamatrix to be used in a population inference and tree-building framework, is to use an alignment-based genotyping approach. Such approaches profit from having a reference genome to which raw reads are mapped, often using a short-read alignment tool as BWA (Li and Durbin 2009) or Bowtie (Langmead and Salzberg 2012). The resulting alignments are later processed using a variant calling method to call haplotype or SNP loci for each sample; general purpose methods of variant calling can be found in GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs–, samtools (Li et al. 2009) –mpileup– and other general purpose bioinformatic packages.
+
+The usability of short-read alignment methods depends on the degree of similarity between target and reference genomes. They are widely used in resequencing experiments at infraspecific level or including closely related species within a genus, especially in surveys using reduced representation libraries. Obvious examples are the pipelines Stacks (Catchen 2013) and Pyrad (Eaton 2014) meant to process the different flavours of RADSeq/GBS datafiles, but RNASeq (De Wit et al. 2012) and poolseq (Schlötterer et al. 2014) data are processed similarly  It is worth mentioning that in some cases, the lack of a reference genome is overcome by assembling a transient reference library stacking short reads (Catchen et al. 2011), a case that is of limited usability in interpreting lichen metagenomic samples. A usable phylogenomic pipeline using an alignment to reference approach is RealPhy (Biozentrum Universität Basel n.d.) which was used for Rhizoplaca melanophthalma (Leavitt et al. 2016).
+
+All these pipelines commented above, used for population or multispecies datasets have been developed to study organisms that have more complex genomes than fungi, like animals, especially humans and for vascular plants. In all of them the vegetative part of the life cycle is at least diploid, when not tetraploid or with even higher levels of ploidy. This has a strong influence on the type of data desired to retrieve as outcome. Some methods will provide a consensus phased genotype –a haplotype– although most methods are designed to call variants in the form of SNPs. As lichenologists, we depart from the presumption that the specimen we sequence is haploid, a presumption that causes significant base-calling uncertainty in sanger sequences of microlichens where apothecia are rutinarily used. From that perspective, it is tempting to understand SNPs as the same type of data one could get by stripping a multiple alignment from uninformative sites. However this is not exactly what SNPs are. Single Nucleotide Polymorphisms are biallelic loci, meant to cope with heerozygotic samples, and are extremely restrictive with regards to their evolutionary model, they must conform to an infinite sites model and fullfill a four allele rule. This means that in each site only two states are possible in the absence of recombination and that mutations only happen once in each site and that homoplasy (back mutation) is not possible. This pressumptions are not met in many cases in phylogenmic datasets, because the number of acceptable synonimous mutations is quite restricted in proteing coding regions and because selection and not only recombination may cause significant departures from that model. 
+In programs as Stacks, all loci that do not fulfill these presumptions are systematically excluded from the analyses lsometimes leading to an important erosion in the informativenes of the dataset when the intention is building phylogeneies or coalescent reconstructions and not population assignments or traditional statistics. In addition, the data fromat exported in such pipelines is usually formated as it would for a diploid organism. These files used as they come in population genetics programs usually provide artificially low estimates of recombination and a wide clonality signal which may be missleading.
+Drawbacks. Lack of information on the evolutionary history of individual genes. Further Heterozygosity filtering is necessary to ensure that the reference regions and the mapped reads are orthologous.
+
+4.1.2 Annotation based pipelines and Orthology
+A second approach to assemble a phylogenomic dataset makes use of the methods developed to estimate coding regions and protein sequences and models of protein evolution. In itself is closer to the original scope of phylogenomics (98) as addressed by early researchers.
+Usually protein sequences are more conserved than their DNA counterparts and their evolution is easier to model using Hidden Markov chain models. In this case the choice of loci is not made by aligning DNA sequences but by Infering protein sequences from genomic assemblies and comparing them to a preexistent repository.
+The most naive example of this kind of approach would be generating a database of target DNA sequences (ITS, Beta-tubuli, RPB1 etc) to which individual genome assemblies are blasted in order to extract the each targeted region from the assemblies, put them together and align them in a similar setup to the traditional phylogentic one. This simplistic approach works, and it is widespread in the literature, there is for instance an interesting paper including 20 nuclear loci of polar and brown bears that was published in Science in 2012. But again it is polar bears.
+Using all loci extracted from a reference genome would also work but may fai in cases where genes are duplicated, or belong to transposable elements, etc....Still for taxa that are closely related to the one used as a reference it could work.
+The next level of refinement would be to estimate orthology.
+What is orthology and paralogy.
+A simple setup best reciprocal blast hits. All protein coding genes... It gets problematic as the history of the genomes complicates for deeper phylogenetic levels.
+4.1.3 Pipelines based on the use of precompiled sets of Orthologous genes.
+The next level is use phylogenomic repositories containg orthologous gene sets in which the evolutionary pathways for each AA in the sequence are modeled using HMM. Global repositories as Ortho MCl etc are good for deep phylogenies but reduce the type of loci to be used to more conserved ones the more distant the relationship between the sample sin our experiment.
+HMMER is used for searching sequence databases for sequence homologs, and for making sequence alignments. It implements methods using probabilistic models called profile hidden Markov models (profile HMMs).
+
+However, this approach is scalable, and researchers have commenced developing themed sets of genes that tend to be single copy orthologs within a subset of organisms at a certain phylogenetic scale. Within the Busco pipeline originally intended to estimate genome completeness several gene sets are provided which contain different number of loci. 300 for fungi...3000 for Pezizomycotina.... Ocnsidering a genome consists of ca. 10.000 genes 1/3 is already a good number of sequence loci to use.
+The developement of focus sets of orthologs, even including positional orthology (syntny) in the equation are clearly the simplest and more robust resource to produce phylogenomic datasets for a wider range of experiments and focal groups. For this reason this approach is the one we will succintly develop in the following toy pipeline
+4.2 A phylogenomic pipeline
+The somewhat naïve phylogenomic pipeline we propose makes use of the computational strategies implemented in the BUSCO v 3.0 (Simão et al. 2015) pipeline. BUSCO uses a repository of single copy orthologous genes defined by precompiled HMM profiles (Eddy 1998) to estimate gene-completeness of a genome assembly. Because BUSCO uses augustus (Stanke et al. 2006) for gene-prediction and HMMER (Mistry et al. 2013) for the identification of orthologs from a precompiled hmmer profile database, it covers three necessary steps in the developement of a phylogenomic pipeline. A more thorough pipeline would profit from a) using a more through iterative gene-prediction strategy, b) using a custom built taxon specific ortholog database and probaly a c) a further use of a phylogenetically explicit method of ortholog detection. A similar setup profitting from the use of BUSCO has been used in a large phylogenomic survey in Saccharomycotina (Shen et al. 2016) Fig. 1.
+
+Figure 1: Pipeline used by
+Sheen et al. 2017 (Shen et al. 2016).
+4.2.1 Assement of gene-completeness with BUSCO
+Task 1: Asses the gene completeness of a small genomic subset using busco.
+1.	Go to the folder made for todays activities $ cd /genomics_course/day-4/
+2.	Locate the busco pipeline in ./busco and the downloaded lineage specific databases in  ./busco/lineages.
+3.	Decompress the lineage databases using tar –xvzf on each tar.gz file.
+4.	Look for the folder containing .hmm profiles: a) How many BUSCOS does each database contain? b) Try to understand it the .hmm files by looking at it with more or a similar tool. NOTE: It shows a table with the probabilities for each aminoacid state for each position in the sequence.
+5.	Let’s run BUSCO: Select one of the reduced assemblies found in  day-4/task_1
+4.	Run BUSCO taking care to specify the correct path for the python script as well as for your input file, the lineages and where you want the output to be. 
+$ python ../busco/scripts/run_BUSCO.py \
+–i YOUR_SEQUENCE_FILE.fa \
+-o OUTPUT_NAME \
+-l ../busco/lineages/NAME_OF_LINEAGE -m geno
+ 
+5.	Look at the output files. Several of them could be of use in phylogenomic pipeline, especially the aminoacid and nucleotide fasta files provided in the folder /single_copy_busco_sequences which would be easy to use downstream. Another file to take into account is the one named training_set_* which could be a good starting point for further gene-prediction and annotation pipelines. We will use the file named full_table_* downstream. It is both complete and intuitive, and serves multiple purposes that will be explained in task_2.
+6.	Now... a) Are the assemblies complete? b) Are there a lot of duplicated BUSCOs? c) What could be the cause? d) Could Kmer-coverage suggest the presence of more fungi in the sample? e) Does the assembly require additional cleaning? f) Can this generate a problem downstream? g) Why is the parameter length smaller than the value of Start-End. The following table provides a simplified example.
+#BUSCO_group	Status	Scaffold	Start	End	Bitscore	Length
+BUSCOfEOG7CCC0Z	Complete	NODE_8_length_770894_cov_4.06215_ID_270532	553762	589411	1175.1	909
+BUSCOfEOG73RBMM	Complete	NODE_8_length_770894_cov_4.06215_ID_270532	641463	652863	933.3	530
+BUSCOfEOG7DVDN4	Complete	NODE_63_length_278098_cov_4.11132_ID_673671	94607	106102	713.1	448
+
+Task 1b: Asses the gene completeness of a genomic draft using busco.
+For the highly motivated among you, if your VM or local computer is working fast enough try repeating the same steps with a complete genomic draft of the ones found in folder ./task_1b.
+a) How complete are they? b) Do they have a lot of duplicated BUSCOS? c) Do you observe notable differences in kmer-coverage between the scaffolds included in the genomic draft? again What does it mean? d) Does the assembly need further sanitation?
+4.2.2 Parsing the BUSCO output for phylogenomics
+Task_2: We developed a very simple R script to mine the output of BUSCO in order to produce a phylogenomic data matrix. In a well atomated pipeline it may be more reasonable to work with the fasta files per busco and genome provided by the program. We do however use the full_table_* file for several reasons. First in a preliminary survey, working with the full_table file allows us to a) use BUSCO in the sanitation of a preliminary assembly, in addition to a blobology-like (Shen et al. 2016) approach using augustus, diamond (Buchfink, Xie, and Huson 2015) and MEGAN (Huson, Mitra, and Ruscheweyh 2011), b) thus to manually exclude one of the duplicated BUSCOS that may be causing problems for preliminary exploration. Also, we are not departing from well-tested nor evidence-based protein predictions, so using scaffold coordinates allows us to c) include intronic regions, and d) modulate possible missinterpreted regions in the alignment step. Finally, it also serves to provide a simple example on how to work with tables and sequences in R.
+To simplify the rest of the pipeline we provide a reduced full_table file and assembly for four Caloplaca specimens and part of the Xanthoria parietina genome as a reference.
+1.	Go to folder ../task_2. Find the files to use, they are named coherently as x1-x4.fas and .txt
+2.	Make the following directories (with mkdir) ./fastas ./alignments, and ./trees
+3.	Process the files in R, append sequences to individual files per BUSCO. Notice the simple for loop.
+for i in x1 x2 x3 x4 xanpa;
+do
+Rscript parse_busco.r ./input_files/${i}.txt \   ./input_files/${i}.fasta $i ./fastas/;
+done
+4.	At this stage we add a completion filter to include only BUSCOS present in all 5 samples. This is not necessary, and there is a tendency to include missing data in phylogenomic matrices as a better practice. However, BUSCOS found in too few samples and not pressent in the outgroup should be systematically excluded. Subsequently align each individual fasta file with mafft 
+for FILE in ./fastas/*.*;
+do
+value=$(wc -l $FILE |  cut -d' ' -f1)
+if [ $value -eq 10 ] # HERE THE FILTER
+then
+echo $value
+echo $FILE
+mafft --retree 2 --maxiterate 2 --adjustdirection --thread 2 $FILE > $PWD/alignments/${FILE##*/}
+else
+mv $FILE ./fastas/out/$FILE
+fi
+done
+
+5.	Not today... At this stage we may want to refine the alignment using muscle, and potentially produce multiple alignments with different methods to calculate a consensus alignment or to use further in the –compareset option of trimal.
+6.	Then we will trim the alignment using the software trimAl (Capella-Gutiérrez, Silla-Martínez, and Gabaldón 2009). You can find suggestions and a tutorial in http://trimal.cgenomics.org. First explore the alignment report for your files using the –sgt and –sident flags. An example to create a report file could be 
+mkdir ./trimal_reports
+for FILE in $PWD/alignments/*.*;
+do
+trimal -in $FILE -sgt >> ./trimal_reports/report.txt;
+done 
+7.	Then trim the alignment using an automated procedure, check the webpage and tutorials for details. We save an html alignment report and a phylip alignment file
+mkdir ./refined
+for FILE in $PWD/alignments/*.*;
+do
+s=${FILE##*/}
+s=${s%.*}
+trimal -in $FILE -automated1 -htmlout $PWD/trimal_reports/${s}.html
+trimal -in $FILE -automated1 -phylip > $PWD/refined/${s}.phy
+done
+8.	Almost over we calculate single gene trees using raxML, do not forget to a) rename the lables that were reversed (look at the files mafft called some sequences_R_x...) and b) root the trees.
+
+for FILE in $PWD/refined/*.phy
+do
+sed -i -e 's/^_R_//g' $FILE 
+done
+OK issue solved because it turns into a problem
+mkdir ./trees
+for FILE in $PWD/refined/*.phy
+do
+NAME=${FILE##*/}
+NAME=${NAME%.*}
+raxml -s $FILE -n $NAME -x 12345 -p 23456 -f a -# 100 -m GTRGAMMA -T 4 -o xanpa
+mv ./RAxML_* ./trees/
+done
+9.	Finally we use RaxML to calculate a mayority rule consensus tree which we annotate with the Internode Certainty and Tree Certainty score (IC, ICA, TC, and TCA) proposed by Salichos and Rokas 
+
+cat RAxML_bipartitionsBranchLabels.* > all_trees.tre
+raxmlHPC -L MR -z all_trees.tre -m GTRCAT -n -T1
+Additional task: Try to program two similar steps but using IQtree (Minh, Anh Thi Nguyen, and von Haeseler 2013) instead of RaxML, it can be slightly faster (Zhou et al. 2017) and it incorporates automated model-testing, which is a very interesting addition.
+Additional task: Now try to wrap up all the latter steps into a single sequential script, pack it into a .sh file and try runnin it as a pipeline.
+4.2.4 Single gene trees and consensus
+It has become obvious that having a multiplicity of genes does not only provide information as a consensus for the whole genome. Different regions of the genome may have different histories and a consensus may not conform to a simplified ditichotomous structure as provided by a phylogenetic tree. A great tool to explore the phylogenetic signal contained at a whole genome level is the software dendroscope CITE, which provides a wide ranges of methods to estimate rooted networks for the further exploration of the phylogenetic signal encountered across loci.
+Additional Task_3: Contains an additional set of 964 gene trees calculated from the same Caloplaca dataset. a) Use RaxMl to summarize them, b) Download and install Dendroscope and try to obtain further consensus representations.
 
 
 Ideas generales sobre lo que signifcan los caracteres genómicos
