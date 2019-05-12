@@ -10,11 +10,11 @@ output:
 
 # 1. Introducción
 
-El término filogenómica fue introducido para referirse al estudio de EISEN1 
+El término filogenómica fue acuñado por Eisen 1998 @ para referirse al estudio de EISEN1 
 A common goal to all phylogenomic surveys is to provide a reconstruction of the evolutionary history of a taxonomic group using genome-wide data. In some cases reconstructing a phylogeny may be the ultimate goal of the experiment, but more often phylogenies provide a framework to interpret population dynamics, especiation events or provide the background signal to interpret comparative genomic trends.
 Qué es filogenómica?
 
-The protocols commonly used in phylogenetic surveys to select, sanger-sequence, align and estimate a phylogenetic tree with a set of neutral loci are very standarized. In phylogenomics, however there is no single approach or consensus protocol that can be invoqued as a consensus. In fact, due to human and computational limitations, analyzing a high number of loci requieres a series of simplifications and compromises that largely depend on the type of sequening plattform, of genomic coverage and the purpuse of the survey. The philosophy and methods used for every step are extremely dependent on the type of data acquired and the purpose of the survey. For instance highly refined Bayesian methods of model testing, coestimation of phylogeny and population parameters or even making simple phylogenetic inferences are not available for all types of data and often they do not scale well to cope with genomic datasets extremely limiting their use.
+The protocols commonly used in phylogenetic surveys to select, sanger-sequence, align and estimate a phylogenetic tree with a set of neutral loci are very standarized. In phylogenomics, however there is no single approach or consensus protocol that can be invoqued as a consensus. In fact, due to human and computational limitations, analyzing a high number of loci requieres a series of simplifications and compromises that largely depend on the type of sequencing plattform, of genomic coverage and the purpuse of the survey. The philosophy and methods used for every step are extremely dependent on the type of data acquired and the purpose of the survey. For instance highly refined Bayesian methods of model testing, coestimation of phylogeny and population parameters or even making simple phylogenetic inferences are not available for all types of data and often they do not scale well to cope with genomic datasets extremely limiting their use.
 In this practical session we provide a succint introduction to different methods used to generate phylogenomic data matrices, and focus on one of them, making use of use of orthology based gene sets which provides a simple and straightforward method that can be used to address multiple background questions and provides a good entry-level approach to phylogenomics. The practical parts are highlighted 
 
 
@@ -82,18 +82,21 @@ cd ..
 Antes de correr busco hay que elegir un método para hacerlo. Podemos haber instalado BUSCO de modo nativo en nuestro ordenador. Este método es el más habitual y requiere de haber instalado los programas de los que BUSCO depende para su funcionamiento. Mantener la estabilidad de las dependencias constituye un problema en muchos programas bioinformaticos, y no es extraño que programas dejen de funcionar tras actualizar el sistema o tras instalar una consola (shell) diferente. Para evitar estos problemas hay cada vez una mayor tendencia a usar los programas bioinformaticos empaquetados en máquinas virtuales. De ellas, las máquinas virtuales propiamente dichas son las menos versátiles, pero las que más se adecuan al uso de ciertos programas que usan bases de datos externas. BUSCO proporciona una máquina virtual propia basada en ubuntu que se puede utilizar. Otra opción es incluir los programas necesarios en un contenedor de docker. Esta solucion es en muchos casos la mejor, aunque no siempre los contenedores están listos para su uso y requieren invertir una importante cantidad de tiempo...
 
 Una vez descomprimidos los genomas son analizados usando el siguiente script
+Lo primero sort y luego mask
+
+
 ```{bash}
-for FILE in X1scaffoldsfiltered X3scaffoldsfiltered X5scaffoldsfiltered X7scaffoldsfiltered X9scaffoldsfiltered X2scaffoldsfiltered X4scaffoldsfiltered X6scaffoldsfiltered X8scaffoldsfiltered Xanpa2_AssemblyScaffolds
+for FILE in X1 X2 X3 X4 X5 X6 X7 X8 X9 Xanpa
   do
     python /usr/local/src/busco/scripts/run_BUSCO.py \
     -f \
-    -i ./$FILE.fasta \
+    -i ./${FILE}_masked.fasta \
     -o $FILE \
     -l ./ascomycota_odb9 \
     -m genome \
     -c 12 \
     -sp aspergillus_fumigatus
-    gzip ./$FILE.fasta
+    gzip ./${FILE}_masked.fasta
   done
 ```
 En realida podría haber usado la base de datos de pezizomycotina, pero esta nos daria un volumen de resultados no utilizable en el curso de este tutorial.
@@ -246,7 +249,7 @@ Save the following script as run_mafft.sh. For this one can use nano and paste t
 ```{bash}
 nano run_mafft.sh
 ```
-Paste the script below
+Paste the script below within the file run_mafft
 ```{bash}
 #!/bin/bash
 # 
@@ -297,7 +300,7 @@ Lanzamos el escript con:
 ```{bash}
 sh run_trimal.sh
 ```
-**Atención Propuesta.** Echale un vistazo a los archivos producidos por trimal usando *more* con los archivos fasta y usando el navegador web con los html.
+**Atención Propuesta.** Echale un vistazo a los archivos producidos por trimal usando *more* con los archivos fasta y usando el navegador web con los archivos html.
 **Atención Pregunta.** Los archivos html nos ofrecen la posibilidad de decidir si nos conviene usar secuencias de aminoácidos o de nucleotidos. Tu que opinas? fna o faa?
 
 ## 4.6. Realizar reconstruccion filogenética para cada locus iqtree
@@ -495,6 +498,25 @@ o
 
 ## Example III. Departing from proteomes
 https://github.com/davidemms/OrthoFinder
+#
+#
+#
+docker pull cmonjeau/orthofinder
+#
+#
+mkdir ./02_results
+docker run -it --rm -v "/home/fernando/genomics_course/new/new/02_orthofinder/01_data":/input cmonjeau/orthofinder orthofinder.py -f /input -t 10 -a 10 -S diamond
+docker run -it --rm -v "/home/fernando/genomics_course/new/new/02_orthofinder/02_results":/input cmonjeau/orthofinder trees_for_orthogroups.py /input/ -t 7
+#
+#
+#
+orthofinder -f \
+ -t 30 \
+ -a 30 \
+ -M dendroblast \
+ -S diamond \
+ -A mafft \
+ -p ./tmp
 ## Integrate functional annotations
 ```{r}
 pfam<-read.table("/Users/ferninfm/Desktop/eraseme/funannotate_compare/pfam/pfam.results.csv",sep=",",quote="\"",row.names=1,header=TRUE)
