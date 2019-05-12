@@ -1,22 +1,29 @@
 ---
-title: 'Curso de Genómica de Hongos: Filogenómica'
+title: 'Kurso de genomika fungoj: Phylogenomika'
 author: "Fernando Fernandez Mendoza"
 date: "18/5/2019"
 output:
-  pdf_document: default
-  csl: pnas.csl
   html_document: default
+  csl: pnas.csl
   bibliography: bibliography.bib
   word_document: default
 ---
 
 # 1. Introducción
 
-El término filogenómica fue acuñado de manera casi coetanea para referirse a dos enfoques o disciplinas científicas diferentes. Primero Eisen en 1998 @Eisen1998 para referirse al estudio de EISEN1 
+El término filogenómica fue acuñado de manera casi contemporánea para referirse a dos disciplinas científicas diferentes pero que comparten un transfondo metodológico común: el uso de técnicas de reconstrucción filogenética para análizar datos genómicos. Eisen en el año 1998 @Eisen1998 fué el primero en utílizar el término para referirse al uso de modelos phylogenéticos en la anotación funcional de secuencias protéicas. Por otro lado @OBrien1999 introduce por primera vez el término para referirse al uso de datos genómicos en la reconstrucción de la historia evolutiva de un grupo taxonómico. Ambas disciplinas difieren en cuanto a métodos, objetivos e incluso en el nivel de organización biológica que estudian, pero juntas proporcionan la base conceptual para la genómica comparativa y evolutiva.
 
-A common goal to all phylogenomic surveys is to provide a reconstruction of the evolutionary history of a taxonomic group using genome-wide data. In some cases reconstructing a phylogeny may be the ultimate goal of the experiment, but more often phylogenies provide a framework to interpret population dynamics, especiation events or provide the background signal to interpret comparative genomic trends.
-The protocols commonly used in phylogenetic surveys to select, sanger-sequence, align and estimate a phylogenetic tree with a set of neutral loci are very standarized. In phylogenomics, however there is no single approach or consensus protocol that can be invoqued as a consensus. In fact, due to human and computational limitations, analyzing a high number of loci requieres a series of simplifications and compromises that largely depend on the type of sequening plattform, of genomic coverage and the purpuse of the survey. The philosophy and methods used for every step are extremely dependent on the type of data acquired and the purpose of the survey. For instance highly refined Bayesian methods of model testing, coestimation of phylogeny and population parameters or even making simple phylogenetic inferences are not available for all types of data and often they do not scale well to cope with genomic datasets extremely limiting their use.
-In this practical session we provide a succint introduction to different methods used to generate phylogenomic data matrices, and focus on one of them, making use of use of orthology based gene sets which provides a simple and straightforward method that can be used to address multiple background questions and provides a good entry-level approach to phylogenomics. The practical parts are highlighted 
+El proposito común a todos los estudios filogenéticos es la inferencia de las relaciónes evolutivas entre espécies. Hay muchos estudios cuyo único objetivo es la obtención de una hipótesis evolutiva, aunque a menudo también se usa la reconstrucción filogenética como base  para modelar procesos más complejos como patrones de diversificación, dinámicas poblacionales, evolución de caracteres, filogeografía, etc. Bajo una visión restringida, la filogenómica se podría entender como una extensión de la filogenetica tradicional  para usar ya no muchos loci, sino todos los posibles. Sus premisas y objetivos serían comunes, y sus métodos se habrían reajustado para poder afrontar el nuevo tipo y volumen de datos.
+
+Sin embargo, los métodos modernos de secuenciación masiva no sólo proporcionan un enorme número de caracteres genéticos, sino que permiten realizar una descripción detallada de la estructura de los genómas, así como de la función de cada uno de los genes que los conforman. La filogenómica pues, permite estudiar tanto la evolución de las especies como la de sus genómas, y proporciona un marco histótrico para la interpretación de los mecanismos ecológicos y moleculares asociados con el proceso evolutivo.
+
+# 2. Objetivos del curso
+En definitiva, la filogenómica supone la puerta de acceso al estudio genómico comparativo bajo una perspectiva evolutiva.
+
+# 3. Partes de un pipeline: Propuestas metodológicas
+# 1. Introducción
+Los protocolos comúnmente utilizados en las encuestas filogenéticas para seleccionar, sangrar en secuencia, alinear y estimar un árbol filogenético con un conjunto de loci neutros están muy estandarizados. En la filogenómica, sin embargo, no existe un enfoque único o protocolo de consenso que pueda ser facturado como un consenso. De hecho, debido a las limitaciones humanas y computacionales, el análisis de un gran número de loci requiere una serie de simplificaciones y compromisos que dependen en gran medida del tipo de plataforma de secuenciación, de la cobertura genómica y del propósito de la encuesta. La filosofía y los métodos utilizados para cada paso dependen en gran medida del tipo de datos adquiridos y el propósito de la encuesta. Por ejemplo, no se dispone de métodos bayesianos altamente refinados para la prueba de modelos, la coestimación de la filogenia y los parámetros poblacionales, o incluso para hacer inferencias filogenéticas sencillas para todos los tipos de datos y, a menudo, no se adaptan bien a los conjuntos de datos genómicos que limitan su uso.
+En esta sesión práctica, proporcionamos una introducción sucinta a los diferentes métodos utilizados para generar matrices de datos filogenómicos, y nos centramos en uno de ellos, haciendo uso del uso de conjuntos de genes basados ​​en ortología que proporciona un método simple y directo que puede utilizarse para abordar múltiples antecedentes. cuestiona y proporciona un buen enfoque de nivel de entrada a la filogenómica. Se resaltan las partes prácticas.
 4.2 Assembling a phylogenomic data matrix
 The student question quoted above on the top of the page may seem naïve, but reflects the first problem one encounters when attempting to reconstruct a phylogeny from a set of genomic samples. As of today, several handbooks CITE CITE provide a good digest guide to phylogenomics, and several pipelines have been published or made available online. Few years back, the student from the quote would have started by googleing “phylogenomics” and “genome alignment” and would have spent a couple of days trying to figure out how to use the output of MAUVE (Darling, Mau, and Perna 2010), before assuming that having the contigs systematically sorted (Rissman et al. 2009) is nice, but that it was not the point at all.
 However, it remains difficult to make well-informed decissions on the design of a phylogenomic survey. First, there is an important terminological gap between the disciplines of phylogenetic systematics and molecular genomics which is often difficult to bridge; the term phylogenomics itself is widely used in the literature in surveys using evolutionary methods of genome annotation CITE and not just extended phylogenetic surveys. Second, there is no single method to assemble a genome-wide phylogenetic data matrix, starting for the genome representation of the library itself. This generates an important deal of noise, as  highly impacting genomic surveys often deal with taxonomic groups other than fungi or algae, and as our neighbouring colleagues working on animals of plants usually engage in well-informed but highly opinionated digressions about their next project during cofee breaks feeding us up with sometimes inadequate information. Third, to complicate it even more, each manuscript uses a slightly different set of scripts or pipelines to atomatize the assembly of a data-matrix. Pipelines that are often developed with a particular target organism in mind, bacteria, animals, humans, fungi... and are not always transferable to other organisms, especially lichens, where lichenized-fungi, their photobionts, and all the complex biotic community forming the lichen system provide advantaghes and dissadvantages on their own.
@@ -135,19 +142,6 @@ Additional task: Now try to wrap up all the latter steps into a single sequentia
 4.2.4 Single gene trees and consensus
 It has become obvious that having a multiplicity of genes does not only provide information as a consensus for the whole genome. Different regions of the genome may have different histories and a consensus may not conform to a simplified ditichotomous structure as provided by a phylogenetic tree. A great tool to explore the phylogenetic signal contained at a whole genome level is the software dendroscope CITE, which provides a wide ranges of methods to estimate rooted networks for the further exploration of the phylogenetic signal encountered across loci.
 Additional Task_3: Contains an additional set of 964 gene trees calculated from the same Caloplaca dataset. a) Use RaxMl to summarize them, b) Download and install Dendroscope and try to obtain further consensus representations.
-
-
-Ideas generales sobre lo que signifcan los caracteres genómicos
-Que se puede hacer y no
-Conceptos Genoma
-Ortologos
-
-Conceptos de resonstruccion filogenética
-
-# 2. Objetivos del curso
-Punto de partida
-
-# 3. Partes de un pipeline: Propuestas metodológicas
 No hay una sola aproximación a realizar un estudio filogenómico. Es altamente dependiente del tipod de datos que tengamos
 
 En terminos generales:
