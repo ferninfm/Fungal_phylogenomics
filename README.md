@@ -1,4 +1,4 @@
----
+<!---
 title: 'Kurso de genomika fungoj: Phylogenomika'
 author: "Fernando Fernandez Mendoza"
 date: "18/5/2019"
@@ -7,11 +7,13 @@ output:
   csl: pnas.csl
   bibliography: bibliography.bib
   word_document: default
----
+--->
 
 # Kurso de genomika fungoj: Phylogenomika
 
-Fernando Fernandez Mendoza
+*Fernando Fernandez Mendoza*
+
+17-05-2019
 
 ---
 
