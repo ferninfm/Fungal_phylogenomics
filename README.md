@@ -21,11 +21,11 @@ El término filogenómica fue acuñado de manera casi contemporánea para referi
 
 El proposito común a todos los estudios filogenéticos es la inferencia de las relaciónes evolutivas entre espécies. Hay muchos estudios cuyo único objetivo es la obtención de una hipótesis evolutiva, aunque a menudo también se usa la reconstrucción filogenética como base  para modelar procesos más complejos como patrones de diversificación, dinámicas poblacionales, evolución de caracteres, filogeografía, etc. Bajo una visión restringida, la filogenómica se podría entender como una extensión de la filogenetica tradicional  para usar ya no muchos loci, sino todos los posibles. Sus premisas y objetivos serían comunes, y sus métodos se habrían reajustado para poder afrontar el nuevo tipo y volumen de datos. Sin embargo, los métodos modernos de secuenciación masiva no sólo proporcionan un enorme número de caracteres genéticos, sino que permiten realizar una descripción detallada de la estructura de los genómas, así como de la función de cada uno de los genes que los conforman. La filogenómica pues, permite estudiar tanto la evolución de las especies como la de sus genómas, y proporciona un marco histótrico para la interpretación de los mecanismos ecológicos y moleculares asociados con el proceso evolutivo.
 
-En definitiva, la filogenómica no es sólo filogenias, sino que proporciona una puerta de acceso al estudio comparativo de los genómas y su evolución molecular. Aunque ello requiere una importante inversión mucho mayor en recursos económicos y humanos.
+En definitiva, la filogenómica no es sólo calcular filogenias, sino que proporciona una puerta de acceso al estudio comparativo de los genómas y su evolución molecular. Aunque ello requiere una importante inversión mucho mayor en recursos económicos y humanos.
 
 ## 2. Objetivos del curso
 
-El objetivo del curso es proporcionar una visión general sobre las necesidades metodológicas que tienen los estúdios filogenómicos. El curso se compone de tres ejercicios prácticos y varias pausas de lectura. Dado que los tiempos de computación son relativamente elevados, es importante no sólo copiar y pegar para que salga el ejercicio, sino entender lo que estámos haciendo.
+El objetivo del curso es proporcionar una visión general sobre las necesidades metodológicas que tienen los estúdios filogenómicos. El curso se compone de tres ejercicios prácticos e incluye varias pausas de lectura, que sirven para optimizar el uso de los tiempos de computación, que son relativamente elevados. Entender lo que estámos haciendo es sin duda tan importante como entendér por qué lo estamos haciendo (-Paulo Coelho)
 
 La primera actividad es la principal y tiene como objeto desarrollar un ejemplo de *pipeline* filogenómico basado en BUSCO (<https://busco.ezlab.org>), sencillo y poco automatizado. El objetivo es (1) familiarizarse con el uso del terminal de UNIX, (2) desarrollar todos los pasos necesarios para obtener un dataset filogenómico a partir de secuencias genómicas (de nucleótidos) y (3) desarrollar todos los pasos conducentes a la obtención de un árbol filogenómico.
 
@@ -38,24 +38,63 @@ La tercera actividad se centra en las posibilidades abiertas por el modulo de ge
 
 Mientras que los protocolos utilizados en estudios filogenéticos están extremadamente estandarizados, en filogenómica no existe un enfoque único, una receta para todo que pueda considerarse como consenso. La filosofía y los métodos utilizados para cada estudio dependen en gran medida del tipo de datos adquiridos, su calidad y cobertura genómica y la extensión filogenética o el propósito del estudio.
 
-El primer paso es la obtención de un set de datos que puedan ser análizados. La obtención de una matriz filogenética es sencilla, pues los loci a estudira están preseleccionados y sólo hace falta secuenciarlos, alinear sus secuencias, y usarlas para estimar uno (o más) árboles filogenéticos usando un conjunto de loci neutrales.
+En general un estudio filogenómico va a contener todos o la mayoría de los siguientes pasos:
+1. Secuenciación
+2. Ensamblado de los genomas (*de novo* o alinenado a una referencia)
+3. Predicción de genes (o loci)
+4. Annotación (Comparación con bases de datos, anotación funcional)
+5. Agrupamiento (*Clustering*) de secuencias génicas
+6. Selección de loci (cuando se hace *a priori*)
+7. Alineamiento de secuencias (de nucleótidos o aminoácidos)
+8. Refinamiento del Alineamiento
+9. Reconstrucción filogenética (*Supermatrix* o loci individuales)
+10. Selección de loci (*a posteriori*)
+11. Filtrado de topologías
+12. Construcción de un consenso (*Supertree*)
 
-Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, 
-De hecho, debido a las limitaciones humanas y computacionales, el análisis de un gran número de loci requiere una serie de simplificaciones y compromisos que dependen en gran medida del tipo de plataforma de secuenciación, de la cobertura genómica y del propósito de la encuesta. 
+Aunque es cierto 
 
 
+### 3.1. Ensamblar una matriz de datos filogenómicos
 
-a encuesta. Por ejemplo, no se dispone de métodos bayesianos altamente refinados para la prueba de modelos, la coestimación de la filogenia y los parámetros poblacionales, o incluso para hacer inferencias filogenéticas sencillas para todos los tipos de datos y, a menudo, no se adaptan bien a los conjuntos de datos genómicos que limitan su uso.
+El primer paso es la obtención de un set de datos que puedan ser análizados. La obtención de una matriz filogenética es sencilla, pues los loci a estudira están preseleccionados y sólo hace falta secuenciarlos, alinear sus secuencias, y usarlas para estimar uno (o más) árboles filogenéticos usando un conjunto de loci neutrales. Sin embargo, generar matrices filogenómicas puede resultar extremadamente complejo, más cuanto más alejados estén los organismos estudiados entre sí.
 
-En esta sesión práctica, proporcionamos una introducción sucinta a los diferentes métodos utilizados para generar matrices de datos filogenómicos, y nos centramos en uno de ellos, haciendo uso del uso de conjuntos de genes basados ​​en ortología que proporciona un método simple y directo que puede utilizarse para abordar múltiples antecedentes. cuestiona y proporciona un buen enfoque de nivel de entrada a la filogenómica. Se resaltan las partes prácticas.
+Una de las primeras preguntas intuitivas que un cientifico proveniente de la sistemática filogenética se se plantea es "Ya tengo mis genómas. Y ahora como se alinean?". Y el siguient paso intuitivo es abrir el navegador y buscar “phylogenomics” y “genome alignment”. Esto causa una confosión importante,pues pasa uno varios dias intentando sacar algo en claro de la multitud de pipelines desarrolladas para procariotas que hay online, y si tiene suerte encontrará un pipeline aparentemente fucional, desarrollado hace menos de diez años que misteriosamente h penas ha sido citado, o se encuentra inmerso en un universo criptico en el que las palábras ortólogo y phyloma se suceden sin conseguir saber si es eso lo que querémos hacer o no. Ahora no es tan terrible, pero hace unos pocos años lo más habitual era encontrarse intentando sacar algún tipo de sentido a los métodos de alineación de genómas como MAUVE (Darling, Mau, and Perna 2010), antes de asumir que tener los *contigs* sistematicamente ordenados  (Rissman et al. 2009) está muy bien, pero que no es para nada lo que querémos hacer.
 
+Aun cuando los métodos han evolucionado mucho, y es relativamente facil encontrar un pipeline que hace algo parecido a lo que queremos hacer, sigue resultando muy dificl tomar decisiones bien informadas de como diseñar un buen estudio filogenómico. Para empezar hay una importante brecha terminológica entre disciplinas, especialmente la sistemática filogenética y la genómica molecular, estando presente el término filogenómica más presente en la literatura refiriendose a los métodos filogenéticos de anotación funcional. Para seguir, la multiplicidad de enfoques utilizados a la hora de  generar matrices de datos filogenómicas, y la vehemencia con que en muchos casos se defienden unas sobre otras en las publicaciones, pueden hacer dudar hasta al más rudo bioinformático.
+
+Uno de los conceptos más importantes, cuyo uso puede crear bastante confusión es el concepto de ortólogo. Uno de los axiómas básicos de la reconstrucción filogenética, que emana de la cladistica más tradicional es que para establecer relaciones de parentesco evolutivo sólo sirven caracteres (geneticos o no) homólogos, es decir caracteres cuya semejanza (funcional) se deba a que tienen un mísmo orgien evolutivo (es decir estaban presentes en un ancestro común). Mientras que los caracteres análogos, aquellos cuya semejanza se debe a una adquisición secundaria e independiente (las alas de aves y murcielagos son el ejemplo más obvio), no pueden ser usados para establecer relaciones de parentesco.
+
+Esta idea de homología y analogía es obvia también a nivel genético. Aun cuando dos genes produzcan un enzima que degrade el mismo sustrato, si no derivan de una proteina presente en un ancestro común no pueden ser usados para establecer relaciones de parentesco. Bien. Dentro de los genes (caracteres) homologos, encontramos dos tipos: Ortólogos y parálogos. Los génes ortólogos son aquellos cuyo origen es causado por el proceso de especiación, es decir aquellos que permiten trazar una linea de herencia univoca desde un ancestro común. Los genes parálogos son aquellos cuyo origen no es estrictamente el proceso de especiación. Siendo homólogos, porque derivan de un ancestro común (en global) se han originado por duplicación de un gen existente o por captura horizontal. Mientras que la inclusión de parálogos en un arbol filogenético puede ser usado para reflejar la historia evolutiva de ese gen en concreto (util en anotación funcional por ejemplo), cuando el objetivo es calcular una filogénia a nivel de especie introduce en el modelo una fuente de variación que no es causada por el proceso que queremos modelar (especiación) y por eso no deben ser utilizados. La identificación de genes ortólogos es un campo cetral en genómica comparativa, y quizás la referencia española más importante sea el grupo de Toni Gabaldón <https://www.crg.eu/en/programmes-groups/gabaldon-lab> cuyo proyecto phylome <http://phylomedb.org> es un recurso filogenómico internacionalmente muy relevante.
+
+En ocasiones estos parálogos están presentes en un mismo genoma, facilitando su filtrado. Sin embargo lo más habitual es que los génes presentes en mutliples copias sean limpiados del genóma a lo largo del devenir evolutivo, a menudo después de haber sufrido un proceso de neofuncionalización o de silenciación que a menudo altera importantemente su secuencia de aminoácidos. En este caso, alineamientos de genes que parecen ser ortólogos pueden estar trufados de génes parálogos que son muy difíciles de detectar, de ahi que iniciativas con el *quest for orthologs* <https://questfororthologs.org> (Kuzniar et al. 2008) sean tan importantes.
+
+Para complicar más esta cuestión de los ortólogos, el concepto de ortólogo está ampliamente integrado en el discurso de la genética molecular donde se utiliza a mendo referirse a grupos de proteinas cuya función ha sido asignada basandose en criterios de ortología, como por ejemplo en la identificación de grúpos ortólogos como los ***C**lusters of **O**rtologous **G**roups* (<http://clovr.org/docs/clusters-of-orthologous-groups-cogs/>, o en en la base de  datos OrthoMCL <https://orthomcl.org/orthomcl/> de la que deriva el programa BUSCO.
+
+Y para complicarlo todo aún mucho más, el concepto de ortólogo y parálogo es relativo, así que teniendo una duplicación mantenida en el tiempo, estos dos grupos de genes son parálogos entre ellos, pero los genes dentro de cada grupo son ortólogos. De este modo cuando uno usa un método para identificar genes ortólogos usando varios genómas se puede encontrar con reconstrucciones filogenéticas sorprendentes que espero que veamos en el transcurso de este curso.
+
+Bueno, entonces ¿Como obtenemos una matriz de caracteres genéticos ortólogos a partir de nuestros datos genómicos? Pues hay varias opciones cada una con ventajas y desventajas dependiendo de la proximidad filogenética de los organismos estudiados.
+
+####3.1.1. Métodos basados en la resecuenciación (poblaciones o especies muy cercanas, subgéneros)
+
+Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, sepuede considerar que los genómas guardan una gran similitud estructural y por lo tanto una casi total ortología posicional (si esa es otra manera de verlo: Dewey 2011). En este caso bastaría alinear los reads directamente a un genóma de referencia usando herramientas como BWA (Li and Durbin 2009) o Bowtie2 (Langmead and Salzberg 2012), filtrar las regiones con una heterozigosidad fuera de la distribución esperada para evitar parálogos e inferir SNVs usando programas como Freebayes (Garrison & Marth 2012), Stacks o Pyrad dependiendo del tipo de librerías que hayamos secuenciado, o incluso metodos generales de *variant calling* como los implementados en GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs– o samtools (Li et al. 2009). Este tipo de metodología no la vamos a usar en este curso.
+
+####3.1.2. Métodos basados en la comparación con bases de datos
+1. Usando un genoma externo como referencia (Outgroup) (Género-Familia)
+2. Usando todos los genómas como referencia (Best reciprocal blast hit) 
+3. Usando comparación con bases de datos externas (genbank)
+4. Usando comparación con bases de datos externas (Busco)
+
+(nucleotidos a nivel de género o familia y secuencias de aminoácidos a niveles de Familia, Orden, Clase...
+
+####3.1.3. Esto no funciona que hacemos (División, Reino, *Tree of life*)
 
 
 4.2 Assembling a phylogenomic data matrix
-The student question quoted above on the top of the page may seem naïve, but reflects the first problem one encounters when attempting to reconstruct a phylogeny from a set of genomic samples. As of today, several handbooks CITE CITE provide a good digest guide to phylogenomics, and several pipelines have been published or made available online. Few years back, the student from the quote would have started by googleing “phylogenomics” and “genome alignment” and would have spent a couple of days trying to figure out how to use the output of MAUVE (Darling, Mau, and Perna 2010), before assuming that having the contigs systematically sorted (Rissman et al. 2009) is nice, but that it was not the point at all.
-However, it remains difficult to make well-informed decissions on the design of a phylogenomic survey. First, there is an important terminological gap between the disciplines of phylogenetic systematics and molecular genomics which is often difficult to bridge; the term phylogenomics itself is widely used in the literature in surveys using evolutionary methods of genome annotation CITE and not just extended phylogenetic surveys. Second, there is no single method to assemble a genome-wide phylogenetic data matrix, starting for the genome representation of the library itself. This generates an important deal of noise, as  highly impacting genomic surveys often deal with taxonomic groups other than fungi or algae, and as our neighbouring colleagues working on animals of plants usually engage in well-informed but highly opinionated digressions about their next project during cofee breaks feeding us up with sometimes inadequate information. Third, to complicate it even more, each manuscript uses a slightly different set of scripts or pipelines to atomatize the assembly of a data-matrix. Pipelines that are often developed with a particular target organism in mind, bacteria, animals, humans, fungi... and are not always transferable to other organisms, especially lichens, where lichenized-fungi, their photobionts, and all the complex biotic community forming the lichen system provide advantaghes and dissadvantages on their own.
+
+
 4.4.1 DNA alignment based resequencing pipelines
-The simplest way to assemble a datamatrix to be used in a population inference and tree-building framework, is to use an alignment-based genotyping approach. Such approaches profit from having a reference genome to which raw reads are mapped, often using a short-read alignment tool as BWA (Li and Durbin 2009) or Bowtie (Langmead and Salzberg 2012). The resulting alignments are later processed using a variant calling method to call haplotype or SNP loci for each sample; general purpose methods of variant calling can be found in GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs–, samtools (Li et al. 2009) –mpileup– and other general purpose bioinformatic packages.
+The simplest way to assemble a datamatrix to be used in a population inference and tree-building framework, is to use an alignment-based genotyping approach. Such approaches profit from having a reference genome to which raw reads are mapped, often using a short-read alignment tool as . The resulting alignments are later processed using a variant calling method to call haplotype or SNP loci for each sample; general purpose methods of variant calling can be found in GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs–, samtools (Li et al. 2009) –mpileup– and other general purpose bioinformatic packages.
 
 The usability of short-read alignment methods depends on the degree of similarity between target and reference genomes. They are widely used in resequencing experiments at infraspecific level or including closely related species within a genus, especially in surveys using reduced representation libraries. Obvious examples are the pipelines Stacks (Catchen 2013) and Pyrad (Eaton 2014) meant to process the different flavours of RADSeq/GBS datafiles, but RNASeq (De Wit et al. 2012) and poolseq (Schlötterer et al. 2014) data are processed similarly  It is worth mentioning that in some cases, the lack of a reference genome is overcome by assembling a transient reference library stacking short reads (Catchen et al. 2011), a case that is of limited usability in interpreting lichen metagenomic samples. A usable phylogenomic pipeline using an alignment to reference approach is RealPhy (Biozentrum Universität Basel n.d.) which was used for Rhizoplaca melanophthalma (Leavitt et al. 2016).
 
@@ -171,18 +210,13 @@ It has become obvious that having a multiplicity of genes does not only provide 
 Additional Task_3: Contains an additional set of 964 gene trees calculated from the same Caloplaca dataset. a) Use RaxMl to summarize them, b) Download and install Dendroscope and try to obtain further consensus representations.
 No hay una sola aproximación a realizar un estudio filogenómico. Es altamente dependiente del tipod de datos que tengamos
 
-En terminos generales:
-## 1. Assembly
-## 2. Annotation
-## 3. Comparison to database
-## 4. Clustering of gene sequences
-## 5. Subsetting of gene sequences (prior)
-## 6. Alignment of sequences
-## 7. Alignmnet refinement
-## 8. Tree building
-## 9. Subseting of gene sequences (post)
-## 10. Cleaning topologies
-## 11. Consensus building
+
+
+Ade De hecho, debido a las limitaciones humanas y computacionales, el análisis de un gran número de loci requiere una serie de simplificaciones y compromisos que dependen en gran medida del tipo de plataforma de secuenciación, de la cobertura genómica y del propósito de la encuesta. 
+
+
+
+a encuesta. Por ejemplo, no se dispone de métodos bayesianos altamente refinados para la prueba de modelos, la coestimación de la filogenia y los parámetros poblacionales, o incluso para hacer inferencias filogenéticas sencillas para todos los tipos de datos y, a menudo, no se adaptan bien a los conjuntos de datos genómicos que limitan su uso.
 
 Propuestas metodológicas
 Tenemos el de freebayes 
@@ -663,3 +697,7 @@ pfam<-read.table("/Users/ferninfm/Desktop/eraseme/funannotate_compare/pfam/pfam.
 library(ape)
 plot(as.phylo(hclust(dist(t(as.matrix(pfam[,1:9]))))))
 ```
+
+##References
+
+Garrison E, Marth G. Haplotype-based variant detection from short-read sequencing. arXiv preprint arXiv:1207.3907 [q-bio.GN] 2012
