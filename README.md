@@ -91,145 +91,63 @@ Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, se p
 
 ### 4.3. Esto no funciona que hacemos (División, Reino, *Tree of life*)
 
-
-
-4.1.2 Annotation based pipelines and Orthology
-A second approach to assemble a phylogenomic dataset makes use of the methods developed to estimate coding regions and protein sequences and models of protein evolution. In itself is closer to the original scope of phylogenomics (98) as addressed by early researchers.
-Usually protein sequences are more conserved than their DNA counterparts and their evolution is easier to model using Hidden Markov chain models. In this case the choice of loci is not made by aligning DNA sequences but by Infering protein sequences from genomic assemblies and comparing them to a preexistent repository.
-The most naive example of this kind of approach would be generating a database of target DNA sequences (ITS, Beta-tubuli, RPB1 etc) to which individual genome assemblies are blasted in order to extract the each targeted region from the assemblies, put them together and align them in a similar setup to the traditional phylogentic one. This simplistic approach works, and it is widespread in the literature, there is for instance an interesting paper including 20 nuclear loci of polar and brown bears that was published in Science in 2012. But again it is polar bears.
-Using all loci extracted from a reference genome would also work but may fai in cases where genes are duplicated, or belong to transposable elements, etc....Still for taxa that are closely related to the one used as a reference it could work.
-The next level of refinement would be to estimate orthology.
-What is orthology and paralogy.
 A simple setup best reciprocal blast hits. All protein coding genes... It gets problematic as the history of the genomes complicates for deeper phylogenetic levels.
+
 4.1.3 Pipelines based on the use of precompiled sets of Orthologous genes.
 The next level is use phylogenomic repositories containg orthologous gene sets in which the evolutionary pathways for each AA in the sequence are modeled using HMM. Global repositories as Ortho MCl etc are good for deep phylogenies but reduce the type of loci to be used to more conserved ones the more distant the relationship between the sample sin our experiment.
 HMMER is used for searching sequence databases for sequence homologs, and for making sequence alignments. It implements methods using probabilistic models called profile hidden Markov models (profile HMMs).
 
 However, this approach is scalable, and researchers have commenced developing themed sets of genes that tend to be single copy orthologs within a subset of organisms at a certain phylogenetic scale. Within the Busco pipeline originally intended to estimate genome completeness several gene sets are provided which contain different number of loci. 300 for fungi...3000 for Pezizomycotina.... Ocnsidering a genome consists of ca. 10.000 genes 1/3 is already a good number of sequence loci to use.
 The developement of focus sets of orthologs, even including positional orthology (syntny) in the equation are clearly the simplest and more robust resource to produce phylogenomic datasets for a wider range of experiments and focal groups. For this reason this approach is the one we will succintly develop in the following toy pipeline
-4.2 A phylogenomic pipeline
-The somewhat naïve phylogenomic pipeline we propose makes use of the computational strategies implemented in the BUSCO v 3.0 (Simão et al. 2015) pipeline. BUSCO uses a repository of single copy orthologous genes defined by precompiled HMM profiles (Eddy 1998) to estimate gene-completeness of a genome assembly. Because BUSCO uses augustus (Stanke et al. 2006) for gene-prediction and HMMER (Mistry et al. 2013) for the identification of orthologs from a precompiled hmmer profile database, it covers three necessary steps in the developement of a phylogenomic pipeline. A more thorough pipeline would profit from a) using a more through iterative gene-prediction strategy, b) using a custom built taxon specific ortholog database and probaly a c) a further use of a phylogenetically explicit method of ortholog detection. A similar setup profitting from the use of BUSCO has been used in a large phylogenomic survey in Saccharomycotina (Shen et al. 2016) Fig. 1.
 
-Figure 1: Pipeline used by
-Sheen et al. 2017 (Shen et al. 2016).
-4.2.1 Assement of gene-completeness with BUSCO
-Task 1: Asses the gene completeness of a small genomic subset using busco.
-1.	Go to the folder made for todays activities $ cd /genomics_course/day-4/
-2.	Locate the busco pipeline in ./busco and the downloaded lineage specific databases in  ./busco/lineages.
-3.	Decompress the lineage databases using tar –xvzf on each tar.gz file.
-4.	Look for the folder containing .hmm profiles: a) How many BUSCOS does each database contain? b) Try to understand it the .hmm files by looking at it with more or a similar tool. NOTE: It shows a table with the probabilities for each aminoacid state for each position in the sequence.
-5.	Let’s run BUSCO: Select one of the reduced assemblies found in  day-4/task_1
-4.	Run BUSCO taking care to specify the correct path for the python script as well as for your input file, the lineages and where you want the output to be. 
-$ python ../busco/scripts/run_BUSCO.py \
-–i YOUR_SEQUENCE_FILE.fa \
--o OUTPUT_NAME \
--l ../busco/lineages/NAME_OF_LINEAGE -m geno
- 
-5.	Look at the output files. Several of them could be of use in phylogenomic pipeline, especially the aminoacid and nucleotide fasta files provided in the folder /single_copy_busco_sequences which would be easy to use downstream. Another file to take into account is the one named training_set_* which could be a good starting point for further gene-prediction and annotation pipelines. We will use the file named full_table_* downstream. It is both complete and intuitive, and serves multiple purposes that will be explained in task_2.
-6.	Now... a) Are the assemblies complete? b) Are there a lot of duplicated BUSCOs? c) What could be the cause? d) Could Kmer-coverage suggest the presence of more fungi in the sample? e) Does the assembly require additional cleaning? f) Can this generate a problem downstream? g) Why is the parameter length smaller than the value of Start-End. The following table provides a simplified example.
-#BUSCO_group	Status	Scaffold	Start	End	Bitscore	Length
-BUSCOfEOG7CCC0Z	Complete	NODE_8_length_770894_cov_4.06215_ID_270532	553762	589411	1175.1	909
-BUSCOfEOG73RBMM	Complete	NODE_8_length_770894_cov_4.06215_ID_270532	641463	652863	933.3	530
-BUSCOfEOG7DVDN4	Complete	NODE_63_length_278098_cov_4.11132_ID_673671	94607	106102	713.1	448
 
-Task 1b: Asses the gene completeness of a genomic draft using busco.
-For the highly motivated among you, if your VM or local computer is working fast enough try repeating the same steps with a complete genomic draft of the ones found in folder ./task_1b.
-a) How complete are they? b) Do they have a lot of duplicated BUSCOS? c) Do you observe notable differences in kmer-coverage between the scaffolds included in the genomic draft? again What does it mean? d) Does the assembly need further sanitation?
-4.2.2 Parsing the BUSCO output for phylogenomics
-Task_2: We developed a very simple R script to mine the output of BUSCO in order to produce a phylogenomic data matrix. In a well atomated pipeline it may be more reasonable to work with the fasta files per busco and genome provided by the program. We do however use the full_table_* file for several reasons. First in a preliminary survey, working with the full_table file allows us to a) use BUSCO in the sanitation of a preliminary assembly, in addition to a blobology-like (Shen et al. 2016) approach using augustus, diamond (Buchfink, Xie, and Huson 2015) and MEGAN (Huson, Mitra, and Ruscheweyh 2011), b) thus to manually exclude one of the duplicated BUSCOS that may be causing problems for preliminary exploration. Also, we are not departing from well-tested nor evidence-based protein predictions, so using scaffold coordinates allows us to c) include intronic regions, and d) modulate possible missinterpreted regions in the alignment step. Finally, it also serves to provide a simple example on how to work with tables and sequences in R.
-To simplify the rest of the pipeline we provide a reduced full_table file and assembly for four Caloplaca specimens and part of the Xanthoria parietina genome as a reference.
-1.	Go to folder ../task_2. Find the files to use, they are named coherently as x1-x4.fas and .txt
-2.	Make the following directories (with mkdir) ./fastas ./alignments, and ./trees
-3.	Process the files in R, append sequences to individual files per BUSCO. Notice the simple for loop.
-for i in x1 x2 x3 x4 xanpa;
-do
-Rscript parse_busco.r ./input_files/${i}.txt \   ./input_files/${i}.fasta $i ./fastas/;
-done
-4.	At this stage we add a completion filter to include only BUSCOS present in all 5 samples. This is not necessary, and there is a tendency to include missing data in phylogenomic matrices as a better practice. However, BUSCOS found in too few samples and not pressent in the outgroup should be systematically excluded. Subsequently align each individual fasta file with mafft 
-for FILE in ./fastas/*.*;
-do
-value=$(wc -l $FILE |  cut -d' ' -f1)
-if [ $value -eq 10 ] # HERE THE FILTER
-then
-echo $value
-echo $FILE
-mafft --retree 2 --maxiterate 2 --adjustdirection --thread 2 $FILE > $PWD/alignments/${FILE##*/}
-else
-mv $FILE ./fastas/out/$FILE
-fi
-done
 
-5.	Not today... At this stage we may want to refine the alignment using muscle, and potentially produce multiple alignments with different methods to calculate a consensus alignment or to use further in the –compareset option of trimal.
-6.	Then we will trim the alignment using the software trimAl (Capella-Gutiérrez, Silla-Martínez, and Gabaldón 2009). You can find suggestions and a tutorial in http://trimal.cgenomics.org. First explore the alignment report for your files using the –sgt and –sident flags. An example to create a report file could be 
-mkdir ./trimal_reports
-for FILE in $PWD/alignments/*.*;
-do
-trimal -in $FILE -sgt >> ./trimal_reports/report.txt;
-done 
-7.	Then trim the alignment using an automated procedure, check the webpage and tutorials for details. We save an html alignment report and a phylip alignment file
-mkdir ./refined
-for FILE in $PWD/alignments/*.*;
-do
-s=${FILE##*/}
-s=${s%.*}
-trimal -in $FILE -automated1 -htmlout $PWD/trimal_reports/${s}.html
-trimal -in $FILE -automated1 -phylip > $PWD/refined/${s}.phy
-done
-8.	Almost over we calculate single gene trees using raxML, do not forget to a) rename the lables that were reversed (look at the files mafft called some sequences_R_x...) and b) root the trees.
 
-for FILE in $PWD/refined/*.phy
-do
-sed -i -e 's/^_R_//g' $FILE 
-done
-OK issue solved because it turns into a problem
-mkdir ./trees
-for FILE in $PWD/refined/*.phy
-do
-NAME=${FILE##*/}
-NAME=${NAME%.*}
-raxml -s $FILE -n $NAME -x 12345 -p 23456 -f a -# 100 -m GTRGAMMA -T 4 -o xanpa
-mv ./RAxML_* ./trees/
-done
-9.	Finally we use RaxML to calculate a mayority rule consensus tree which we annotate with the Internode Certainty and Tree Certainty score (IC, ICA, TC, and TCA) proposed by Salichos and Rokas 
 
-cat RAxML_bipartitionsBranchLabels.* > all_trees.tre
-raxmlHPC -L MR -z all_trees.tre -m GTRCAT -n -T1
+## 5. Reconstrucción filogenética con miles de loci
+
+De hecho, debido a las limitaciones humanas y computacionales, el análisis de un gran número de loci requiere una serie de simplificaciones y compromisos que dependen en gran medida del tipo de plataforma de secuenciación, de la cobertura genómica y del propósito de la encuesta. Por ejemplo, no se dispone de métodos bayesianos altamente refinados para la prueba de modelos, la coestimación de la filogenia y los parámetros poblacionales, o incluso para hacer inferencias filogenéticas sencillas para todos los tipos de datos y, a menudo, no se adaptan bien a los conjuntos de datos genómicos que limitan su uso.
+
 Additional task: Try to program two similar steps but using IQtree (Minh, Anh Thi Nguyen, and von Haeseler 2013) instead of RaxML, it can be slightly faster (Zhou et al. 2017) and it incorporates automated model-testing, which is a very interesting addition.
 Additional task: Now try to wrap up all the latter steps into a single sequential script, pack it into a .sh file and try runnin it as a pipeline.
+
 4.2.4 Single gene trees and consensus
 It has become obvious that having a multiplicity of genes does not only provide information as a consensus for the whole genome. Different regions of the genome may have different histories and a consensus may not conform to a simplified ditichotomous structure as provided by a phylogenetic tree. A great tool to explore the phylogenetic signal contained at a whole genome level is the software dendroscope CITE, which provides a wide ranges of methods to estimate rooted networks for the further exploration of the phylogenetic signal encountered across loci.
 Additional Task_3: Contains an additional set of 964 gene trees calculated from the same Caloplaca dataset. a) Use RaxMl to summarize them, b) Download and install Dendroscope and try to obtain further consensus representations.
 No hay una sola aproximación a realizar un estudio filogenómico. Es altamente dependiente del tipod de datos que tengamos
 
+## 6. Ejemplo práctico I. Un pipeline filogenómico un poquito a pedal usando BUSCO
+
+En este tutorial implementaremos un pequeño pipeline filogenómico basado en el uso de la aplicación BUSCO v 3.0 (Simão et al. 2015)  <https://busco.ezlab.org> para automatizar la identificación de génes ortólogos. El pipeline es sencillo pero está pensado para que veais que con muy pocos recursos se pueden obtener resultados publicables en un par de días de computación.
+
+Todos los archivos necesarios se encuentran en mi repositorio de Github. Por eso lo primero que debemos hacer es elegir una carpeta donde trabajar y clonar el repositorio:
+```{bash}
+git clone https://github.com/ferninfm/Fungal_phylogenomics
+```
+
+BUSCO es un programa desarrollado para evaluar la cobertura genomica utilizando un repositorio de genes ortologos de copia unica. Estos se encuentran definidos en una serie de perfiles HMM recopilados y precalculados (Eddy 1998) para distintos niveles taxonomicos. Aunque BUSCO sólo tenía como proposito proporcionar información sobre la calidad de los ensamblajes genómicos, fue rápidamente reutilizado para otros fines. Busco utiliza augustus (Stanke et al. 2006) como maquina de predicción de genes y HMMER (Mistry et al. 2013) para comparar los genes estimados con la base de datos de ortologos. En si mismo BUSCO cumple los pasos necesarios para llevar a cabo un pipeline filogenómico desde cero. Identifica genes en el genóma y selecciona aquellos que se sabe son ortólogos de copia única para un grupo taxonómico específico. Estas dos ventajas son tambien sus mayores desventajas. Un pipeline mas maduro quizas deberia partir de genes estimados usando un procesos iterativo mas complejo (maker3 o funannotate) y quizas seria importante optimizar la captura de genes ortologos desarrollando bases de datos mas especificas para el grupo taxonómico que estamos estudiando. Un setup similar se puede encontrar el el estudio filogenomico de Saccharomycotina publicado por Shen et al. (2016).
+
+**Atención propuesta!** Para aquellos que esteis motivados, en el repositorio he dejado un ejemplo de HMM asi como un par de publicaciones explicativas de lo que son Hidden Markov Models (HMMs, Eddy 1998). El archivo de cada HMM proporciona información estadistica sobre la secuencia de aminoacidos de cada grupo ortologo. Están alineados y proporcionan un consenso estadistico flexible que permite capturar mayor variabilidad y más rapido que una busqueda directa como BLAST. Veis las ventajas? Es una herramienta magnifica que tiene aplicación en gran cantidad de campos de la ciencia.
+
+4.2.2 Parsing the BUSCO output for phylogenomics
+Task_2: We developed a very simple R script to mine the output of BUSCO in order to produce a phylogenomic data matrix. In a well atomated pipeline it may be more reasonable to work with the fasta files per busco and genome provided by the program. We do however use the full_table_* file for several reasons. First in a preliminary survey, working with the full_table file allows us to a) b) thus to manually exclude one of the duplicated BUSCOS that may be causing problems for preliminary exploration. Also, we are not departing from well-tested nor evidence-based protein predictions, so using scaffold coordinates allows us to c) include intronic regions, and d) modulate possible missinterpreted regions in the alignment step. Finally, it also serves to provide a simple example on how to work with tables and sequences in R.
+
+6.	Then we will trim the alignment using the software trimAl (Capella-Gutiérrez, Silla-Martínez, and Gabaldón 2009). You can find suggestions and a tutorial in http://trimal.cgenomics.org. First explore the alignment report for your files using the –sgt and –sident flags. An example to create a report file could be 
 
 
-Ade De hecho, debido a las limitaciones humanas y computacionales, el análisis de un gran número de loci requiere una serie de simplificaciones y compromisos que dependen en gran medida del tipo de plataforma de secuenciación, de la cobertura genómica y del propósito de la encuesta. 
-
-
-
-a encuesta. Por ejemplo, no se dispone de métodos bayesianos altamente refinados para la prueba de modelos, la coestimación de la filogenia y los parámetros poblacionales, o incluso para hacer inferencias filogenéticas sencillas para todos los tipos de datos y, a menudo, no se adaptan bien a los conjuntos de datos genómicos que limitan su uso.
-
-Propuestas metodológicas
-Tenemos el de freebayes 
-Tenemos el de busco
-tenemos el de phylogenoma
-Tenemos el de funnannotate
-## 5. Reconstrucción filogenética con miles de loci
-
-## 6. Ejemplo práctico I. Un pipeline filogenómico un poquito a pedal
-
-En este tutorial implementaremos un pequeño pipeline filogenómico basado en el uso de la aplicación BUSCO <a>https://busco.ezlab.org</a> para automatizar la identificación de génes ortólogos.
+cat RAxML_bipartitionsBranchLabels.* > all_trees.tre
+raxmlHPC -L MR -z all_trees.tre -m GTRCAT -n -T1
 
 FIGURA CON EL PIPELINE
 
 ### 6.1. Pasos preliminares
-Para hacer el curso un poco más dinámico he dicidido realizar varios pasos preliminares de antemano.
+Para reducir el tiempo de compuatción y hacer el curso un poco más dinámico he dicidido realizar varios pasos preliminares de antemano.
 #### 6.1.1 Ensamblar los genomas
 Para este ejercicio contamos con nueve genomas pertenecientes al género *Caloplaca* (Teloschistaceae) obtenidas en el marco del proyecto Hiperdiversidad en symbiosis fungicas poliextremotolerantes (FWF P26359, <a>http://ferninfm.github.io/Hyperdiversity_project_webpage</a>. Aunque bastante completos son versiones interminadas cuya version final está en proceso de publicación. Por cautela no os he dado las referencias concretas ni el nombre. Los accession numbers serán añadidos en el futuro. Además de esos nueve genómas también he incluido como referencia la version 1.1 del genóma de *Xanthoria Parietina* que se puede encontar aquí  (<a>https://genome.jgi.doe.gov/Xanpa2/Xanpa2.home.html</a>)
 
 Los librerias genímicas originales fueron preparadas usando TrueSeq de Illumina, en su mayoria sin PCR. Las liberiras fueron secuenciados usando dos lineas de un Illumina HiSeq, usando lecturas pareadas (paired reads) de 200 pares de bases. El tamaño del insert medio es de 350 pares de bases. LOs genomas fueron ensamblados usando Spades (CITE).
 
-Los genomas de partida están ya ensamblados y están comprimidos en el archivo *genomes.tar.gz* dentro de la carpeta 01_data. El primer paso implicaría descomprimirlos para poder ser analizados. Antes de nada ve al directorio raíz en donde hayas instalado este documento, para eso has de hacer uso del comando cd que has aprendido al inicio de este curso. Seguidamente debemos descomprimir los genomas.
+Los genomas de partida están ya ensamblados. El genoma X1 proviene de un cultivo axénico mientras que los demás provienen de metagenomas y han sido limpiados usando BUSCO, un script propio semejante a blobology (Shen et al. 2016) usando augustus, diamond (Buchfink, Xie, and Huson 2015) y MEGAN (Huson, Mitra, and Ruscheweyh 2011). Los archivos están comprimidos entro de la carpeta 01_data, aunque como he dicho no vamos a usarlos directamente. El primer paso implicaría descomprimirlos para poder ser analizados. Antes de nada ve al directorio raíz en donde hayas instalado este documento, para eso has de hacer uso del comando cd que has aprendido al inicio de este curso. Seguidamente debemos descomprimir los genomas.
 ```{}
 # Cambiar al directorio de datos
 
@@ -244,12 +162,10 @@ tar -xvzf ./genomes.tar.gz
 
 cd ..
 ```
-#### 6.1.2. Correr BUSCO
-Antes de correr busco hay que elegir un método para hacerlo. Podemos haber instalado BUSCO de modo nativo en nuestro ordenador. Este método es el más habitual y requiere de haber instalado los programas de los que BUSCO depende para su funcionamiento. Mantener la estabilidad de las dependencias constituye un problema en muchos programas bioinformaticos, y no es extraño que programas dejen de funcionar tras actualizar el sistema o tras instalar una consola (shell) diferente. Para evitar estos problemas hay cada vez una mayor tendencia a usar los programas bioinformaticos empaquetados en máquinas virtuales. De ellas, las máquinas virtuales propiamente dichas son las menos versátiles, pero las que más se adecuan al uso de ciertos programas que usan bases de datos externas. BUSCO proporciona una máquina virtual propia basada en ubuntu que se puede utilizar. Otra opción es incluir los programas necesarios en un contenedor de docker. Esta solucion es en muchos casos la mejor, aunque no siempre los contenedores están listos para su uso y requieren invertir una importante cantidad de tiempo...
+#### 6.1.2. Ejecutar BUSCO
+Antes de ejecutar BUSCO hay que elegir un método para hacerlo. Podemos haber instalado BUSCO de modo nativo en nuestro ordenador. Este método es el más habitual y requiere de haber instalado los programas de los que BUSCO depende para su funcionamiento. Mantener la estabilidad de las dependencias constituye un problema en muchos programas bioinformaticos, y no es extraño que programas dejen de funcionar tras actualizar el sistema o tras instalar una consola (shell) diferente. Para evitar estos problemas hay cada vez una mayor tendencia a usar los programas bioinformaticos empaquetados en máquinas virtuales. De ellas, las máquinas virtuales propiamente dichas son las menos versátiles, pero las que más se adecuan al uso de ciertos programas que usan bases de datos externas. BUSCO proporciona una máquina virtual propia basada en ubuntu que se puede utilizar. Otra opción es incluir los programas necesarios en un contenedor de docker. Esta solucion es en muchos casos la mejor, aunque no siempre los contenedores están listos para su uso y requieren invertir una importante cantidad de tiempo...
 
 Una vez descomprimidos los genomas son analizados usando el siguiente script
-Lo primero sort y luego mask
-
 
 ```{bash}
 for FILE in X1 X2 X3 X4 X5 X6 X7 X8 X9 Xanpa
@@ -265,18 +181,23 @@ for FILE in X1 X2 X3 X4 X5 X6 X7 X8 X9 Xanpa
     gzip ./${FILE}_masked.fasta
   done
 ```
-En realida podría haber usado la base de datos de pezizomycotina, pero esta nos daria un volumen de resultados no utilizable en el curso de este tutorial.
+**Atención *mea culpa***: En realida lo suyo sería haber usado la base de datos disponible para pezizomycotina, que contiene casi el triple de BUSCOs. Sin embargo esta nos daria un volumen de resultados excesivo para este tutorial.
 Las carpetas con los resultados del análisis de los BUSCOs han sido comprimidos en archivos gzip. Para poder usarlos debemos descomprimir los directorios de datos.
 ```{bash}
 cd ../02_busco
 gunzip *.gz
 ```
 ### 6.2. Evaluar busco
-Lo primero que debemos hacer es evaluar el resultado de las busquedas de BUSCOs para poder inferir que  genomas incluir  o no muestras que estén muy incompletas o cuyos ensamblajes presenten claros problemas.
+Lo primero que debemos hacer es evaluar el resultado de las busquedas de BUSCOs para poder inferir que  genomas incluir o no en el análisis. Para ello usamos el programa multiqc <https://multiqc.info>.
 ```{bash}
 multiqc ./run*
 ```
+**Atención pregunta:**: Hay alguna muestra más incompleta? A priori parece que alguna de ellas sea de peor calidad o más problemáticas? Por qué
+
 ### 6.3. Extraer los buscos
+
+***EMPEZAMOS AQUI***
+
 El paso siguiente es extraer las secuencias de los BUSCOs encontrados en los genómas y agregarlos en un archivo fasta por cada BUSCO sobre el que proseguir con el pipeline filogenético.
 Hay multitud de ejemplos online para hace esto. Los scripts más antiguos procesan la tabla de resultados de cada run de BUSCO. Tienen ventajas y desventajas.Un ejemplo es el script *extract_buscos_pylo.py* distribuido en <a>https://gitlab.com/ezlab/busco_usecases/blob/master/phylogenomics/readme.md</a.
 
