@@ -17,21 +17,21 @@ Fernando Fernandez Mendoza
 
 ## 1. Introducción
 
-El término filogenómica fue acuñado de manera casi contemporánea para referirse a dos disciplinas científicas diferentes pero que comparten un transfondo metodológico común: el uso de técnicas de reconstrucción filogenética para análizar datos genómicos. Eisen en el año 1998 fué el primero en utílizar el término para referirse al uso de modelos phylogenéticos en la anotación funcional de secuencias protéicas. Por otro lado @OBrien1999 introduce por primera vez el término para referirse al uso de datos genómicos en la reconstrucción de la historia evolutiva de un grupo taxonómico. Ambas disciplinas difieren en cuanto a métodos, objetivos e incluso en el nivel de organización biológica que estudian, pero juntas proporcionan la base conceptual para la genómica comparativa y evolutiva.
+El término filogenómica fue acuñado de manera casi contemporánea para referirse a dos disciplinas científicas diferentes pero que comparten un trasfondo metodológico común: el uso de técnicas de reconstrucción filogenética para analizar datos genómicos. Eisen en el año 1998 fué el primero en utilizar el término para referirse al uso de modelos filogenéticos en la anotación funcional de secuencias proteicas. Por otro lado @OBrien1999 introduce por primera vez el término para referirse al uso de datos genómicos en la reconstrucción de la historia evolutiva de un grupo taxonómico. Ambas disciplinas difieren en cuanto a métodos, objetivos e incluso en el nivel de organización biológica que estudian, pero juntas proporcionan la base conceptual para la genómica comparativa y evolutiva.
 
-El proposito común a todos los estudios filogenéticos es la inferencia de las relaciónes evolutivas entre espécies. Hay muchos estudios cuyo único objetivo es la obtención de una hipótesis evolutiva, aunque a menudo también se usa la reconstrucción filogenética como base  para modelar procesos más complejos como patrones de diversificación, dinámicas poblacionales, evolución de caracteres, filogeografía, etc. Bajo una visión restringida, la filogenómica se podría entender como una extensión de la filogenetica tradicional  para usar ya no muchos loci, sino todos los posibles. Sus premisas y objetivos serían comunes, y sus métodos se habrían reajustado para poder afrontar el nuevo tipo y volumen de datos. Sin embargo, los métodos modernos de secuenciación masiva no sólo proporcionan un enorme número de caracteres genéticos, sino que permiten realizar una descripción detallada de la estructura de los genómas, así como de la función de cada uno de los genes que los conforman. La filogenómica pues, permite estudiar tanto la evolución de las especies como la de sus genómas, y proporciona un marco histótrico para la interpretación de los mecanismos ecológicos y moleculares asociados con el proceso evolutivo.
+El propósito común a todos los estudios filogenéticos es la inferencia de las relaciones evolutivas entre especies. Hay muchos estudios cuyo único objetivo es la obtención de una hipótesis evolutiva, aunque a menudo también se usa la reconstrucción filogenética como base  para modelar procesos más complejos como patrones de diversificación, dinámicas poblacionales, evolución de caracteres, filogeografía, etc. Bajo una visión restringida, la filogenómica se podría entender como una extensión de la filogenética tradicional  para usar ya no muchos loci, sino todos los posibles. Sus premisas y objetivos serían comunes, y sus métodos se habrían reajustado para poder afrontar el nuevo tipo y volumen de datos. Sin embargo, los métodos modernos de secuenciación masiva no sólo proporcionan un enorme número de caracteres genéticos, sino que permiten realizar una descripción detallada de la estructura de los genomas, así como de la función de cada uno de los genes que los conforman. La filogenómica pues, permite estudiar tanto la evolución de las especies como la de sus genomas, y proporciona un marco histórico para la interpretación de los mecanismos ecológicos y moleculares asociados con el proceso evolutivo.
 
-En definitiva, la filogenómica no es sólo calcular filogenias, sino que proporciona una puerta de acceso al estudio comparativo de los genómas y su evolución molecular. Aunque ello requiere una importante inversión mucho mayor en recursos económicos y humanos.
+En definitiva, la filogenómica no es sólo calcular filogenias, sino que proporciona una puerta de acceso al estudio comparativo de los genomas y su evolución molecular. Aunque ello requiere una importante inversión mucho mayor en recursos económicos y humanos.
 
 ## 2. Objetivos del curso
 
-El objetivo del curso es proporcionar una visión general sobre las necesidades metodológicas que tienen los estúdios filogenómicos. El curso se compone de tres ejercicios prácticos e incluye varias pausas de lectura, que sirven para optimizar el uso de los tiempos de computación, que son relativamente elevados. Entender lo que estámos haciendo es sin duda tan importante como entendér por qué lo estamos haciendo (-Paulo Coelho)
+El objetivo del curso es proporcionar una visión general sobre las necesidades metodológicas que tienen los estudios filogenómicos. El curso se compone de tres ejercicios prácticos e incluye varias pausas de lectura, que sirven para optimizar el uso de los tiempos de computación, que son relativamente elevados. Entender lo que estamos haciendo es sin duda tan importante como entender por qué lo estamos haciendo (-Paulo Coelho)
 
 La primera actividad es la principal y tiene como objeto desarrollar un ejemplo de *pipeline* filogenómico basado en BUSCO (<https://busco.ezlab.org>), sencillo y poco automatizado. El objetivo es (1) familiarizarse con el uso del terminal de UNIX, (2) desarrollar todos los pasos necesarios para obtener un dataset filogenómico a partir de secuencias genómicas (de nucleótidos) y (3) desarrollar todos los pasos conducentes a la obtención de un árbol filogenómico.
 
 La segunda actividad se centra en utilizar un pipeline filogenómico partiendo de secuencias de proteínas y en aprender a usar containers de docker.
 
-La tercera actividad se centra en las posibilidades abiertas por el modulo de genómica comparativa del pipeline de anotación funcional funannotate (<https://funannotate.readthedocs.io/en/latest/>).
+La tercera actividad se centra en las posibilidades abiertas por el módulo de genómica comparativa del pipeline de anotación funcional funannotate (<https://funannotate.readthedocs.io/en/latest/>).
 
 ## 3. Partes de un pipeline: Propuestas metodológicas
 ---
@@ -40,9 +40,9 @@ Mientras que los protocolos utilizados en estudios filogenéticos están extrema
 
 En general un estudio filogenómico va a contener todos o la mayoría de los siguientes pasos:
 1. Secuenciación
-2. Ensamblado de los genomas (*de novo* o alinenado a una referencia)
+2. Ensamblado de los genomas (*de novo* o alineando a una referencia)
 3. Predicción de genes (o loci)
-4. Annotación (Comparación con bases de datos, anotación funcional)
+4. Anotación (Comparación con bases de datos, anotación funcional)
 5. Agrupamiento (*Clustering*) de secuencias génicas
 6. Selección de loci (cuando se hace *a priori*)
 7. Alineamiento de secuencias (de nucleótidos o aminoácidos)
@@ -55,31 +55,33 @@ En general un estudio filogenómico va a contener todos o la mayoría de los sig
 Aunque es cierto 
 
 
-### 3.1. Ensamblar una matriz de datos filogenómicos
+## 4. Ensamblar una matriz de datos filogenómicos
 
-El primer paso es la obtención de un set de datos que puedan ser análizados. La obtención de una matriz filogenética es sencilla, pues los loci a estudira están preseleccionados y sólo hace falta secuenciarlos, alinear sus secuencias, y usarlas para estimar uno (o más) árboles filogenéticos usando un conjunto de loci neutrales. Sin embargo, generar matrices filogenómicas puede resultar extremadamente complejo, más cuanto más alejados estén los organismos estudiados entre sí.
+El primer paso es la obtención de un set de datos que puedan ser analizados. La obtención de una matriz filogenética es sencilla, pues los loci a estudiar están preseleccionados y sólo hace falta secuenciarlos, alinear sus secuencias, y usarlas para estimar uno (o más) árboles filogenéticos usando un conjunto de loci neutrales. Sin embargo, generar matrices filogenómicas puede resultar extremadamente complejo, más cuanto más alejados estén los organismos estudiados entre sí.
 
-Una de las primeras preguntas intuitivas que un cientifico proveniente de la sistemática filogenética se se plantea es "Ya tengo mis genómas. Y ahora como se alinean?". Y el siguient paso intuitivo es abrir el navegador y buscar “phylogenomics” y “genome alignment”. Esto causa una confosión importante,pues pasa uno varios dias intentando sacar algo en claro de la multitud de pipelines desarrolladas para procariotas que hay online, y si tiene suerte encontrará un pipeline aparentemente fucional, desarrollado hace menos de diez años que misteriosamente h penas ha sido citado, o se encuentra inmerso en un universo criptico en el que las palábras ortólogo y phyloma se suceden sin conseguir saber si es eso lo que querémos hacer o no. Ahora no es tan terrible, pero hace unos pocos años lo más habitual era encontrarse intentando sacar algún tipo de sentido a los métodos de alineación de genómas como MAUVE (Darling, Mau, and Perna 2010), antes de asumir que tener los *contigs* sistematicamente ordenados  (Rissman et al. 2009) está muy bien, pero que no es para nada lo que querémos hacer.
+Una de las primeras preguntas intuitivas que un científico proveniente de la sistemática filogenética se se plantea es "Ya tengo mis genomas. Y ahora cómo se alinean?". Y el siguiente paso intuitivo es abrir el navegador y buscar “phylogenomics” y “genome alignment”. Esto causa una confusión importante,pues pasa uno varios dias intentando sacar algo en claro de la multitud de pipelines desarrolladas para procariotas que hay online, y si tiene suerte encontrará un pipeline aparentemente funcional, desarrollado hace menos de diez años que misteriosamente h penas ha sido citado, o se encuentra inmerso en un universo críptico en el que las palabras ortólogo y philoma se suceden sin conseguir saber si es eso lo que queremos hacer o no. Ahora no es tan terrible, pero hace unos pocos años lo más habitual era encontrarse intentando sacar algún tipo de sentido a los métodos de alineación de genomas como MAUVE (Darling, Mau, and Perna 2010), antes de asumir que tener los *contigs* sistemáticamente ordenados  (Rissman et al. 2009) está muy bien, pero que no es para nada lo que queremos hacer.
 
-Aun cuando los métodos han evolucionado mucho, y es relativamente facil encontrar un pipeline que hace algo parecido a lo que queremos hacer, sigue resultando muy dificl tomar decisiones bien informadas de como diseñar un buen estudio filogenómico. Para empezar hay una importante brecha terminológica entre disciplinas, especialmente la sistemática filogenética y la genómica molecular, estando presente el término filogenómica más presente en la literatura refiriendose a los métodos filogenéticos de anotación funcional. Para seguir, la multiplicidad de enfoques utilizados a la hora de  generar matrices de datos filogenómicas, y la vehemencia con que en muchos casos se defienden unas sobre otras en las publicaciones, pueden hacer dudar hasta al más rudo bioinformático.
+Aun cuando los métodos han evolucionado mucho, y es relativamente fácil encontrar un pipeline que hace algo parecido a lo que queremos hacer, sigue resultando muy difícil tomar decisiones bien informadas de cómo diseñar un buen estudio filogenómico. Para empezar hay una importante brecha terminológica entre disciplinas, especialmente la sistemática filogenética y la genómica molecular, estando presente el término filogenómica más presente en la literatura refiriéndose a los métodos filogenéticos de anotación funcional. Para seguir, la multiplicidad de enfoques utilizados a la hora de  generar matrices de datos filogenómicas, y la vehemencia con que en muchos casos se defienden unas sobre otras en las publicaciones, pueden hacer dudar hasta al más rudo bioinformático.
 
-Uno de los conceptos más importantes, cuyo uso puede crear bastante confusión es el concepto de ortólogo. Uno de los axiómas básicos de la reconstrucción filogenética, que emana de la cladistica más tradicional es que para establecer relaciones de parentesco evolutivo sólo sirven caracteres (geneticos o no) homólogos, es decir caracteres cuya semejanza (funcional) se deba a que tienen un mísmo orgien evolutivo (es decir estaban presentes en un ancestro común). Mientras que los caracteres análogos, aquellos cuya semejanza se debe a una adquisición secundaria e independiente (las alas de aves y murcielagos son el ejemplo más obvio), no pueden ser usados para establecer relaciones de parentesco.
+Uno de los conceptos más importantes, cuyo uso puede crear bastante confusión es el concepto de ortólogo. Uno de los axiomas básicos de la reconstrucción filogenética, que emana de la cladística más tradicional es que para establecer relaciones de parentesco evolutivo sólo sirven caracteres (genéticos o no) homólogos, es decir caracteres cuya semejanza (funcional) se deba a que tienen un mismo origen evolutivo (es decir estaban presentes en un ancestro común). Mientras que los caracteres análogos, aquellos cuya semejanza se debe a una adquisición secundaria e independiente (las alas de aves y murciélagos son el ejemplo más obvio), no pueden ser usados para establecer relaciones de parentesco.
 
-Esta idea de homología y analogía es obvia también a nivel genético. Aun cuando dos genes produzcan un enzima que degrade el mismo sustrato, si no derivan de una proteina presente en un ancestro común no pueden ser usados para establecer relaciones de parentesco. Bien. Dentro de los genes (caracteres) homologos, encontramos dos tipos: Ortólogos y parálogos. Los génes ortólogos son aquellos cuyo origen es causado por el proceso de especiación, es decir aquellos que permiten trazar una linea de herencia univoca desde un ancestro común. Los genes parálogos son aquellos cuyo origen no es estrictamente el proceso de especiación. Siendo homólogos, porque derivan de un ancestro común (en global) se han originado por duplicación de un gen existente o por captura horizontal. Mientras que la inclusión de parálogos en un arbol filogenético puede ser usado para reflejar la historia evolutiva de ese gen en concreto (util en anotación funcional por ejemplo), cuando el objetivo es calcular una filogénia a nivel de especie introduce en el modelo una fuente de variación que no es causada por el proceso que queremos modelar (especiación) y por eso no deben ser utilizados. La identificación de genes ortólogos es un campo cetral en genómica comparativa, y quizás la referencia española más importante sea el grupo de Toni Gabaldón <https://www.crg.eu/en/programmes-groups/gabaldon-lab> cuyo proyecto phylome <http://phylomedb.org> es un recurso filogenómico internacionalmente muy relevante.
+Esta idea de homología y analogía es obvia también a nivel genético. Aun cuando dos genes produzcan un enzima que degrade el mismo sustrato, si no derivan de una proteína presente en un ancestro común no pueden ser usados para establecer relaciones de parentesco. Bien. Dentro de los genes (caracteres) homólogos, encontramos dos tipos: Ortólogos y parálogos. Los genes ortólogos son aquellos cuyo origen es causado por el proceso de especiación, es decir aquellos que permiten trazar una linea de herencia unívoca desde un ancestro común. Los genes parálogos son aquellos cuyo origen no es estrictamente el proceso de especiación. Siendo homólogos, porque derivan de un ancestro común (en global) se han originado por duplicación de un gen existente o por captura horizontal. Mientras que la inclusión de parálogos en un árbol filogenético puede ser usado para reflejar la historia evolutiva de ese gen en concreto (útil en anotación funcional por ejemplo), cuando el objetivo es calcular una filogenia a nivel de especie introduce en el modelo una fuente de variación que no es causada por el proceso que queremos modelar (especiación) y por eso no deben ser utilizados. La identificación de genes ortólogos es un campo cetral en genómica comparativa, y quizás la referencia española más importante sea el grupo de Toni Gabaldón <https://www.crg.eu/en/programmes-groups/gabaldon-lab> cuyo proyecto phylome <http://phylomedb.org> es un recurso filogenómico internacionalmente muy relevante.
 
-En ocasiones estos parálogos están presentes en un mismo genoma, facilitando su filtrado. Sin embargo lo más habitual es que los génes presentes en mutliples copias sean limpiados del genóma a lo largo del devenir evolutivo, a menudo después de haber sufrido un proceso de neofuncionalización o de silenciación que a menudo altera importantemente su secuencia de aminoácidos. En este caso, alineamientos de genes que parecen ser ortólogos pueden estar trufados de génes parálogos que son muy difíciles de detectar, de ahi que iniciativas con el *quest for orthologs* <https://questfororthologs.org> (Kuzniar et al. 2008) sean tan importantes.
+En ocasiones estos parálogos están presentes en un mismo genoma, facilitando su filtrado. Sin embargo lo más habitual es que los genes presentes en múltiples copias sean limpiados del genoma a lo largo del devenir evolutivo, a menudo después de haber sufrido un proceso de neofuncionalización o de silenciación que a menudo altera importantemente su secuencia de aminoácidos. En este caso, alineamientos de genes que parecen ser ortólogos pueden estar trufados de genes parálogos que son muy difíciles de detectar, de ahí que iniciativas con el *quest for orthologs* <https://questfororthologs.org> (Kuzniar et al. 2008) sean tan importantes.
 
-Para complicar más esta cuestión de los ortólogos, el concepto de ortólogo está ampliamente integrado en el discurso de la genética molecular donde se utiliza a mendo referirse a grupos de proteinas cuya función ha sido asignada basandose en criterios de ortología, como por ejemplo en la identificación de grúpos ortólogos como los ***C**lusters of **O**rtologous **G**roups* (<http://clovr.org/docs/clusters-of-orthologous-groups-cogs/>, o en en la base de  datos OrthoMCL <https://orthomcl.org/orthomcl/> de la que deriva el programa BUSCO.
+Para complicar más esta cuestión de los ortólogos, el concepto de ortólogo está ampliamente integrado en el discurso de la genética molecular donde se utiliza a menudo referirse a grupos de proteínas cuya función ha sido asignada basándose en criterios de ortología, como por ejemplo en la identificación de grupos ortólogos como los ***C**lusters of **O**rtologous **G**roups* (<http://clovr.org/docs/clusters-of-orthologous-groups-cogs/>, o en en la base de  datos OrthoMCL <https://orthomcl.org/orthomcl/> de la que deriva el programa BUSCO.
 
-Y para complicarlo todo aún mucho más, el concepto de ortólogo y parálogo es relativo, así que teniendo una duplicación mantenida en el tiempo, estos dos grupos de genes son parálogos entre ellos, pero los genes dentro de cada grupo son ortólogos. De este modo cuando uno usa un método para identificar genes ortólogos usando varios genómas se puede encontrar con reconstrucciones filogenéticas sorprendentes que espero que veamos en el transcurso de este curso.
+Y para complicarlo todo aún mucho más, el concepto de ortólogo y parálogo es relativo, así que teniendo una duplicación mantenida en el tiempo, estos dos grupos de genes son parálogos entre ellos, pero los genes dentro de cada grupo son ortólogos. De este modo cuando uno usa un método para identificar genes ortólogos usando varios genomas se puede encontrar con reconstrucciones filogenéticas sorprendentes que espero que veamos en el transcurso de este curso.
 
-Bueno, entonces ¿Como obtenemos una matriz de caracteres genéticos ortólogos a partir de nuestros datos genómicos? Pues hay varias opciones cada una con ventajas y desventajas dependiendo de la proximidad filogenética de los organismos estudiados.
+Bueno, entonces ¿Cómo obtenemos una matriz de caracteres genéticos ortólogos a partir de nuestros datos genómicos? Pues hay varias opciones cada una con ventajas y desventajas dependiendo de la proximidad filogenética de los organismos estudiados.
 
-####3.1.1. Métodos basados en la resecuenciación (poblaciones o especies muy cercanas, subgéneros)
+### 4.1. Métodos basados en resecuenciación genómica (poblaciones o especies muy cercanas, subgéneros)
 
-Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, sepuede considerar que los genómas guardan una gran similitud estructural y por lo tanto una casi total ortología posicional (si esa es otra manera de verlo: Dewey 2011). En este caso bastaría alinear los reads directamente a un genóma de referencia usando herramientas como BWA (Li and Durbin 2009) o Bowtie2 (Langmead and Salzberg 2012), filtrar las regiones con una heterozigosidad fuera de la distribución esperada para evitar parálogos e inferir SNVs usando programas como Freebayes (Garrison & Marth 2012), Stacks o Pyrad dependiendo del tipo de librerías que hayamos secuenciado, o incluso metodos generales de *variant calling* como los implementados en GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs– o samtools (Li et al. 2009). Este tipo de metodología no la vamos a usar en este curso.
+Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, se puede considerar que los genomas guardan una gran similitud estructural y por lo tanto una casi total ortología posicional (si esa es otra manera de verlo: Dewey 2011). En este caso bastaría alinear los reads directamente a un genoma de referencia usando herramientas como BWA (Li and Durbin 2009) o Bowtie2 (Langmead and Salzberg 2012), filtrar las regiones con una heterocigosidad fuera de la distribución esperada para evitar parálogos e inferir SNVs usando programas como Freebayes (Garrison & Marth 2012), Stacks (Catchen 2013) o Pyrad (Eaton 2014) dependiendo del tipo de librerías que hayamos secuenciado, o incluso métodos generales de *variant calling* como los implementados en GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs– o samtools (Li et al. 2009). Este tipo de implementaciones también se usan para analizar datos obtenidos mediante RNASeq (De Wit et al. 2012) y poolseq (Schlötterer et al. 2014). Un ejemplo de *pipeline* que usa este tipo de aproximación es RealPhy <https://realphy.unibas.ch/realphy/> que se ha usado por ejemplo para estudiar el hongo liquenizado *Rhizoplaca melanophthalma* (Leavitt et al. 2016). Este tipo de metodologías no las vamos a usar en este curso.
 
-####3.1.2. Métodos basados en la comparación con bases de datos
+
+
+### 4.2. Métodos basados en la comparación con bases de datos
 1. Usando un genoma externo como referencia (Outgroup) (Género-Familia)
 2. Usando todos los genómas como referencia (Best reciprocal blast hit) 
 3. Usando comparación con bases de datos externas (genbank)
@@ -87,20 +89,9 @@ Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, sepu
 
 (nucleotidos a nivel de género o familia y secuencias de aminoácidos a niveles de Familia, Orden, Clase...
 
-####3.1.3. Esto no funciona que hacemos (División, Reino, *Tree of life*)
+### 4.3. Esto no funciona que hacemos (División, Reino, *Tree of life*)
 
 
-4.2 Assembling a phylogenomic data matrix
-
-
-4.4.1 DNA alignment based resequencing pipelines
-The simplest way to assemble a datamatrix to be used in a population inference and tree-building framework, is to use an alignment-based genotyping approach. Such approaches profit from having a reference genome to which raw reads are mapped, often using a short-read alignment tool as . The resulting alignments are later processed using a variant calling method to call haplotype or SNP loci for each sample; general purpose methods of variant calling can be found in GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs–, samtools (Li et al. 2009) –mpileup– and other general purpose bioinformatic packages.
-
-The usability of short-read alignment methods depends on the degree of similarity between target and reference genomes. They are widely used in resequencing experiments at infraspecific level or including closely related species within a genus, especially in surveys using reduced representation libraries. Obvious examples are the pipelines Stacks (Catchen 2013) and Pyrad (Eaton 2014) meant to process the different flavours of RADSeq/GBS datafiles, but RNASeq (De Wit et al. 2012) and poolseq (Schlötterer et al. 2014) data are processed similarly  It is worth mentioning that in some cases, the lack of a reference genome is overcome by assembling a transient reference library stacking short reads (Catchen et al. 2011), a case that is of limited usability in interpreting lichen metagenomic samples. A usable phylogenomic pipeline using an alignment to reference approach is RealPhy (Biozentrum Universität Basel n.d.) which was used for Rhizoplaca melanophthalma (Leavitt et al. 2016).
-
-All these pipelines commented above, used for population or multispecies datasets have been developed to study organisms that have more complex genomes than fungi, like animals, especially humans and for vascular plants. In all of them the vegetative part of the life cycle is at least diploid, when not tetraploid or with even higher levels of ploidy. This has a strong influence on the type of data desired to retrieve as outcome. Some methods will provide a consensus phased genotype –a haplotype– although most methods are designed to call variants in the form of SNPs. As lichenologists, we depart from the presumption that the specimen we sequence is haploid, a presumption that causes significant base-calling uncertainty in sanger sequences of microlichens where apothecia are rutinarily used. From that perspective, it is tempting to understand SNPs as the same type of data one could get by stripping a multiple alignment from uninformative sites. However this is not exactly what SNPs are. Single Nucleotide Polymorphisms are biallelic loci, meant to cope with heerozygotic samples, and are extremely restrictive with regards to their evolutionary model, they must conform to an infinite sites model and fullfill a four allele rule. This means that in each site only two states are possible in the absence of recombination and that mutations only happen once in each site and that homoplasy (back mutation) is not possible. This pressumptions are not met in many cases in phylogenmic datasets, because the number of acceptable synonimous mutations is quite restricted in proteing coding regions and because selection and not only recombination may cause significant departures from that model. 
-In programs as Stacks, all loci that do not fulfill these presumptions are systematically excluded from the analyses lsometimes leading to an important erosion in the informativenes of the dataset when the intention is building phylogeneies or coalescent reconstructions and not population assignments or traditional statistics. In addition, the data fromat exported in such pipelines is usually formated as it would for a diploid organism. These files used as they come in population genetics programs usually provide artificially low estimates of recombination and a wide clonality signal which may be missleading.
-Drawbacks. Lack of information on the evolutionary history of individual genes. Further Heterozygosity filtering is necessary to ensure that the reference regions and the mapped reads are orthologous.
 
 4.1.2 Annotation based pipelines and Orthology
 A second approach to assemble a phylogenomic dataset makes use of the methods developed to estimate coding regions and protein sequences and models of protein evolution. In itself is closer to the original scope of phylogenomics (98) as addressed by early researchers.
@@ -223,16 +214,17 @@ Tenemos el de freebayes
 Tenemos el de busco
 tenemos el de phylogenoma
 Tenemos el de funnannotate
+## 5. Reconstrucción filogenética con miles de loci
 
-# 4. Ejemplo práctico I. Un pipeline filogenómico un poquito a pedal
+## 6. Ejemplo práctico I. Un pipeline filogenómico un poquito a pedal
 
 En este tutorial implementaremos un pequeño pipeline filogenómico basado en el uso de la aplicación BUSCO <a>https://busco.ezlab.org</a> para automatizar la identificación de génes ortólogos.
 
 FIGURA CON EL PIPELINE
 
-## 4.1. Pasos preliminares
+### 6.1. Pasos preliminares
 Para hacer el curso un poco más dinámico he dicidido realizar varios pasos preliminares de antemano.
-### 4.1.1 Ensamblar los genomas
+#### 6.1.1 Ensamblar los genomas
 Para este ejercicio contamos con nueve genomas pertenecientes al género *Caloplaca* (Teloschistaceae) obtenidas en el marco del proyecto Hiperdiversidad en symbiosis fungicas poliextremotolerantes (FWF P26359, <a>http://ferninfm.github.io/Hyperdiversity_project_webpage</a>. Aunque bastante completos son versiones interminadas cuya version final está en proceso de publicación. Por cautela no os he dado las referencias concretas ni el nombre. Los accession numbers serán añadidos en el futuro. Además de esos nueve genómas también he incluido como referencia la version 1.1 del genóma de *Xanthoria Parietina* que se puede encontar aquí  (<a>https://genome.jgi.doe.gov/Xanpa2/Xanpa2.home.html</a>)
 
 Los librerias genímicas originales fueron preparadas usando TrueSeq de Illumina, en su mayoria sin PCR. Las liberiras fueron secuenciados usando dos lineas de un Illumina HiSeq, usando lecturas pareadas (paired reads) de 200 pares de bases. El tamaño del insert medio es de 350 pares de bases. LOs genomas fueron ensamblados usando Spades (CITE).
@@ -252,7 +244,7 @@ tar -xvzf ./genomes.tar.gz
 
 cd ..
 ```
-### 4.1.2. Correr BUSCO
+#### 6.1.2. Correr BUSCO
 Antes de correr busco hay que elegir un método para hacerlo. Podemos haber instalado BUSCO de modo nativo en nuestro ordenador. Este método es el más habitual y requiere de haber instalado los programas de los que BUSCO depende para su funcionamiento. Mantener la estabilidad de las dependencias constituye un problema en muchos programas bioinformaticos, y no es extraño que programas dejen de funcionar tras actualizar el sistema o tras instalar una consola (shell) diferente. Para evitar estos problemas hay cada vez una mayor tendencia a usar los programas bioinformaticos empaquetados en máquinas virtuales. De ellas, las máquinas virtuales propiamente dichas son las menos versátiles, pero las que más se adecuan al uso de ciertos programas que usan bases de datos externas. BUSCO proporciona una máquina virtual propia basada en ubuntu que se puede utilizar. Otra opción es incluir los programas necesarios en un contenedor de docker. Esta solucion es en muchos casos la mejor, aunque no siempre los contenedores están listos para su uso y requieren invertir una importante cantidad de tiempo...
 
 Una vez descomprimidos los genomas son analizados usando el siguiente script
@@ -279,12 +271,12 @@ Las carpetas con los resultados del análisis de los BUSCOs han sido comprimidos
 cd ../02_busco
 gunzip *.gz
 ```
-## 4.2. Evaluar busco
+### 6.2. Evaluar busco
 Lo primero que debemos hacer es evaluar el resultado de las busquedas de BUSCOs para poder inferir que  genomas incluir  o no muestras que estén muy incompletas o cuyos ensamblajes presenten claros problemas.
 ```{bash}
 multiqc ./run*
 ```
-## 4.3. Extraer los buscos
+### 6.3. Extraer los buscos
 El paso siguiente es extraer las secuencias de los BUSCOs encontrados en los genómas y agregarlos en un archivo fasta por cada BUSCO sobre el que proseguir con el pipeline filogenético.
 Hay multitud de ejemplos online para hace esto. Los scripts más antiguos procesan la tabla de resultados de cada run de BUSCO. Tienen ventajas y desventajas.Un ejemplo es el script *extract_buscos_pylo.py* distribuido en <a>https://gitlab.com/ezlab/busco_usecases/blob/master/phylogenomics/readme.md</a.
 
@@ -411,7 +403,7 @@ Rscript rename_busco.r /home/fernando/genomics_course/new/new/03_fastas 10
 ```
 Este script crea una serie de archivos en formato fasta llamados *renamed_*. Siguiendo el standard de busco *.faa* se refiere a sequencias de aminoacidos y *.fna* de nucleótidos. Sólo los BUSCOS presentes en los 10 genomas van a ser incluidos aunque la decisión depende mucho de cada caso individual. Nosotros seguiremos a partir de aquí usando exclusivamente las secuencias de nucleótidos, pues nuestros organismos estan filogenéticamente muy cerca. A nivel supra-familiar es más recomendable usar secuencias de aminoácidos, aunque quizás lo mejor (aunque dificl de automatizar) sería evaluar la alineabilidad de cada locus y usar el nivel más adecuado. De todos modos, Busco utiliza un método poco refinado (relativamente hablando) para anotar el genoma (identificar exones y proponer secuncias de proteinas). A un nivel superior sería mejor partir de anotaciones más completas y complejas para cada genoma como las proporcionadas por maker o funannotate.
 
-## 4.4. Alinear los archivos fasta con MAFTT
+### 6.4. Alinear los archivos fasta con MAFTT
 
 Opcional refinar el alignment con Muscle 
 Yo lo suelo hacer así pero creo que es innecesario.
@@ -442,7 +434,7 @@ run the script
 sh run_mafft.sh
 ```
 
-## 4.5. Refinar el alignment con trimal
+### 6.5. Refinar el alignment con trimal
 Trimal es un programa desarrollado por el grupo de Toni Gabaldón. Esta descritpo en Capella-Gutierrez S, Silla-Martinez JM, Gabaldon T. *Bioinformatics*. 2009 25: 1972-1973. Para instalarlo lo mejor es clonar el repositorio <a>https://github.com/scapella/trimal.git</a>
 
 Trimal es un programa magnifico capaz de realizar multitud de tareas y merecería un dia entero probando distintos parametros y a prendiendo su uso. En especial para el caso que nos ocupa, podríamos haber perfeccionado el pipeline usando multiples programas para alinear nuestras secuencias y usar trimal para obtener un consenso. Sería una buena alternativa para objetivar el refinamiento de los alineamientos al programa XXXXX que he mencionado más atrás en el texto. Por sacar una pega, trimal maneja de un modo extraño las direcciones de los archivos (*path*). Yo he optado por incluir un cambio de directorio en el escript para evitar usar paths relativos. No deja de ser un truquillo simple que nos puede ayudar a salir del paso.
@@ -477,7 +469,7 @@ sh run_trimal.sh
 **Atención Propuesta.** Echale un vistazo a los archivos producidos por trimal usando *more* con los archivos fasta y usando el navegador web con los archivos html.
 **Atención Pregunta.** Los archivos html nos ofrecen la posibilidad de decidir si nos conviene usar secuencias de aminoácidos o de nucleotidos. Tu que opinas? fna o faa?
 
-## 4.6. Realizar reconstruccion filogenética para cada locus iqtree
+### 6.6. Realizar reconstruccion filogenética para cada locus iqtree
 Para la reconstrucción filogenética usamos *Maximum Likelihood* (ML) y no un método bayesiano. TAmpoco usamos parsimonia. Esto es una decisión metodológica debida sobre todo al tiempo de computación necesario y a los menores requerimientos computacionales de este tipo de métodologías. Esto no significa que no puedan usarse métodos bayesianos, pero si es cierto que su usabilidad depende en gran medida de las necesidades y los plazos de cada experimento.
 
 Hay varios métodos de reconstrucción filogenética que permiten realizar análisis de ML aproximados y rápidos. Los tres más frecuentes en la bibliografía son fasttree, raxml e iqtree. Me he decantado por este ultimo porque es un programa menos habitual que los otros dos, y que sin embargo proporciona grandes ventajas metodológicas. Entre otras cosas iqtree es capaz de leer casi cualquier formato (fasta, phyllip,nexus) y en lugar de optimizar el uso de un modelo de sustitución GTR+Gamma como RaxML, incorpora un módulo de selección del modelo de sustitucion basado en AIC o BIC (default) automatizado.
@@ -502,13 +494,13 @@ done
 cd ..
 ```
 
-## 4.7. Concatenar todos los loci y hacer un análisis supermatriz iqtree
+### 6.7. Concatenar todos los loci y hacer un análisis supermatriz iqtree
 
 ```{}
 mkdir ./07_final
 cat ./06_iqtree/*.treefile >> ./07_final/all_trees.tre
 ```
-## 4.8. Calcular un arbol consenso (*mayority rule*) con iqtree
+## 6.8. Calcular un arbol consenso (*mayority rule*) con iqtree
 La obtención de un consenso se puede hacer muy fácilmente con iqtree, ya que en principio utiliza el mismo algoritmo que al obtener un consenso de los arboles obtenidos usando *bootstrap*. Pero vamos a ver
 ```{}
 iqtree -con all_trees.tre
@@ -532,7 +524,7 @@ write.trees(trees[unlist(sapply(sapply(trees,`[[`,"tip.label"),length))==10],"me
 quit()
 ```
 
-## 4.9. Anotar el soporte estadístico de la topología
+## 6.9. Anotar el soporte estadístico de la topología
 Vamos a usa el metodo propuesto por Salichos y Rokas (2013) <a>http://www.ncbi.nlm.nih.gov/pubmed/23657258</a> en el que se calculan los valores de *Internode Certainty* (IC) y *Tree Certainty* (TC). El método se describe con más profución en <a>
 http://mbe.oxfordjournals.org/content/early/2014/02/07/molbev.msu061.abstractkeytype=ref&ijkey =I65FuGNx0HzR2Ow</a>. Aunque su  implementación en RAXML (version>=8.2.0) difiere ligeramente de lo publicado al permitir el uso de set de árboles incompletos como se discute aquí: <a>http://dx.doi.org/10.1101/022053</a>.
 Primero debemos volcar todos los arboles obtenidos en iqtree (o raxml) anotados usando bootstrap en un solo archivo
@@ -558,27 +550,23 @@ En realidad los alineamientos que hemos producido se pueden usar como cualquier 
 Nota mental: Incrementar el numero de loci aumenta linearmente los requerimientos informaticos, usar los genes en paralelo nos permite hacer una paralelización trivial (a manubrio) del proceso. Podríamos pensar que concatenar puede simplificar el proceso, especialmente si se reduce el numero de particiones de los modelos de sustitución. Sin embargo la enorme longitud del alineamiento complica mucho los calculos de verosimilitud (likelihood) y es necesario hacer una paralelización no trivial de la computación (se divide el alineamiento en x fragmentos y cada thread se hace cargo de calcular de los valores de una parte, esto es lo que hace Beagle usado con beast2 por ejemplo).
 Por otro lado incrementar el numero de sequencias afecta la computación de manera exponencial, y satura los requerimientos de RAM en muchos casos. Calcular una filogenia con 300+ genes y las 1700 species de hongos que hay secuenciadas parece una ideaza. Pero la realidad es que implica saturar un cluster entero durante un mé (las secuencias de aminoacidos son más lentas de analizar)
 
-## 4.11. Visualización de arboles con iTol.
+### 6.10. Visualización de arboles con iTol.
 
 ```{}
 ```
 
-## 4.11. Obtener consensos cuando el dataset es incompleto y también visualizar incertidumbre en forma de redes con dendroscope.
+### 6.11. Obtener consensos cuando el dataset es incompleto y también visualizar incertidumbre en forma de redes con dendroscope.
 
 ```{}
 ```
 
-## 4.12. Comparar topologías.
+### 6.12. Comparar topologías Robinson foulds distance.
 
 ```{}
 ```
-
-# 5. Tutorial II.  Un pipeline más filogenémico usando funannotate
-
-# 6. Tutorial II.  Un pipeline usando proteinas
-
-## 6.1. Pasos preliminares
-### 6.1.1. Correr funannotate
+## 7. Tutorial II.  Un pipeline usando detección de ortólogos a posteriori
+### 7.1. Pasos preliminares
+#### 7.1.1. Correr funannotate
 He instalado funannotate usando un ambiente de anaconda siguiendo las instrucciones del manual.
 No olvidarse de exportar las siguientes versiones
 ```{bash}
@@ -629,6 +617,11 @@ funannotate predict \
 --cpus 30
 done
 ```
+## 8. Tutorial III.  Introducción a funannotate
+
+
+
+
 Hasta aquí es equivalente (pero más refinado a los que hicimos con augustus para BUSCO. Podríamos partir de las secuencias de genes identificadas usando funannotate como entrada para BUSCO (para hacer filogenómica).
 
 Una vez identificados los genes, proseguimos con la anotación funcional. usando *antiSMASH* como primer pipeline, interproscan y finalmente se pone todo en conjunto usando *funannotate annotate*.
@@ -652,7 +645,7 @@ done
 ```
 **Atención, nota mental!** La anotación completa de un genoma fungico (ca. 10.000 proteinas) en funannotate requiere unas 24 horas. Yo he usado una maquina con 32 nucleos lógicos, de ahi que haya usado en los escripts los *flags* -c 30 o --cpus 30. Ten en cuenta que esto depende mucho de tu máquina.
 
-## 6.2. Usar la comparación genómica incorporada en funannotate
+### 6.2. Usar la comparación genómica incorporada en funannotate
 ```{bash}
 funannotate outgroup xanthoria_parietina.ascomycota
 ```
@@ -698,6 +691,37 @@ library(ape)
 plot(as.phylo(hclust(dist(t(as.matrix(pfam[,1:9]))))))
 ```
 
-##References
+## References
 
+Buchfink, B., Xie, C., & Huson, D. H. (2015). Fast and sensitive protein alignment using DIAMOND. Nat Meth, 12(1), 59–60. Retrieved from http://dx.doi.org/10.1038/nmeth.3176
+Capella-Gutiérrez, S., Silla-Martínez, J. M., & Gabaldón, T. (2009). trimAl: A tool for automated alignment trimming in large-scale phylogenetic analyses. Bioinformatics, 25(15), 1972–1973. https://doi.org/10.1093/bioinformatics/btp348
+Catchen, J. M. (2013). Stacks: an analysis tool set for population genomics. Molecular Ecology, 22(11), 3124–3140. https://doi.org/10.1111/mec.12354.Stacks
+Catchen, J. M., Amores, A., Hohenlohe, P., Cresko, W., & Postlethwait, J. H. (2011). Stacks : Building and Genotyping Loci De Novo From Short-Read Sequences. G3 Genes|Genomes|Genetics, 1(3), 171–182. https://doi.org/10.1534/g3.111.000240
+Darling, A. E., Mau, B., & Perna, N. T. (2010). Progressivemauve: Multiple genome alignment with gene gain, loss and rearrangement. PLoS ONE, 5(6). https://doi.org/10.1371/journal.pone.0011147
+De Wit, P., Pespeni, M. H., Ladner, J. T., Barshis, D. J., Seneca, F., Jaris, H., … Palumbi, S. R. (2012). The simple fool’s guide to population genomics via RNA-Seq: an introduction to high-throughput sequencing data analysis. Molecular Ecology Resources, 12(6), 1058–1067. https://doi.org/10.1111/1755-0998.12003
+Dewey, C. N. (2011). Positional orthology: Putting genomic evolutionary relationships into context. Briefings in Bioinformatics, 12(5), 401–412. https://doi.org/10.1093/bib/bbr040
+Eaton, D. a R. (2014). PyRAD: assembly of de novo RADseq loci for phylogenetic analyses. Bioinformatics, 30, 1844–1849. https://doi.org/10.1093/bioinformatics/btu121
+Eddy, S. R. (1998). Profile hidden Markov models. Bioinformatics, 14(9), 755–763. https://doi.org/btb114 [pii]
+Eisen, J. A. (1998). Phylogenomics : Improving Functional Predictions for Uncharacterized Genes by Evolutionary ? Analysis Phylogenomics : Improving Functional Predictions for Uncharacterized Genes by Evolutionary Analysis. Genome Research, (1997), 163–167. https://doi.org/10.1101/gr.8.3.163
 Garrison E, Marth G. Haplotype-based variant detection from short-read sequencing. arXiv preprint arXiv:1207.3907 [q-bio.GN] 2012
+Huson, D., Mitra, S., & Ruscheweyh, H. (2011). Integrative analysis of environmental sequences using MEGAN4. Genome Research, 21(9), 1552–1560. https://doi.org/10.1101/gr.120618.111.Freely
+Kuzniar, A., van Ham, R. C. H. J., Pongor, S., & Leunissen, J. A. M. (2008). The quest for orthologs: finding the corresponding gene across genomes. Trends in Genetics, 24(11), 539–551. https://doi.org/10.1016/j.tig.2008.08.009
+Langmead, B., & Salzberg, S. L. (2012). Fast gapped-read alignment with Bowtie 2. Nature Methods, 9(4), 357–359. https://doi.org/10.1038/nmeth.1923
+Leavitt, S. D., Grewe, F., Widhelm, T., Muggia, L., Wray, B., & Lumbsch, H. T. (2016). Resolving evolutionary relationships in lichen-forming fungi using diverse phylogenomic datasets and analytical approaches. Scientific Reports, 6(1), 22262. https://doi.org/10.1038/srep22262
+Li, H., & Durbin, R. (2009). Fast and accurate short read alignment with Burrows-Wheeler transform. Bioinformatics, 25(14), 1754–1760. https://doi.org/10.1093/bioinformatics/btp324
+Li, H., Handsaker, B., Wysoker, A., Fennell, T., Ruan, J., Homer, N., … Durbin, R. (2009). The Sequence Alignment/Map format and SAMtools. Bioinformatics, 25(16), 2078–2079. https://doi.org/10.1093/bioinformatics/btp352
+McKenna, A., Hanna, M., Banks, E., Sivachenko, A., Cibulskis, K., Kernytsky, A., … DePristo, M. A. (2010). The Genome Analysis Toolkit: A MapReduce framework for analyzing next-generation DNA sequencing data. Genome Research, 1297–1303. https://doi.org/http://www.genome.org/cgi/doi/10.1101/gr.107524.110.
+Minh, B. Q., Anh Thi Nguyen, M., & von Haeseler, A. (2013). Ultra-Fast Approximation for Phylogenetic Bootstrap. Molecular Biology and Evolution, 30(5), 1188–1195. https://doi.org/10.1093/molbev/mst024
+Mistry, J., Finn, R. D., Eddy, S. R., Bateman, A., & Punta, M. (2013). Challenges in homology search: HMMER3 and convergent evolution of coiled-coil regions. Nucleic Acids Research, 41(12), 1–10. https://doi.org/10.1093/nar/gkt263
+No Title. (n.d.).
+O’Brien, S. J., Menotti-Raymond, M., Murphy, W. J., Nash, W. G., Wienberg, J., Stanyon, R., … Marshall Graves, J. A. (1999). The Promise of Comparative Genomics in Mammals. Science, 286(5439), 458 LP – 481. https://doi.org/10.1126/science.286.5439.458
+O’Brien, S. J., & Stanyon, R. (1999). Ancestral primate viewed. Nature, 402(6760), 365–366. https://doi.org/10.1038/46450
+Rissman, A. I., Mau, B., Biehl, B. S., Darling, A. E., Glasner, J. D., & Perna, N. T. (2009). Reordering contigs of draft genomes using the Mauve Aligner. Bioinformatics, 25(16), 2071–2073. https://doi.org/10.1093/bioinformatics/btp356
+Schlötterer, C., Tobler, R., Kofler, R., & Nolte, V. (2014). Sequencing pools of individuals — mining genome-wide polymorphism data without big funding. Nature Reviews Genetics, 15(11), 749–763. https://doi.org/10.1038/nrg3803
+Shen, X.-X., Zhou, X., Kominek, J., Kurtzman, C. P., Hittinger, C. T., & Rokas, A. (2016). Reconstructing the Backbone of the Saccharomycotina Yeast Phylogeny Using Genome-Scale Data. G3 Genes|Genomes|Genetics, 6(December), 3927–3939. https://doi.org/10.1534/g3.116.034744
+Simão, F. A., Waterhouse, R. M., Ioannidis, P., Kriventseva, E. V., & Zdobnov, E. M. (2015). BUSCO: Assessing genome assembly and annotation completeness with single-copy orthologs. Bioinformatics, 31(19), 3210–3212. https://doi.org/10.1093/bioinformatics/btv351
+Sjolander, K. (2004). Phylogenomic inference of protein molecular function: advances and challenges. Bioinformatics (Oxford, England), 20(2), 170–179.
+Stanke, M., Schöffmann, O., Morgenstern, B., & Waack, S. (2006). Gene prediction in eukaryotes with a generalized hidden Markov model that uses hints from external sources. BMC Bioinformatics, 7(1), 62. https://doi.org/10.1186/1471-2105-7-62
+Zhou, X., Shen, X., Hittinger, C. T., & Rokas, A. (2017). Evaluating fast maximum likelihood-based phylogenetic programs using empirical phylogenomic data. BioRxiv, http://dx.
+
+
