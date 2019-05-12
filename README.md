@@ -36,7 +36,6 @@ La segunda actividad se centra en utilizar un pipeline filogenómico partiendo d
 La tercera actividad se centra en las posibilidades abiertas por el módulo de genómica comparativa del pipeline de anotación funcional funannotate (<https://funannotate.readthedocs.io/en/latest/>).
 
 ## 3. Partes de un pipeline: Propuestas metodológicas
----
 
 Mientras que los protocolos utilizados en estudios filogenéticos están extremadamente estandarizados, en filogenómica no existe un enfoque único, una receta para todo que pueda considerarse como consenso. La filosofía y los métodos utilizados para cada estudio dependen en gran medida del tipo de datos adquiridos, su calidad y cobertura genómica y la extensión filogenética o el propósito del estudio.
 
