@@ -56,7 +56,7 @@ En general un estudio filogenómico va a contener todos o la mayoría de los sig
 Aunque es cierto 
 
 
-## 4. Ensamblar una matriz de datos filogenómicos
+## 4. Cómo generar una matriz de datos filogenómicos.
 
 El primer paso es la obtención de un set de datos que puedan ser analizados. La obtención de una matriz filogenética es sencilla, pues los loci a estudiar están preseleccionados y sólo hace falta secuenciarlos, alinear sus secuencias, y usarlas para estimar uno (o más) árboles filogenéticos usando un conjunto de loci neutrales. Sin embargo, generar matrices filogenómicas puede resultar extremadamente complejo, más cuanto más alejados estén los organismos estudiados entre sí.
 
@@ -80,8 +80,6 @@ Bueno, entonces ¿Cómo obtenemos una matriz de caracteres genéticos ortólogos
 
 Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, se puede considerar que los genomas guardan una gran similitud estructural y por lo tanto una casi total ortología posicional (si esa es otra manera de verlo: Dewey 2011). En este caso bastaría alinear los reads directamente a un genoma de referencia usando herramientas como BWA (Li and Durbin 2009) o Bowtie2 (Langmead and Salzberg 2012), filtrar las regiones con una heterocigosidad fuera de la distribución esperada para evitar parálogos e inferir SNVs usando programas como Freebayes (Garrison & Marth 2012), Stacks (Catchen 2013) o Pyrad (Eaton 2014) dependiendo del tipo de librerías que hayamos secuenciado, o incluso métodos generales de *variant calling* como los implementados en GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs– o samtools (Li et al. 2009). Este tipo de implementaciones también se usan para analizar datos obtenidos mediante RNASeq (De Wit et al. 2012) y poolseq (Schlötterer et al. 2014). Un ejemplo de *pipeline* que usa este tipo de aproximación es RealPhy <https://realphy.unibas.ch/realphy/> que se ha usado por ejemplo para estudiar el hongo liquenizado *Rhizoplaca melanophthalma* (Leavitt et al. 2016). Este tipo de metodologías no las vamos a usar en este curso.
 
-
-
 ### 4.2. Métodos basados en la comparación con bases de datos
 1. Usando un genoma externo como referencia (Outgroup) (Género-Familia)
 2. Usando todos los genómas como referencia (Best reciprocal blast hit) 
@@ -101,10 +99,6 @@ HMMER is used for searching sequence databases for sequence homologs, and for ma
 However, this approach is scalable, and researchers have commenced developing themed sets of genes that tend to be single copy orthologs within a subset of organisms at a certain phylogenetic scale. Within the Busco pipeline originally intended to estimate genome completeness several gene sets are provided which contain different number of loci. 300 for fungi...3000 for Pezizomycotina.... Ocnsidering a genome consists of ca. 10.000 genes 1/3 is already a good number of sequence loci to use.
 The developement of focus sets of orthologs, even including positional orthology (syntny) in the equation are clearly the simplest and more robust resource to produce phylogenomic datasets for a wider range of experiments and focal groups. For this reason this approach is the one we will succintly develop in the following toy pipeline
 
-
-
-
-
 ## 5. Reconstrucción filogenética con miles de loci
 
 De hecho, debido a las limitaciones humanas y computacionales, el análisis de un gran número de loci requiere una serie de simplificaciones y compromisos que dependen en gran medida del tipo de plataforma de secuenciación, de la cobertura genómica y del propósito de la encuesta. Por ejemplo, no se dispone de métodos bayesianos altamente refinados para la prueba de modelos, la coestimación de la filogenia y los parámetros poblacionales, o incluso para hacer inferencias filogenéticas sencillas para todos los tipos de datos y, a menudo, no se adaptan bien a los conjuntos de datos genómicos que limitan su uso.
@@ -117,16 +111,19 @@ It has become obvious that having a multiplicity of genes does not only provide 
 Additional Task_3: Contains an additional set of 964 gene trees calculated from the same Caloplaca dataset. a) Use RaxMl to summarize them, b) Download and install Dendroscope and try to obtain further consensus representations.
 No hay una sola aproximación a realizar un estudio filogenómico. Es altamente dependiente del tipod de datos que tengamos
 
-## 6. Ejemplo práctico I. Un pipeline filogenómico un poquito a pedal usando BUSCO
+## 6. Tutorial I. Pipeline filogenómico basado en BUSCO y un poquito a pedal.
 
-En este tutorial implementaremos un pequeño pipeline filogenómico basado en el uso de la aplicación BUSCO v 3.0 (Simão et al. 2015)  <https://busco.ezlab.org> para automatizar la identificación de génes ortólogos. El pipeline es sencillo pero está pensado para que veais que con muy pocos recursos se pueden obtener resultados publicables en un par de días de computación.
+En este tutorial implementaremos un *pipeline* filogenómico basado en la aplicación BUSCO v 3.0 (Simão et al. 2015)  <https://busco.ezlab.org> para automatizar la identificación de génes ortólogos. El *pipeline* en sí es algo naïve y bastante manual, aunque la automatización sería fácil de implemetar. Está pensado para entender la sucesión de métodos paso a paso, de manera que pueda servir como base para modificar otros pipelines e implementar vuestro propio método.
 
 Todos los archivos necesarios se encuentran en mi repositorio de Github. Por eso lo primero que debemos hacer es elegir una carpeta donde trabajar y clonar el repositorio:
+
 ```{bash}
 git clone https://github.com/ferninfm/Fungal_phylogenomics
 ```
 
-BUSCO es un programa desarrollado para evaluar la cobertura genomica utilizando un repositorio de genes ortologos de copia unica. Estos se encuentran definidos en una serie de perfiles HMM recopilados y precalculados (Eddy 1998) para distintos niveles taxonomicos. Aunque BUSCO sólo tenía como proposito proporcionar información sobre la calidad de los ensamblajes genómicos, fue rápidamente reutilizado para otros fines. Busco utiliza augustus (Stanke et al. 2006) como maquina de predicción de genes y HMMER (Mistry et al. 2013) para comparar los genes estimados con la base de datos de ortologos. En si mismo BUSCO cumple los pasos necesarios para llevar a cabo un pipeline filogenómico desde cero. Identifica genes en el genóma y selecciona aquellos que se sabe son ortólogos de copia única para un grupo taxonómico específico. Estas dos ventajas son tambien sus mayores desventajas. Un pipeline mas maduro quizas deberia partir de genes estimados usando un procesos iterativo mas complejo (maker3 o funannotate) y quizas seria importante optimizar la captura de genes ortologos desarrollando bases de datos mas especificas para el grupo taxonómico que estamos estudiando. Un setup similar se puede encontrar el el estudio filogenomico de Saccharomycotina publicado por Shen et al. (2016).
+BUSCO es un programa desarrollado para evaluar la calidad de un genóma ensamblado usando su cobertura genómica, es decir que porcentaje de los genes esperados son identificables. Para ello, BUSCO utiliza un set de genes ortologos de copia única que son los que busca en el genóma a analizar. Estos genes ortólogs se encuentran definidos como perfiles HMM, obtenidos a través del uso de Modelos ocultos de Markov (HMM, Eddy 1998) para distintos niveles taxonomicos. Debido a su versatilidad BUSCO fue rápidamente reutilizado para fines más allá de su proposito inicial. En nuestro caso, BUSco automatiza varios de los pasos necesarios para obtener un dataset filogenómico desde cero: primero utiliza *augustus* (Stanke et al. 2006) como algoritmo de predicción de genes, que al fin y al cabo es la base de métodos de predicción de genes más complejos, y segundo *HMMER* (Mistry et al. 2013) para comparar los genes estimados con la base de datos de ortologos de copia única.
+
+Sus virtudes son al mismo tiempo sus mayores desventajas. Cuando se usan secuencias de nucleótidos el sesgo es menor, pero para utilizar pipeline mas maduro se deberia partir de genes estimados usando un procesos iterativo mas complejo (maker3 o funannotate). Por otro lado se podría  optimizar la captura de genes ortologos desarrollando bases de datos mas especificas para el grupo taxonómico que estamos estudiando. Un setup similar se puede encontrar el el estudio filogenomico de Saccharomycotina publicado por Shen et al. (2016) o el de Parmeliaceos de Pizarro et al. (2018).
 
 **Atención propuesta!** Para aquellos que esteis motivados, en el repositorio he dejado un ejemplo de HMM asi como un par de publicaciones explicativas de lo que son Hidden Markov Models (HMMs, Eddy 1998). El archivo de cada HMM proporciona información estadistica sobre la secuencia de aminoacidos de cada grupo ortologo. Están alineados y proporcionan un consenso estadistico flexible que permite capturar mayor variabilidad y más rapido que una busqueda directa como BLAST. Veis las ventajas? Es una herramienta magnifica que tiene aplicación en gran cantidad de campos de la ciencia.
 
