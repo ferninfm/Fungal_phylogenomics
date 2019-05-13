@@ -56,7 +56,7 @@ En general un estudio filogenómico va a contener todos o la mayoría de los sig
 Aunque es cierto 
 
 
-## 4. Ensamblar una matriz de datos filogenómicos
+## 4. Cómo generar una matriz de datos filogenómicos.
 
 El primer paso es la obtención de un set de datos que puedan ser analizados. La obtención de una matriz filogenética es sencilla, pues los loci a estudiar están preseleccionados y sólo hace falta secuenciarlos, alinear sus secuencias, y usarlas para estimar uno (o más) árboles filogenéticos usando un conjunto de loci neutrales. Sin embargo, generar matrices filogenómicas puede resultar extremadamente complejo, más cuanto más alejados estén los organismos estudiados entre sí.
 
@@ -80,8 +80,6 @@ Bueno, entonces ¿Cómo obtenemos una matriz de caracteres genéticos ortólogos
 
 Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, se puede considerar que los genomas guardan una gran similitud estructural y por lo tanto una casi total ortología posicional (si esa es otra manera de verlo: Dewey 2011). En este caso bastaría alinear los reads directamente a un genoma de referencia usando herramientas como BWA (Li and Durbin 2009) o Bowtie2 (Langmead and Salzberg 2012), filtrar las regiones con una heterocigosidad fuera de la distribución esperada para evitar parálogos e inferir SNVs usando programas como Freebayes (Garrison & Marth 2012), Stacks (Catchen 2013) o Pyrad (Eaton 2014) dependiendo del tipo de librerías que hayamos secuenciado, o incluso métodos generales de *variant calling* como los implementados en GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs– o samtools (Li et al. 2009). Este tipo de implementaciones también se usan para analizar datos obtenidos mediante RNASeq (De Wit et al. 2012) y poolseq (Schlötterer et al. 2014). Un ejemplo de *pipeline* que usa este tipo de aproximación es RealPhy <https://realphy.unibas.ch/realphy/> que se ha usado por ejemplo para estudiar el hongo liquenizado *Rhizoplaca melanophthalma* (Leavitt et al. 2016). Este tipo de metodologías no las vamos a usar en este curso.
 
-
-
 ### 4.2. Métodos basados en la comparación con bases de datos
 1. Usando un genoma externo como referencia (Outgroup) (Género-Familia)
 2. Usando todos los genómas como referencia (Best reciprocal blast hit) 
@@ -91,6 +89,8 @@ Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, se p
 (nucleotidos a nivel de género o familia y secuencias de aminoácidos a niveles de Familia, Orden, Clase...
 
 ### 4.3. Esto no funciona que hacemos (División, Reino, *Tree of life*)
+*Distancia basada en estructura del proteoma*
+*Distancia basada en oligomeros*
 
 A simple setup best reciprocal blast hits. All protein coding genes... It gets problematic as the history of the genomes complicates for deeper phylogenetic levels.
 
@@ -100,10 +100,6 @@ HMMER is used for searching sequence databases for sequence homologs, and for ma
 
 However, this approach is scalable, and researchers have commenced developing themed sets of genes that tend to be single copy orthologs within a subset of organisms at a certain phylogenetic scale. Within the Busco pipeline originally intended to estimate genome completeness several gene sets are provided which contain different number of loci. 300 for fungi...3000 for Pezizomycotina.... Ocnsidering a genome consists of ca. 10.000 genes 1/3 is already a good number of sequence loci to use.
 The developement of focus sets of orthologs, even including positional orthology (syntny) in the equation are clearly the simplest and more robust resource to produce phylogenomic datasets for a wider range of experiments and focal groups. For this reason this approach is the one we will succintly develop in the following toy pipeline
-
-
-
-
 
 ## 5. Reconstrucción filogenética con miles de loci
 
@@ -117,16 +113,19 @@ It has become obvious that having a multiplicity of genes does not only provide 
 Additional Task_3: Contains an additional set of 964 gene trees calculated from the same Caloplaca dataset. a) Use RaxMl to summarize them, b) Download and install Dendroscope and try to obtain further consensus representations.
 No hay una sola aproximación a realizar un estudio filogenómico. Es altamente dependiente del tipod de datos que tengamos
 
-## 6. Ejemplo práctico I. Un pipeline filogenómico un poquito a pedal usando BUSCO
+## 6. Tutorial I. Pipeline filogenómico basado en BUSCO y un poquito a pedal.
 
-En este tutorial implementaremos un pequeño pipeline filogenómico basado en el uso de la aplicación BUSCO v 3.0 (Simão et al. 2015)  <https://busco.ezlab.org> para automatizar la identificación de génes ortólogos. El pipeline es sencillo pero está pensado para que veais que con muy pocos recursos se pueden obtener resultados publicables en un par de días de computación.
+En este tutorial implementaremos un *pipeline* filogenómico basado en la aplicación BUSCO v 3.0 (Simão et al. 2015)  <https://busco.ezlab.org> para automatizar la identificación de génes ortólogos. El *pipeline* en sí es algo naïve y bastante manual, aunque la automatización sería fácil de implemetar. Está pensado para entender la sucesión de métodos paso a paso, de manera que pueda servir como base para modificar otros pipelines e implementar vuestro propio método.
 
 Todos los archivos necesarios se encuentran en mi repositorio de Github. Por eso lo primero que debemos hacer es elegir una carpeta donde trabajar y clonar el repositorio:
+
 ```{bash}
 git clone https://github.com/ferninfm/Fungal_phylogenomics
 ```
 
-BUSCO es un programa desarrollado para evaluar la cobertura genomica utilizando un repositorio de genes ortologos de copia unica. Estos se encuentran definidos en una serie de perfiles HMM recopilados y precalculados (Eddy 1998) para distintos niveles taxonomicos. Aunque BUSCO sólo tenía como proposito proporcionar información sobre la calidad de los ensamblajes genómicos, fue rápidamente reutilizado para otros fines. Busco utiliza augustus (Stanke et al. 2006) como maquina de predicción de genes y HMMER (Mistry et al. 2013) para comparar los genes estimados con la base de datos de ortologos. En si mismo BUSCO cumple los pasos necesarios para llevar a cabo un pipeline filogenómico desde cero. Identifica genes en el genóma y selecciona aquellos que se sabe son ortólogos de copia única para un grupo taxonómico específico. Estas dos ventajas son tambien sus mayores desventajas. Un pipeline mas maduro quizas deberia partir de genes estimados usando un procesos iterativo mas complejo (maker3 o funannotate) y quizas seria importante optimizar la captura de genes ortologos desarrollando bases de datos mas especificas para el grupo taxonómico que estamos estudiando. Un setup similar se puede encontrar el el estudio filogenomico de Saccharomycotina publicado por Shen et al. (2016).
+BUSCO es un programa desarrollado para evaluar la calidad de un genóma ensamblado usando su cobertura genómica, es decir que porcentaje de los genes esperados son identificables. Para ello, BUSCO utiliza un set de genes ortologos de copia única que son los que busca en el genóma a analizar. Estos genes ortólogs se encuentran definidos como perfiles HMM, obtenidos a través del uso de Modelos ocultos de Markov (HMM, Eddy 1998) para distintos niveles taxonomicos. Debido a su versatilidad BUSCO fue rápidamente reutilizado para fines más allá de su proposito inicial. En nuestro caso, BUSco automatiza varios de los pasos necesarios para obtener un dataset filogenómico desde cero: primero utiliza *augustus* (Stanke et al. 2006) como algoritmo de predicción de genes, que al fin y al cabo es la base de métodos de predicción de genes más complejos, y segundo *HMMER* (Mistry et al. 2013) para comparar los genes estimados con la base de datos de ortologos de copia única.
+
+Sus virtudes son al mismo tiempo sus mayores desventajas. Cuando se usan secuencias de nucleótidos el sesgo es menor, pero para utilizar pipeline mas maduro se deberia partir de genes estimados usando un procesos iterativo mas complejo (maker3 o funannotate). Por otro lado se podría  optimizar la captura de genes ortologos desarrollando bases de datos mas especificas para el grupo taxonómico que estamos estudiando. Un setup similar se puede encontrar el el estudio filogenomico de Saccharomycotina publicado por Shen et al. (2016) o el de Parmeliaceos de Pizarro et al. (2018).
 
 **Atención propuesta!** Para aquellos que esteis motivados, en el repositorio he dejado un ejemplo de HMM asi como un par de publicaciones explicativas de lo que son Hidden Markov Models (HMMs, Eddy 1998). El archivo de cada HMM proporciona información estadistica sobre la secuencia de aminoacidos de cada grupo ortologo. Están alineados y proporcionan un consenso estadistico flexible que permite capturar mayor variabilidad y más rapido que una busqueda directa como BLAST. Veis las ventajas? Es una herramienta magnifica que tiene aplicación en gran cantidad de campos de la ciencia.
 
@@ -445,7 +444,6 @@ table(foo)
 write.trees(trees[unlist(sapply(sapply(trees,`[[`,"tip.label"),length))==10],"menos_trees.tre")
 quit()
 ```
-
 ## 6.9. Anotar el soporte estadístico de la topología
 Vamos a usa el metodo propuesto por Salichos y Rokas (2013) <a>http://www.ncbi.nlm.nih.gov/pubmed/23657258</a> en el que se calculan los valores de *Internode Certainty* (IC) y *Tree Certainty* (TC). El método se describe con más profución en <a>
 http://mbe.oxfordjournals.org/content/early/2014/02/07/molbev.msu061.abstractkeytype=ref&ijkey =I65FuGNx0HzR2Ow</a>. Aunque su  implementación en RAXML (version>=8.2.0) difiere ligeramente de lo publicado al permitir el uso de set de árboles incompletos como se discute aquí: <a>http://dx.doi.org/10.1101/022053</a>.
@@ -474,18 +472,57 @@ Por otro lado incrementar el numero de sequencias afecta la computación de mane
 
 ### 6.10. Visualización de arboles con iTol.
 
+## 6.9 Limpiar de artefactos las filogenias usando treeshrink
+Uno de los problemas más habituales que nos podemos encontrar es la unclusión de secuencias que por la razón que sea acumlan mayor número de caracteres diferenciales de los esperable. Esto puede ser real, pero a menudo es debido a errores en el alineamiento o a la presencia de contaminantes o parálogos no identificados.
+Este es un paso importante a la hora de discutir la corrección de las inferencias filogenéticas llevadas a cabo anteriormente, aunque en muchos trabajos se usa un método de filtrado por defecto.
+
+Treeshrink es un programa relativamente nuevo que automatiza el filtrado *a posteriori* de las topologías.
 ```{}
+python /usr/local/src/TreeShrink/run_treeshrink.py -t all_trees.tre -o all_trees_filtered.tre
+```
+**Atención Pregunta!** Cuantas veces se ha eliminado cada especie?
+**Atención Propuesta!** Como afecta esto al soporte estadístico? y al consenso? Puedes volver a trás y repetir los pasos anteriores pero sobre el archivo *all_trees_filtered.tre*. Otra opción es seguir adelante y usar Astral para el mísmo proposito.
+
+### 6.12. Astral para obtener un superárbol.
+
+En sentido estricto un consenso implica procesar árboles que contengan el mismo número de especies. Esto sólo es factible factible a niveles filogenéticos intermedios, pero a medida que nos desplazamaos a nivel de familía u orden el número de genes ortólogos de copia única presentes en todos los genómas es cada vez menor. A nivel de división a penas hay genes ortólogos que estén presentes en todas las muestras. Para procesar árboles cincompletos se requieren métodos de inferencia de *superárboles*. Los métodos para calcular superárboles fueron en los años noventa desterrados por lós metoos haciendo uso de supermatríces, por ser farragosos de usar y lentos. Aún así, hay varios métodos modernos permiten calcular superárboles, aunque normalmente no los llaman así. Un ejemplo es Astral III <https://github.com/smirarab/ASTRAL>, que bajo el constructo de que es un árbol de coalescente, lo que hace es estimar una topología de especies basada en la descomposición en quartetes.
+
+
+Primero calcularemos un árbol de especies compendio (*summary*) basado en la topología más verosimil (ML) de cada gen.
+
+```{}
+java -jar /usr/local/bin/astral.5.6.3.jar -i ./all_trees.tre -o ./astral.tre
+```
+Después procesaremos la distribución de árboles obtenidos mediante bootstrap. Para ello crearemos un lista de archivos:
+
+```{}
+ls ./06_iqtree/*.ufboot > bootstrap_list.txt
+```
+que utilizaremos para calcular arboles compendio de los distintos loci. 
+```{}
+java -jar /usr/local/src/ASTRAL/astral.5.6.3.jar -i ./all_trees.tre -o ./astral_boot.tre -b ./bootstrap_list.txt
+```
+En nuestro caso el arbol de especies y el de genes contienen el mismo número de entradas. En casos en que tengamos más de un genoma por especie, es donde Astral se vuelve importante al permitir incorporar polimorfismo intraespecífico (Es decir realoiza un arbol de especies en sentido estricto).
+**Atención Propuesta.** Echale un vistazo al manual de astral. Te parece el concepto de árbol de especies coherente con conceptos basados en coalescencia (multispecies coalescent)? O quizás no llamamos árbol de especies a lo mismo?
+
+### 6.12. Redes consenso en Dendroscope.
+
+Una alternativa interesam´nt es usar el programa dendroscope <http://dendroscope.org> para obtener redes filogenéticas consenso. Esto será util tanto para detectar problemas como para discutir hibridación o introgresión si este fuese el caso. Además el algoritmo de z-closure permite también trabajar con árboles incompletos.
+
+Para trabajar simplemente teneis que ejecutar dendroscope en la máquina virtual o el ordenador que tengais disponible e importar el archivo all_trees.tre. La interfáz gráfica es sencilla y autoexplicativa y ante la duda el manual está aquí <https://ab.inf.uni-tuebingen.de/data/software/dendroscope3/download/manual.pdf>.
+
+### 6.11. Comparar topologías usando distancias de Robinson-Foulds.
+
+```{}
+iqtree -t all_trees.tre -rf_all
+```
+Despues puedes abrir R y probar a interpretar la distribución de distancias
+```{r}
+rf<-read.table("menos_trees.tre.rfdist",skip=1,row.names=1)
+rf<-as.dist(rf)
+/home/fernando/genomics_course/new/new/02_Busco/run_X1scaffoldsfiltered/full_table_X1scaffoldsfiltered.tsv
 ```
 
-### 6.11. Obtener consensos cuando el dataset es incompleto y también visualizar incertidumbre en forma de redes con dendroscope.
-
-```{}
-```
-
-### 6.12. Comparar topologías Robinson foulds distance.
-
-```{}
-```
 ## 7. Tutorial II.  Un pipeline usando detección de ortólogos a posteriori
 ### 7.1. Pasos preliminares
 He instalado funannotate usando un ambiente de anaconda siguiendo las instrucciones del manual.
