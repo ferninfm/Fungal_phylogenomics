@@ -440,13 +440,14 @@ done
 cd ..
 ```
 
-### 6.7. Concatenar todos los loci y hacer un análisis supermatriz iqtree
+<!---### 6.7. Concatenar todos los loci y hacer un análisis supermatriz iqtree
 
 ```{}
 mkdir ./07_final
 cat ./06_iqtree/*.treefile >> ./07_final/all_trees.tre
 ```
-## 6.8. Calcular un arbol consenso (*mayority rule*) con iqtree
+--->
+## 6.7. Calcular un arbol consenso (*mayority rule*) con iqtree
 La obtención de un consenso se puede hacer muy fácilmente con iqtree, ya que en principio utiliza el mismo algoritmo que al obtener un consenso de los arboles obtenidos usando *bootstrap*. Pero vamos a ver
 ```{}
 iqtree -con all_trees.tre
@@ -469,7 +470,7 @@ table(foo)
 write.trees(trees[unlist(sapply(sapply(trees,`[[`,"tip.label"),length))==10],"menos_trees.tre")
 quit()
 ```
-## 6.9. Anotar el soporte estadístico de la topología
+## 6.8. Anotar el soporte estadístico de la topología
 Vamos a usa el metodo propuesto por Salichos y Rokas (2013) <a>http://www.ncbi.nlm.nih.gov/pubmed/23657258</a> en el que se calculan los valores de *Internode Certainty* (IC) y *Tree Certainty* (TC). El método se describe con más profución en <a>
 http://mbe.oxfordjournals.org/content/early/2014/02/07/molbev.msu061.abstractkeytype=ref&ijkey =I65FuGNx0HzR2Ow</a>. Aunque su  implementación en RAXML (version>=8.2.0) difiere ligeramente de lo publicado al permitir el uso de set de árboles incompletos como se discute aquí: <a>http://dx.doi.org/10.1101/022053</a>.
 Primero debemos volcar todos los arboles obtenidos en iqtree (o raxml) anotados usando bootstrap en un solo archivo
@@ -495,9 +496,13 @@ En realidad los alineamientos que hemos producido se pueden usar como cualquier 
 Nota mental: Incrementar el numero de loci aumenta linearmente los requerimientos informaticos, usar los genes en paralelo nos permite hacer una paralelización trivial (a manubrio) del proceso. Podríamos pensar que concatenar puede simplificar el proceso, especialmente si se reduce el numero de particiones de los modelos de sustitución. Sin embargo la enorme longitud del alineamiento complica mucho los calculos de verosimilitud (likelihood) y es necesario hacer una paralelización no trivial de la computación (se divide el alineamiento en x fragmentos y cada thread se hace cargo de calcular de los valores de una parte, esto es lo que hace Beagle usado con beast2 por ejemplo).
 Por otro lado incrementar el numero de sequencias afecta la computación de manera exponencial, y satura los requerimientos de RAM en muchos casos. Calcular una filogenia con 300+ genes y las 1700 species de hongos que hay secuenciadas parece una ideaza. Pero la realidad es que implica saturar un cluster entero durante un mé (las secuencias de aminoacidos son más lentas de analizar)
 
-### 6.10. Visualización de arboles con iTol.
+## 6.9. Visualización de arboles con iTol.
 
-## 6.9 Limpiar de artefactos las filogenias usando treeshrink
+El final del proceso de estimar una filogenia es gnerar un gráfico que tenga buen aspecto para publicar. Hay muchas opciones posibles, pero quiero llamaros la atención sobre iTol <https://itol.embl.de>. Es una implementación online que produce gráficos de una calidad excepcional y que permite incorporar matrices de datos para enriquecer la visualización. En un contexto filogenómico donde queremos incorporar datos de anotación funcional sobre una filogenia, este programa un buen salvavidas.
+
+Simplemente abrid la página web e importad vuestros árboles. La introducción de datos se puede hacer desde excel (previo pago) o a mano. Yo suelo usar R para obtener una tabla, con el nombre de cada tip y una paleta de colores personalizada en RGB. Pero tiene poco misterio.
+
+### 6.11 Limpiar de artefactos las filogenias usando treeshrink
 Uno de los problemas más habituales que nos podemos encontrar es la unclusión de secuencias que por la razón que sea acumlan mayor número de caracteres diferenciales de los esperable. Esto puede ser real, pero a menudo es debido a errores en el alineamiento o a la presencia de contaminantes o parálogos no identificados.
 Este es un paso importante a la hora de discutir la corrección de las inferencias filogenéticas llevadas a cabo anteriormente, aunque en muchos trabajos se usa un método de filtrado por defecto.
 
@@ -532,11 +537,11 @@ En nuestro caso el arbol de especies y el de genes contienen el mismo número de
 
 ### 6.12. Redes consenso en Dendroscope.
 
-Una alternativa interesam´nt es usar el programa dendroscope <http://dendroscope.org> para obtener redes filogenéticas consenso. Esto será util tanto para detectar problemas como para discutir hibridación o introgresión si este fuese el caso. Además el algoritmo de z-closure permite también trabajar con árboles incompletos.
+Una alternativa interesante es usar el programa dendroscope <http://dendroscope.org> para obtener redes filogenéticas consenso. Esto será util tanto para detectar problemas como para discutir hibridación o introgresión si este fuese el caso. Además el algoritmo de z-closure permite también trabajar con árboles incompletos (supernetwork).
 
-Para trabajar simplemente teneis que ejecutar dendroscope en la máquina virtual o el ordenador que tengais disponible e importar el archivo all_trees.tre. La interfáz gráfica es sencilla y autoexplicativa y ante la duda el manual está aquí <https://ab.inf.uni-tuebingen.de/data/software/dendroscope3/download/manual.pdf>.
+Para trabajar simplemente teneis que ejecutar dendroscope en la máquina virtual o el ordenador que tengais disponible e importar el archivo all_trees.tre. La interfáz gráfica es sencilla y autoexplicativa. Tiene enormes cantidades de opciones para explorar. El manual está aquí <https://ab.inf.uni-tuebingen.de/data/software/dendroscope3/download/manual.pdf>. A por ello.
 
-### 6.11. Comparar topologías usando distancias de Robinson-Foulds.
+### 6.11. Comparar topologías usando distancias Robinson-Foulds.
 
 ```{}
 iqtree -t all_trees.tre -rf_all
