@@ -528,10 +528,10 @@ El final del proceso de estimar una filogenia es gnerar un gráfico que tenga bu
 Simplemente abrid la página web e importad vuestros árboles. La introducción de datos se puede hacer desde excel (previo pago) o a mano. Yo suelo usar R para obtener una tabla, con el nombre de cada tip y una paleta de colores personalizada en RGB. Pero tiene poco misterio.
 
 ### 6.11 Limpiar de artefactos las filogenias usando treeshrink
-Uno de los problemas más habituales que nos podemos encontrar es la unclusión de secuencias que por la razón que sea acumlan mayor número de caracteres diferenciales de los esperable. Esto puede ser real, pero a menudo es debido a errores en el alineamiento o a la presencia de contaminantes o parálogos no identificados.
-Este es un paso importante a la hora de discutir la corrección de las inferencias filogenéticas llevadas a cabo anteriormente, aunque en muchos trabajos se usa un método de filtrado por defecto.
 
-Treeshrink es un programa relativamente nuevo que automatiza el filtrado *a posteriori* de las topologías.
+Con este paso pretendemos limpiar los árboles de genes para evitar sesgos introducidos por el fenómeno de *long branch attraction* (Ver Phillippe et al. 2005 < https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1274308/pdf/1471-2148-5-50.pdf>). Este se manifiesta en casos en que una o más especies muestran una tasa evolutiva más rápida que las demás, por lo que acumulan mayor cantidad de caracteres diferenciales. En realidad, la presencia de ramas atípicas (*outliers*) puede estar reflejando tanto la presencia de LBA, en sentido estricto como la presencia de parálogos en el dataset. No todos los estudios filogenómicos incluyen este paso, pero es altamente recomendable incluirlo, al menos para discutir su efecto sobre la la topología consenso, cuando la identificación de  genes ortólogos se hace *a priori*.
+
+Aunque el método es en si relativamente trivial, vamos a utilizar su implementación en el programa Treeshrink (Mai et al. 2018) <https://github.com/uym2/TreeShrink>
 ```{}
 python /usr/local/src/TreeShrink/run_treeshrink.py -t all_trees.tre -o all_trees_filtered.tre
 ```
