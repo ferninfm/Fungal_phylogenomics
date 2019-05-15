@@ -128,6 +128,31 @@ Como he dicho este tipo de medidas también se puede usar con secuencias de nucl
 
 ## 5. Reconstrucción filogenética con miles de loci
 
+Como punto de partida hay que recordar una serie de conceptos relevantes para entender que son y como funcionan los metodos de reconstruccion filogenetica. Mas o menos refinados, adornados con terminologias mas o menos complejas (superpublicables y megaflipantes), tódos los métodos de reconstruccion gilogenetica se pueden encuadrar entre los metodos matematicos de clustering jerarquico. En ultimo termino tienen como objetivo organizar nuestros datos en un grafo dicótomo (arbol) que nosostros interpretamos como hipotesis de relación evolutiva entre las especies/alelos/genes que introducimos en la matriz de datos.
+
+El punto de partida para todos los métodos es obtener una medida de distancia entre cada observación para poder elaborar el grafo. Esta distancia en el caso de caracteres genéticos se obtine a partir de una matriz en las que las secuencias de nucleotidos o aminoacidos estan alineadas, maximizando la identificacion de homologias en las secuencias. Esto se hace habitualmete mediante el alineamiento multiple de secuencias, y su descripción detallada requeriria un libro propio. Si teneis dudas hay multitud de recursos disponibles para profundizar en los algoritmos paral realizar este tipo de *multiple sequence alignment* tanto en internet como en la literatura.
+
+Los metodos mas sencillos de inferencia filogenénetica realizan la inferencia de la topología en dos pasos. Primero calculan la distancia en base a un modelo estadístico de sustitución –otro tema que requiere in libro propio–, y basado en esa matriz de distancias utilizan distintos algoritmos para calcular una topología (Neighbour joining, UPGMA, etc...). Estos algoritmos obtienen el arbol mas probable basdo en los datos fijando un modelo de sustitucion. Un caso especial son los métodos basados en parsimonia, que interpretan las sustituciones desde un perspectiva eventual, maxima parsimonia genara una estructura estadistica (grafo) que minimiza el numero de diferencias entre secuencias, pero no usa modelos estadisticos de sustitucion.
+
+El siguiente nivel de complejidad en los algoritmos de inferencia filogenética hace uso del concepto de Verosimilitud o *Likelihood* desarollado por Felsenstein en los años 80 y 90 del siglo pasado y evalua la probabilidad de obtener los datos a la luz de una topología y un modelo de sustitución impuesto. Primero usa una matriz de distancias para optimizar la parametrización del modelo y obtener una topología de partida, y la optimiza de modo iterativo hasta obtener el árbol más verosimil, que maximiza la probabilidad de los datos dado un modelo y una topología. Este tipo de aproximación se denomina *Maximum likelihood*.
+
+Dado que estamos optimiozando la probabilidad de los datos, evaluar la solidez de la topología requiere modificar los datos de partida. Para obtener el soporte estadístico de cada topología rse recurre al bootstraping. Se generan  matrices de datos randomizadas en las que las posiciones geneticas se introducen con repeticion en un alineamiento igual de largo que el original y se optimiza la porbabilidad de cada dataset simulado. Al final se recurre a un metodo de consenso para evaluar en cuantos de los arboles simulados se encuentra cada biparticion y esto genera unos valores de soporte estadistico.
+
+El último nivel de complejidad pasa por utilizar métodos de optimización bayesiana, en concreto cadenas de Markov (*Metropolis coupled markov chain montecarlo* para ser más pedante). En estos se lleva a cabo un proceso parecido al de ML, pero topología y parametrización del modelo se optimizan conjuntamente. La optimización Bayesiana tiene grandes ventajas sobre los métodos de ML. Primero no es tan dependiente del punto de partida (el árbol UPGMA por ejemplo), segundo al asumir en la cadena cambios a peor y no solo a seleccionar la mayor verosimilitud, es capaz de evitar optimos locales mejor y es capaz de explorar el espacio paramaetrico de manera mas exhaustiva. Además la evaluación del soporte estadistico parte de árboles basados en obtener una distribución de árboles en principio equiprobables basados en los datos reales y no en un constructo artificial con pseudodatos como se hace con el bootstrapping.
+
+4. Reloj Molecular
+
+5. Árboles multigenicos y árboles de especies
+Supermatrix
+Consensos y supertrees
+Métodos  de reconciliación (multispecies coalescent)
+Métodos de reconciliación (summary)
+Redes
+
+6. Cálculo del soporte topológico
+
+7. Limitaciones computacionales 
+
 De hecho, debido a las limitaciones humanas y computacionales, el análisis de un gran número de loci requiere una serie de simplificaciones y compromisos que dependen en gran medida del tipo de plataforma de secuenciación, de la cobertura genómica y del propósito de la encuesta. Por ejemplo, no se dispone de métodos bayesianos altamente refinados para la prueba de modelos, la coestimación de la filogenia y los parámetros poblacionales, o incluso para hacer inferencias filogenéticas sencillas para todos los tipos de datos y, a menudo, no se adaptan bien a los conjuntos de datos genómicos que limitan su uso.
 
 Additional task: Try to program two similar steps but using IQtree (Minh, Anh Thi Nguyen, and von Haeseler 2013) instead of RaxML, it can be slightly faster (Zhou et al. 2017) and it incorporates automated model-testing, which is a very interesting addition.
