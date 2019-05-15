@@ -11,7 +11,7 @@ output:
 
 # Kurso de genomika fungoj: Phylogenomika
 
-*Fernando Fernandez Mendoza*
+*Fernando Fernández Mendoza*
 
 17-05-2019
 
@@ -126,19 +126,21 @@ Un grupo de métodos emergentes se basan en la descomposición del genoma en peq
 
 Como he dicho este tipo de medidas también se puede usar con secuencias de nucleótidos, y tienen muchas aplicaciones potenciales que se salen, en parte al menos del propósito de este curso. Os añado este review por puro vicio <https://academic.oup.com/gigascience/article/7/12/giy125/5140149>, esto será sin duda el futuro del DNA-barcoding.
 
-## 5. Reconstrucción filogenética con miles de loci
+## 5. Métodos de reconstrucción filogenética
 
-Como punto de partida hay que recordar una serie de conceptos relevantes para entender qué son y cómo funcionan los métodos de reconstrucción filogenética. Más o menos refinados, adornados con terminologías más o menos complejas (superpublicables y megaflipantes), todos los métodos de reconstrucción filogenética se pueden encuadrar entre los métodos matemáticos de clustering jerárquico. En último término tienen como objetivo organizar nuestros datos en un grafo dicótomo (árbol) que nosotros interpretamos como hipótesis de relación evolutiva entre las especies/alelos/genes que introducimos en la matriz de datos.
+Como punto de partida hay que recordar una serie de conceptos relevantes para entender qué son y cómo funcionan los métodos de reconstrucción filogenética. Aunque si por la razón que sea sientes que necesitas un tratamiento sistemático te recomiendo que empieces por “The Phylogenetic Handbook” editado por Lemey et al. (2009).
 
-El punto de partida para todos los métodos es obtener una medida de distancia entre cada observación para poder elaborar el grafo. Esta distancia en el caso de caracteres genéticos se obtiene a partir de una matriz en las que las secuencias de nucleótidos o aminoácidos están alineadas, maximizando la identificación de homologías en las secuencias. Esto se hace habitualmete mediante el alineamiento múltiple de secuencias, y su descripción detallada requeriría un libro propio. Si tenéis dudas hay multitud de recursos disponibles para profundizar en los algoritmos para realizar este tipo de *multiple sequence alignment* tanto en internet como en la literatura.
+En términos generales, el problema de la inferencia de árboles filogenéticos no es más que un problema estadístico. Más o menos refinados, ponderados, iterados, usando modelos implícitos o explícitos, ajustando la topología más probable a la vista de los datos o la probabilidad de los datos dado un modelo, todos los métodos de reconstrucción filogenética se pueden encuadrar de manera general dentro de los métodos matemáticos de cluster jerárquico. Todos ellos tienen como objetivo organizar los datos en un grafo dicótomo (árbol) que nosotros interpretamos como hipótesis de relación evolutiva entre las especies/alelos/genes que introducimos en la matriz de datos. 
 
-Los métodos más sencillos de inferencia filogenética realizan la inferencia de la topología en dos pasos. Primero calculan la distancia en base a un modelo estadístico de sustitución –otro tema que requiere un libro propio–, y basado en esa matriz de distancias utilizan distintos algoritmos para calcular una topología (Neighbour joining, UPGMA, etc...). Estos algoritmos obtienen el árbol más probable basado en los datos fijando un modelo de sustitución. Un caso especial son los métodos basados en parsimonia, que interpretan las sustituciones desde un perspectiva eventual, máxima parsimonia genera una estructura estadística (grafo) que minimiza el número de diferencias entre secuencias, pero no usa modelos estadísticos de sustitución.
+El punto de partida común casi todas las implementaciones de análisis filogenético es obtener una matriz de caracteres que nos permita evaluar la similitud entre las distintas observaciones o especies. En el caso de caracteres genéticos las secuencias de nucleótidos o de aminoácidos necesitan alinearse, de manera que los caracteres a comparar sean homólogos, o al menos hayamos maximizando la probabilidad de que los caracteres agrupados en loci sean homólogos. Esto se hace mediante métodos de alineamiento múltiple de secuencias, y su descripción detallada también la podéis encontrar en el manual al que me he referido anteriormente.
+ 
+Los métodos más sencillos de inferencia filogenética realizan la inferencia de la topología en dos pasos. Primero utilizan un modelo evolutivo probabilístico para estimar la distancia o la disimilitud entre observaciones. Basándose en esas distancias se utilizan distintos algoritmos para calcular una topología ya sea usando métodos de cluster generales como UPGMA o diseñados específicamente para tratar matrices de datos genéticos como Neighbour-joining. Estos algoritmos obtienen el árbol más probable basado en los datos fijando un modelo de sustitución. Un caso especial son los métodos basados en parsimonia, que interpretan las sustituciones desde un perspectiva eventual, y no utiliza modelos evolutivos en los que las distintas sustituciones son tratadas de manera explicita y dependiente del contexto.
 
 El siguiente nivel de complejidad en los algoritmos de inferencia filogenética hace uso del concepto de Verosimilitud o *Likelihood* desarollado por Felsenstein en los años 80 y 90 del siglo pasado y evalúa la probabilidad de obtener los datos a la luz de una topología y un modelo de sustitución impuesto. Primero usa una matriz de distancias para optimizar la parametrización del modelo y obtener una topología de partida, y la optimiza de modo iterativo hasta obtener el árbol más verosímil, que maximiza la probabilidad de los datos dado un modelo y una topología. Este tipo de aproximación se denomina *Maximum likelihood*.
 
-Dado que estamos optimizando la probabilidad de los datos, evaluar la solidez de la topología requiere modificar los datos de partida. Para obtener el soporte estadístico de cada topología se recurre al bootstrapping. Se generan  matrices de datos randomizadas en las que las posiciones genéticas se introducen con repetición en un alineamiento igual de largo que el original y se optimiza la probabilidad de cada dataset simulado. Al final se recurre a un método de consenso para evaluar en cuántos de los árboles simulados se encuentra cada partición y esto genera unos valores de soporte estadístico.
+Dado que estamos optimizando la probabilidad de los datos, evaluar la solidez de la topología requiere modificar los datos de partida. Para obtener el soporte estadístico de cada topología se recurre al bootstrapping. Se generan  matrices de datos randomizadas en las que las posiciones genéticas se introducen con repetición en un alineamiento igual de largo que el original y se optimiza la probabilidad de cada set de datos simulado. Al final se recurre a un método de consenso para evaluar en cuántos de los árboles simulados se encuentra cada partición y esto genera unos valores de soporte estadístico.
 
-El último nivel de complejidad pasa por utilizar métodos de optimización bayesiana, en concreto cadenas de Markov (*Metropolis coupled markov chain montecarlo* para ser más pedante). En estos se lleva a cabo un proceso parecido al de ML, pero topología y parametrización del modelo se optimizan conjuntamente. La optimización Bayesiana tiene grandes ventajas sobre los métodos de ML. Primero no es tan dependiente del punto de partida (el árbol UPGMA por ejemplo), segundo al asumir en la cadena cambios a peor y no solo a seleccionar la mayor verosimilitud, es capaz de evitar óptimos locales mejor y es capaz de explorar el espacio paramétrico de manera más exhaustiva. Además la evaluación del soporte estadístico parte de árboles basados en obtener una distribución de árboles en principio equiprobables basados en los datos reales y no en un constructo artificial con pseudodatos como se hace con el bootstrapping.
+El último nivel de complejidad pasa por utilizar métodos de optimización bayesiana, en concreto cadenas de Markov (*Metropolis coupled markov chain Montecarlo*). En estos se lleva a cabo un proceso parecido al de ML, pero topología y parametrización del modelo se optimizan conjuntamente. La optimización Bayesiana tiene grandes ventajas sobre los métodos de ML. Primero no es tan dependiente del punto de partida (el árbol UPGMA por ejemplo), segundo al asumir en la cadena cambios a peor y no solo a seleccionar la mayor verosimilitud, es capaz de evitar óptimos locales mejor y es capaz de explorar el espacio paramétrico de manera más exhaustiva. Además la evaluación del soporte estadístico parte de árboles basados en obtener una distribución de árboles en principio equiprobables basados en los datos reales y no en un constructo artificial con pseudodatos como se hace con el bootstrapping.
 
 4. Reloj Molecular
 
@@ -528,10 +530,10 @@ El final del proceso de estimar una filogenia es gnerar un gráfico que tenga bu
 Simplemente abrid la página web e importad vuestros árboles. La introducción de datos se puede hacer desde excel (previo pago) o a mano. Yo suelo usar R para obtener una tabla, con el nombre de cada tip y una paleta de colores personalizada en RGB. Pero tiene poco misterio.
 
 ### 6.11 Limpiar de artefactos las filogenias usando treeshrink
+Uno de los problemas más habituales que nos podemos encontrar es la unclusión de secuencias que por la razón que sea acumlan mayor número de caracteres diferenciales de los esperable. Esto puede ser real, pero a menudo es debido a errores en el alineamiento o a la presencia de contaminantes o parálogos no identificados.
+Este es un paso importante a la hora de discutir la corrección de las inferencias filogenéticas llevadas a cabo anteriormente, aunque en muchos trabajos se usa un método de filtrado por defecto.
 
-Con este paso pretendemos limpiar los árboles de genes para evitar sesgos introducidos por el fenómeno de *long branch attraction* (Ver Phillippe et al. 2005 < https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1274308/pdf/1471-2148-5-50.pdf>). Este se manifiesta en casos en que una o más especies muestran una tasa evolutiva más rápida que las demás, por lo que acumulan mayor cantidad de caracteres diferenciales. En realidad, la presencia de ramas atípicas (*outliers*) puede estar reflejando tanto la presencia de LBA, en sentido estricto como la presencia de parálogos en el dataset. No todos los estudios filogenómicos incluyen este paso, pero es altamente recomendable incluirlo, al menos para discutir su efecto sobre la la topología consenso, cuando la identificación de  genes ortólogos se hace *a priori*.
-
-Aunque el método es en si relativamente trivial, vamos a utilizar su implementación en el programa Treeshrink (Mai et al. 2018) <https://github.com/uym2/TreeShrink>
+Treeshrink es un programa relativamente nuevo que automatiza el filtrado *a posteriori* de las topologías.
 ```{}
 python /usr/local/src/TreeShrink/run_treeshrink.py -t all_trees.tre -o all_trees_filtered.tre
 ```
@@ -578,10 +580,18 @@ rf<-as.dist(rf)
 /home/fernando/genomics_course/new/new/02_Busco/run_X1scaffoldsfiltered/full_table_X1scaffoldsfiltered.tsv
 ```
 
-## 7. Tutorial II.  Un pipeline usando detección de ortólogos a posteriori
+## 7. Tutorial II.  Un pipeline usando detección de ortólogos a posteriori.
+
+En este tutorial vamos a utilizar un pipeline filogenómico llamado Orthofinder (<https://github.com/davidemms/OrthoFinder>). Comparado con el pipeline que acabamos de desarrollar, Orthofinder está muy empaquetado y automatizado. Es contraste con nuestro pipeline, tiene como objetivo principal la extracción de genes ortólogos *de novo* o *a posteriori*. Para esto utiliza un algoritmo de *cluster* primero con el que obtiene grupos de ortólogos, los que previa reconstrucción filogenética son filtrados para seleccionar genes ortólogos.
+
+Además vamos a utilizar este pipeline como introducción a docker <https://www.docker.com>. Docker es un sistema para encapsular un sistema operativo y los ejecutables de un programa de nuestro interés en un contenedor único que puede ser utilizado en cualquier ordenador y cualquier sistema operativo. Docker a menudo soluciona problemas de dependencias –las librerías de Perl suelen ser el horror– y de conflictos de versiones, lo que permite tener un sistema estable y permanente. Tiene sin embargo ciertas desventajas respecto a configurar los programas de modo nativo, en especial cuando se requiere usar bases de datos de manera intensiva. Hay varios repositorios de contenedores de docker dedicados a la bioinformática, entre los cuales el punto de partida quizás sea biocontainers <https://github.com/BioContainers/containers>.
+
+**Atención pregunta:** Este pipeline no es adecuado para el dataset que estamos utilizando, que es el mismo que en el ejercicio anterior. Sabrías decirme por qué?
+**Atención recomendación:** Echaos un vistazo a la descripción del pipeline en su pagina web. Se entiende muy bien
+
 ### 7.1. Pasos preliminares
-He instalado funannotate usando un ambiente de anaconda siguiendo las instrucciones del manual.
-No olvidarse de exportar las siguientes versiones
+
+Este pipeline parte de secuencias de proteínas y no de aminoácidos. Requiere por tanto un paso previo de predicción de genes. Para ello he usado funannotate, del que hablaré en el siguiente tutorial. He instalado funannotate usando un ambiente de anaconda siguiendo las instrucciones del manual. No hay que olvidarse de olvidarse de exportar las siguientes variables ambientales.
 ```{bash}
 export EVM_HOME=/home/fernando/anaconda2/envs/funannotate/opt/evidencemodeler-1.1.1/
 export TRINITYHOME=/home/fernando/anaconda2/envs/funannotate/opt/trinity-2.6.6
@@ -594,7 +604,7 @@ export PATH="/usr/local/src/maker/exe/RepeatMasker:$PATH"
 export PATH="/usr/local/src/funannotate:$PATH"
 ```
 El punto de partida son genoma completamente ensamblados y refinados.
-Primero usamos sort para renombrar los contigs con nombres más compatibles con genbank.
+Primero usamos *sort* para renombrar los *contigs* con nombres más compatibles con el formato soportado por genbank. He dejado los PATHS absolutos de mi maquina (/home/fernando/genomics_course/new/new/01_data/) para evitar confusiones cuando decidáis usar funannotate vosotros.
 
 ```{bash}
 for FILE in X1 X2 X3 X4 X5 X6 X7 X8 X9 Xanpa
@@ -632,12 +642,6 @@ done
 ```
 ### 7.3. Usamos el pipeline Orthofinder
 
-En esta sección del tutoriasl vamos a utilizar el pipeline filogenómico Orthofinder (<https://github.com/davidemms/OrthoFinder>). Este pipeline es muy interesante pues extrae loci ortologos usando un algoritmo de *cluster* primero y un procesado *a posteriori* de los árboles filogenéticos.
-
-Además vamos a utilizar este pippeline como introducción a docker <https://www.docker.com>. Docker es un sistema para encapsular un sistema operativo y los ejectubles de un programa de nuestro enterés en un contenedor único que puede ser utilizado en cualquier ordenador y cualquier sistema operativo. Docker a menudo soluciona problemas de dependencias (las librerias de perl suelen ser el horror) y de conflictos de versiones y permite tener un sistema estable y permanente. Tinen también ciertas desventajas respecto a la configuaración nativa de algunas aplicaciones, en especial cuando se requiere usar bases de datos externas de manera intensiva. Hay varios repositorios de contenedores de docker dedicados a la bioinformática, entre los cuales el punto de partida quizas sea biocontainers <https://github.com/BioContainers/containers>.
-
-**Atención pregunta:** En realidad este pipeline no es adecuado para el dataset que vamos a utilizar, que es el mismo que en el ejercicio anterior. Sabrías decirme por qué?
-**Atención recomendación:** Echaos un vistazo a la descripción del pipeline en su pagina web. Es magnífica.
 
 Al turrón! Lo primero que haremos será instalar el container de docker donde está instalado el pipeline orthofinder.
 
@@ -721,6 +725,8 @@ plot(as.phylo(hclust(dist(t(as.matrix(pfam[,1:9]))))))
 
 ## References
 
+Abadi, Shiran, Dana Azouri, Tal Pupko, and Itay Mayrose. 2019. “Model Selection May Not Be a Mandatory Step for Phylogeny Reconstruction.” Nature Communications 10 (1). https://doi.org/10.1038/s41467-019-08822-w.
+
 Buchfink, B., Xie, C., & Huson, D. H. (2015). Fast and sensitive protein alignment using DIAMOND. Nat Meth, 12(1), 59–60. Retrieved from http://dx.doi.org/10.1038/nmeth.3176
 
 Capella-Gutiérrez, S., Silla-Martínez, J. M., & Gabaldón, T. (2009). trimAl: A tool for automated alignment trimming in large-scale phylogenetic analyses. Bioinformatics, 25(15), 1972–1973. https://doi.org/10.1093/bioinformatics/btp348
@@ -728,6 +734,8 @@ Capella-Gutiérrez, S., Silla-Martínez, J. M., & Gabaldón, T. (2009). trimAl: 
 Catchen, J. M. (2013). Stacks: an analysis tool set for population genomics. Molecular Ecology, 22(11), 3124–3140. https://doi.org/10.1111/mec.12354.Stacks
 
 Catchen, J. M., Amores, A., Hohenlohe, P., Cresko, W., & Postlethwait, J. H. (2011). Stacks : Building and Genotyping Loci De Novo From Short-Read Sequences. G3 Genes|Genomes|Genetics, 1(3), 171–182. https://doi.org/10.1534/g3.111.000240
+
+Choi, JaeJin, and Sung-Hou Kim. 2017. “A Genome Tree of Life for the Fungi Kingdom.” Proceedings of the National Academy of Sciences 114 (35): 201711939. https://doi.org/10.1073/pnas.1711939114.
 
 Darling, A. E., Mau, B., & Perna, N. T. (2010). Progressivemauve: Multiple genome alignment with gene gain, loss and rearrangement. PLoS ONE, 5(6). https://doi.org/10.1371/journal.pone.0011147
 
@@ -781,19 +789,9 @@ Zhou, X., Shen, X., Hittinger, C. T., & Rokas, A. (2017). Evaluating fast maximu
 
 <!---
 (Pizarro et al. 2018; Zhang et al. 2018; Marthey et al. 2008; Huerta-Cepas et al. 2016; Choi and Kim 2017)
-Choi, JaeJin, and Sung-Hou Kim. 2017. “A Genome Tree of Life for the Fungi Kingdom.” Proceedings of the National Academy of Sciences 114 (35): 201711939. https://doi.org/10.1073/pnas.1711939114.
-Huerta-Cepas, Jaime, Damian Szklarczyk, Kristoffer Forslund, Helen Cook, Davide Heller, Mathias C. Walter, Thomas Rattei, et al. 2016. “EGGNOG 4.5: A Hierarchical Orthology Framework with Improved Functional Annotations for Eukaryotic, Prokaryotic and Viral Sequences.” Nucleic Acids Research 44 (D1): D286–93. https://doi.org/10.1093/nar/gkv1248.
-Marthey, Sylvain, Gabriela Aguileta, François Rodolphe, Annie Gendrault, Tatiana Giraud, Elisabeth Fournier, Manuela Lopez-Villavicencio, Angélique Gautier, Marc Henri Lebrun, and Hélène Chiapello. 2008. “FUNYBASE: A FUNgal PhYlogenomic DataBASE.” BMC Bioinformatics 9 (i): 1–10. https://doi.org/10.1186/1471-2105-9-456.
-Pizarro, David, Pradeep K. Divakar, Felix Grewe, Steven D. Leavitt, Jen Pan Huang, Francesco Dal Grande, Imke Schmitt, Mats Wedin, Ana Crespo, and H. Thorsten Lumbsch. 2018. “Phylogenomic Analysis of 2556 Single-Copy Protein-Coding Genes Resolves Most Evolutionary Relationships for the Major Clades in the Most Diverse Group of Lichen-Forming Fungi.” Fungal Diversity 92 (1): 31–41. https://doi.org/10.1007/s13225-018-0407-7.
-Zhang, Chao, Maryam Rabiee, Erfan Sayyari, and Siavash Mirarab. 2018. “ASTRAL-III: Polynomial Time Species Tree Reconstruction from Partially Resolved Gene Trees.” BMC Bioinformatics 19 (Suppl 6): 15–30. https://doi.org/10.1186/s12859-018-2129-y.
---->
-<!--
-(Pizarro et al. 2018; Zhang et al. 2018; Marthey et al. 2008; Huerta-Cepas et al. 2016; Choi and Kim 2017)
 
 (Eisen 1998; Langmead and Salzberg 2012; Kuzniar et al. 2008; Dewey 2011; O’Brien and Stanyon 1999; O’Brien et al. 1999; Sjolander 2004; Choi and Kim 2017; Huerta-Cepas et al. 2016; Marthey et al. 2008; Zhang et al. 2018; Pizarro et al. 2018; Jiao et al. 2011; Mai and Mirarab 2018; Philippe et al. 2005; Krogh 1998; Salichos and Rokas 2011; Shen, Salichos, and Rokas 2016; Kominek et al. 2019; Moon et al. 2019; Labella et al. 2019; Abadi et al. 2019; Yang 2001; Yang et al. 2000; Roy 2009; Mauro et al. 2019; Mckain and Johnson 2018)
 
-Abadi, Shiran, Dana Azouri, Tal Pupko, and Itay Mayrose. 2019. “Model Selection May Not Be a Mandatory Step for Phylogeny Reconstruction.” Nature Communications 10 (1). https://doi.org/10.1038/s41467-019-08822-w.
-Choi, JaeJin, and Sung-Hou Kim. 2017. “A Genome Tree of Life for the Fungi Kingdom.” Proceedings of the National Academy of Sciences 114 (35): 201711939. https://doi.org/10.1073/pnas.1711939114.
 Dewey, Colin N. 2011. “Positional Orthology: Putting Genomic Evolutionary Relationships into Context.” Briefings in Bioinformatics 12 (5): 401–12. https://doi.org/10.1093/bib/bbr040.
 Eisen, Jonathan A. 1998. “Phylogenomics : Improving Functional Predictions for Uncharacterized Genes by Evolutionary ? Analysis Phylogenomics : Improving Functional Predictions for Uncharacterized Genes by Evolutionary Analysis.” Genome Research, no. 1997: 163–167. https://doi.org/10.1101/gr.8.3.163.
 Huerta-Cepas, Jaime, Damian Szklarczyk, Kristoffer Forslund, Helen Cook, Davide Heller, Mathias C. Walter, Thomas Rattei, et al. 2016. “EGGNOG 4.5: A Hierarchical Orthology Framework with Improved Functional Annotations for Eukaryotic, Prokaryotic and Viral Sequences.” Nucleic Acids Research 44 (D1): D286–93. https://doi.org/10.1093/nar/gkv1248.
@@ -820,4 +818,5 @@ Yang, Ziheng. 2001. “Codon-Substitution Models for Detecting Molecular Adaptat
 Yang, Ziheng, Rasmus Nielsen, Nick Goldman, and Anne-mette Krabbe Pedersen. 2000. “Codon-Substitution Models for Heterogeneous Selection Pressure at Amino Acid Sites.”
 Zhang, Chao, Maryam Rabiee, Erfan Sayyari, and Siavash Mirarab. 2018. “ASTRAL-III: Polynomial Time Species Tree Reconstruction from Partially Resolved Gene Trees.” BMC Bioinformatics 19 (Suppl 6): 15–30. https://doi.org/10.1186/s12859-018-2129-y.
 -->
+
 
