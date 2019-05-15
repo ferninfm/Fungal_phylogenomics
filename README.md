@@ -779,4 +779,11 @@ Stanke, M., Schöffmann, O., Morgenstern, B., & Waack, S. (2006). Gene predictio
 
 Zhou, X., Shen, X., Hittinger, C. T., & Rokas, A. (2017). Evaluating fast maximum likelihood-based phylogenetic programs using empirical phylogenomic data. BioRxiv, http://dx.
 
-
+<!---
+(Pizarro et al. 2018; Zhang et al. 2018; Marthey et al. 2008; Huerta-Cepas et al. 2016; Choi and Kim 2017)
+Choi, JaeJin, and Sung-Hou Kim. 2017. “A Genome Tree of Life for the Fungi Kingdom.” Proceedings of the National Academy of Sciences 114 (35): 201711939. https://doi.org/10.1073/pnas.1711939114.
+Huerta-Cepas, Jaime, Damian Szklarczyk, Kristoffer Forslund, Helen Cook, Davide Heller, Mathias C. Walter, Thomas Rattei, et al. 2016. “EGGNOG 4.5: A Hierarchical Orthology Framework with Improved Functional Annotations for Eukaryotic, Prokaryotic and Viral Sequences.” Nucleic Acids Research 44 (D1): D286–93. https://doi.org/10.1093/nar/gkv1248.
+Marthey, Sylvain, Gabriela Aguileta, François Rodolphe, Annie Gendrault, Tatiana Giraud, Elisabeth Fournier, Manuela Lopez-Villavicencio, Angélique Gautier, Marc Henri Lebrun, and Hélène Chiapello. 2008. “FUNYBASE: A FUNgal PhYlogenomic DataBASE.” BMC Bioinformatics 9 (i): 1–10. https://doi.org/10.1186/1471-2105-9-456.
+Pizarro, David, Pradeep K. Divakar, Felix Grewe, Steven D. Leavitt, Jen Pan Huang, Francesco Dal Grande, Imke Schmitt, Mats Wedin, Ana Crespo, and H. Thorsten Lumbsch. 2018. “Phylogenomic Analysis of 2556 Single-Copy Protein-Coding Genes Resolves Most Evolutionary Relationships for the Major Clades in the Most Diverse Group of Lichen-Forming Fungi.” Fungal Diversity 92 (1): 31–41. https://doi.org/10.1007/s13225-018-0407-7.
+Zhang, Chao, Maryam Rabiee, Erfan Sayyari, and Siavash Mirarab. 2018. “ASTRAL-III: Polynomial Time Species Tree Reconstruction from Partially Resolved Gene Trees.” BMC Bioinformatics 19 (Suppl 6): 15–30. https://doi.org/10.1186/s12859-018-2129-y.
+--->
