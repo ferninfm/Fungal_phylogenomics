@@ -188,7 +188,7 @@ Task_2: We developed a very simple R script to mine the output of BUSCO in order
 cat RAxML_bipartitionsBranchLabels.* > all_trees.tre
 raxmlHPC -L MR -z all_trees.tre -m GTRCAT -n -T1
 
-FIGURA CON EL PIPELINE
+![Esquema del pipeline basado en BUSCO](https://github.com/ferninfm/Fungal_phylogenomics/blob/master/pipeline_1.png) 
 
 ### 6.1. Pasos preliminares
 Para reducir el tiempo de compuatción y hacer el curso un poco más dinámico he dicidido realizar varios pasos preliminares de antemano.
