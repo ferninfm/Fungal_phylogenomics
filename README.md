@@ -78,30 +78,80 @@ Bueno, entonces ¿Cómo obtenemos una matriz de caracteres genéticos ortólogos
 
 ### 4.1. Métodos basados en resecuenciación genómica (poblaciones o especies muy cercanas, subgéneros)
 
-Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, se puede considerar que los genomas guardan una gran similitud estructural y por lo tanto una casi total ortología posicional (si esa es otra manera de verlo: Dewey 2011). En este caso bastaría alinear los reads directamente a un genoma de referencia usando herramientas como BWA (Li and Durbin 2009) o Bowtie2 (Langmead and Salzberg 2012), filtrar las regiones con una heterocigosidad fuera de la distribución esperada para evitar parálogos e inferir SNVs usando programas como Freebayes (Garrison & Marth 2012), Stacks (Catchen 2013) o Pyrad (Eaton 2014) dependiendo del tipo de librerías que hayamos secuenciado, o incluso métodos generales de *variant calling* como los implementados en GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs– o samtools (Li et al. 2009). Este tipo de implementaciones también se usan para analizar datos obtenidos mediante RNASeq (De Wit et al. 2012) y poolseq (Schlötterer et al. 2014). Un ejemplo de *pipeline* que usa este tipo de aproximación es RealPhy <https://realphy.unibas.ch/realphy/> que se ha usado por ejemplo para estudiar el hongo liquenizado *Rhizoplaca melanophthalma* (Leavitt et al. 2016). Este tipo de metodologías no las vamos a usar en este curso.
+Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, se puede considerar que los genomas guardan una gran similitud estructural y por lo tanto una casi total ortología posicional (si esa es otra manera de verlo: Dewey 2011). En este caso bastaría alinear los reads directamente a un genoma de referencia usando herramientas como BWA (Li and Durbin 2009) o Bowtie2 (Langmead and Salzberg 2012), filtrar las regiones con una heterocigosidad fuera de la distribución esperada para evitar parálogos e inferir SNVs usando programas como Freebayes (Garrison & Marth 2012), Stacks (Catchen 2013) o Pyrad (Eaton 2014) dependiendo del tipo de librerías que hayamos secuenciado, o incluso métodos generales de *variant calling* como los implementados en GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs– o samtools (Li et al. 2009). Este tipo de implementaciones también se usan para analizar datos obtenidos mediante RNASeq (De Wit et al. 2012) y poolseq (Schlötterer et al. 2014). Un ejemplo de *pipeline* que usa este tipo de aproximación es RealPhy <https://realphy.unibas.ch/realphy/> que se ha usado por ejemplo para estudiar el hongo liquenizado *Rhizoplaca melanophthalma* (Leavitt et al. 2016). Este tipo de metodologías no las vamos a usar en este curso. Cabe mencionar que están bastante limitadas a la hora de incorporar outgroups que sean suficientemente distantes.
 
 ### 4.2. Métodos basados en la comparación con bases de datos
-1. Usando un genoma externo como referencia (Outgroup) (Género-Familia)
-2. Usando todos los genómas como referencia (Best reciprocal blast hit) 
-3. Usando comparación con bases de datos externas (genbank)
-4. Usando comparación con bases de datos externas (Busco)
 
-(nucleotidos a nivel de género o familia y secuencias de aminoácidos a niveles de Familia, Orden, Clase...
+La mayoría de estudios filogenómicos no suelen estar basados en la resecuenciación de genomas de especies muy cercanas entre sí, sino que más bien intentan comparar genomas completamente ensamblados, bien completamente terminados o bien *drafts* genomicos parcialmente incompletos. Para compararlos, lo habitual es que no podamos asumir una homología –o mejor ortología– posicional, aunque es cierto que en el caso de los genómas de hongos se suelen encontrar  bloques sinténicos conservados entre genomas relativamente distantes.
 
-### 4.3. Esto no funciona que hacemos (División, Reino, *Tree of life*)
+En este caso se suelen procesar los genómas para predecir genes, o más bien sus exones, que se usarán como punto de partida. Identificar que gen es cada uno es una tarea dificil para un sólo genoma, de modo que si hablamos de decenas o cientos de genomas esta taréa se puede tornar herculea muy rápidamente. Por eso en general lo que se hace es identificar genes cuya secuencia –normalmente de aminoácidos– es suficientemente semejante como para ser considerados si no ya ortólogos, al menos homologos. Esto se hace usando bases de datos de referencia sobre las que alinear nuestros genomas –ya traducidos a secuencias proteicas– usando algoritmos como Blast <https://blast.ncbi.nlm.nih.gov/Blast.cgi>, en concreto blastp. Este procedimiento es habitual en la mayoría de trabajos de genética molecular, donde *blastear* secuencias a mano con ncbi para saber si hemos secuenciado lo que debíamos es parte del día a día, y usar blast de manera masiva es la base para interpretar trabajos ecológicos basados en metabarcoding (Secuenciación masiva de amplicones). Aunque hay muchas reprogramaciones del algoritmo de Blast, que esta bastante mayor, hoy por hoy la mas rapida y efectiva es la implementada en el programa *diamond* <https://github.com/bbuchfink/diamond>, creado por el grupo de Bioinformatica de Tübingen con Daniel Huson –que es un mostruo que no se puede aguantar– a la cabeza.
+
+Con esta filosofía de base se pueden clasificar la mayoría de pipelines filogenómicas según que tipo de base de datos de referencia usan:
+
+#### 4.2.1. Usando un genoma externo como referencia (Outgroup)
+
+El método más sencillo es convertir un genoma conocido en una colección de secuencias proteicas a usar como referencia. Para identificar el gen ortólogo que queremos solo debemos alinear los genes del genoma que queremos procesar con la base de datos y seleccionar para la reconstrucción filogenética el mejor *hit* unidireccional para cada locus –Es decir el gen que mejor se alinea con la referencia, el resultado positivo del alineamiento local *blast* que tenga un valor de e –*e-value– menor–. Este paso es obvio y en realidad es una parte fundamental de la mayoría de *pipelines* que automatizan la anotación de genomas, donde se usa como evidencia externa. Esté método para identificar ortólogos, puede funcionar a nivel de género o incluso de familia. Tiene grandes inconvenientes, no es particularmente sólido y no permite identificar genes ortologos de un modo objetivo, y a medida que se incluyen genomas los riesgos de incluir paralogos en el analisis se tornan mayores. Es una opcion, pero es un método poco maduro, y no se me ocurre ningún caso en el que sea razonable su uso. Un ejemplo varios algo más refinado de este grupo de métodos es el pipeline RealPhy <https://realphy.unibas.ch/realphy/>
+
+#### 4.2.2. Usando todos los genómas como referencia (Best reciprocal blast hit)
+
+Un segundo metodo, que es un refinamiento del anterior sería utilizar para la seleccion de loci, no ya el mejor *hit* unidireccional con el genoma de referencia sino usar como crterio el mejor *hit* reciproco (*best reciprocal blast hit*). Es decir, creariamos una base de datos del genoma A (*reference*) sobre la que buscariamos las proteinas de B (*query*) alineandolas. Seguidamente creariamos una base de datos con el genoma B sobre el que buscariamos el mejor *hit* de A. Estos resultados se tabulan para cada genóma y se seleccionan sólo los genes cuya comparación es reciproca e univoca. Este método es mejor que el blas unidireccional, y es en realidad el punto de partida para la identificación de ortólogos.
+
+El segundo paso conceptual es sencillo. En lugar de usar solo comparaciones entre los genomas que quiero analizar y el genóma de referencia, se usan comparaciones de todos los genomas contra todos. Son más complejas de tabular pero sí permiten identificar paralogos y ortologos con un contexto mucho más amplio. Este método es sin duda el más completo a cualquier escala filogenética. Si se usan secuencias de nucleotidos, el uso esta restringido ahasta nivel de familia –asi a ojimetro–, sin embargo usando secuencias de aminoacidos podemos llegar hasta nivel de Clase. A nivel de División, empieza a ser problematico..
+
+A partir de aquí los métodos difieren en cuanto a los algoritmos que usan para tabular los resultados e inferir ortólogos. En general se utiliza un algoritmo de clustering para organizar los genes de todos los genomas en grupos de ortologos (*Clustering of orthologous groups, sensu stricto*). Acto seguido se suelen realizar reconstrucciones filogenéticas de cada cluster para refinar la identificación de  paralogos. Para entendernos, se puede decir que hacen una identificación de ortólogos *a posteriori*. Este tipo de método la vamos a utilizar en el ejercicio práctico número dos. Funcionan Bien a todas las escalas filogenéticas. Tiende a fallar cuando los genomas no son perfectos y contienen secuencias contaminantes, o cuando tenemos un cierto grado de poliploidia en el genoma, porque por ejemplo partimos de apotecios y el ensamblaje genómico está fragmentado.
+
+#### 4.2.4. Usando comparación con bases de datos externas (Busco)
+
+Una tercera opción seria usar una base de datos como referencia, genebank, swissprot, etc... Esto es rutinario en anotación funcional y podria ser reutilizado en un contexto filogenomico. A priori no es util, y aun en casos donde no haya referencias posibles, usar el método anterior sería más razonable. Sin embargo, las bases de datos dedicadas a la identificación de ortologos que hemos comentado en el epigrafe anterior si proveen una información global contextualizable que puede ser utilizada para identificar ortólogos *a priori*. Si en lugar de comparar los genomas objeto de estudio entre sí los comparo a una base de ortologos conocidos, en principio tengo el trabajo hecho.
+
+Sin embargo las bases de datos de clusteres ortologos, son demasiado complejas y dificiles de interpretar. Lo normal es que los genes de nuestros genomas se disgregen entre grupos de ortologos de organismos poco relacionados entre si. En especial, si el genoma no esta perfectamente limpio, la labor de eliminar ortologos contaminantes puede ser terrible.
+
+Entonces se redescubre CEGMA <http://korflab.ucdavis.edu/datasets/cegma/>. CEGMA (*Core Eukaryotic gene mapping approach*) era un dataset que contenia genes eucarioticos basicos para la funcion celular que aparecen en todos los genomas, que son ortologos y que suelen ser de copia unica. Su autor se adelanto demasiado a su tiempo y su enfoque no suscitó interes hasta diez años mas tarde. Cansado, escribió un epitafio, bastante revelador sobre como funciona la ciencia moderna <http://www.acgt.me/blog/2015/5/18/goodbye-cegma-hello-busco>. En el nos refiere a todos los que estabmos molestandole con emalis a una tecera parte, hay otro grupo que ha hecho algo mejor, y se llama BUSCO (Benchmarking Universal Single-Copy Orthologs, <https://busco.ezlab.org>).
+
+BUSCO sirve para identificar una serie de genes ortólogos en genomas que aún no han sido anotados (sus genes no han sido identificados), y para ello utiliza unos pocos genes ortólogos identificados y sistematizados para grupos de organismos especificos, entre ellos distintas categorias taxonomicas de hongos –cortesia de Jason Stajich <http://lab.stajich.org/home/people/jason-stajich/>, otro crack–. Esto es de gran ayuda para anotar genomas de especies alejadas de los modelos más habituales, así como para analizar la cobertura genómica de *drafts* genomicos. Pero sobre todo, permite identificar miles de genes, que son ortologos, que suelen ser de copia unica, y que pertenecen a una categoria taxonomica concreta, bacterias, algas, el jamon del bocadillo... que pueden estar entremezclados en un mal genoma no alinean lo suficientemente bien y son descartados. En si mismo CEGMA primero y BUSCO despues inauguran la posibilidad de definir ortologos *a priori*.
+
+Busco no es todo ventajas, tiene limitaciones importantes, a muchos niveles. La capacidad de identificar ortologos en un genoma es proporcional al grado de similitud con la base de datos utilizada (y hay grupos de hongos extremadamente divergentes), habitualmente hay buscos duplicados y a medida que ampliamos la cobertura filogenética el numero de ortologos comunes a todos los genomas empieza a decrecer de manera alarmante. En un dataset incluyendo los mas o menos 1700 genomas de hongos que hay en genbank, no hay ni un solo ortologo presente en todas las muestras, y solo 300 de los mil y pico genes incluidos en el dataset de hongos estan presentes en mas de la mitad de los genomas. Busco funciona bien a nivel de género hasta Clase. A nivel de División los alineamientos comienzan a ser muy pobres y podemos encontrarnos con muy pocos loci utilizables y una proporcion de loci incompletos demasiado alta.
+
+El cuerpo principal de este curso es implementar un *pipeline* basado en BUSCO.
+
+### 4.3. Esto no funciona que hacemos? (División, Reino, *Tree of life*)
+
+A partir de la categoría de División, generar una reconstrucción filogenómica como tenemos en mente no es factible. Los métodos basados en alinear secuencias de aminoácidos o nucleótidos no son utilizables, pues habitualmente el ruido supera de largo cualquier tipo de información contenida en las matrices de datos. En este caso se prefiere utilizar métodos *alignment free* como alternativa.Básicamente se trata de obtener una medida de similitud entre genómas y hacer árboles de distancias, anotando el soporte estadistico de la topología usando bootstrapping ya nos daría un método espectacular.
+
 *Distancia basada en estructura del proteoma*
+En bacteriología es bastante habitual encontrar árboles filogenomicos basados en distancias genómicas. Las bacterias tienen genomas muy pequeños que se deshacen rápido de aquellas enzimas implicadas en vias metabolicas que no les interesan, y tienden a obtener genes por transferencia horizontal. El contenido genómico tiene una importancia funcional, pero también filogenética. Así, tabulando los genes presentes en cada genoma (presencia/ausencia o 0,1,+1copia) se puede hacer una reconstrucción filogenómica de las Eubacterias bastante sólida. Estade metodología no es habitual –ni recomendable– en hongos pero la vamos a probar en el último ejercicio práctico.
+
 *Distancia basada en oligomeros*
+Un grupo de métodos emergentes se basan en la descomposición del genoma en pequeños fragmentos de tamaño fijo. En general yo los llamo k-meros que es el termino que se usa para secuencias de nucleótidos. Para secuencias de aminoácidos se suele hablar de *features* pero yo quiero enfatizar que es la misma idea. Simplificando, lo que se hace es partir de un proteoma, segmentarlo en todos los grupos de k aminoácidos consecutivos posibles, con solapamiento, claro está. A partir de esta descomposición se mide la frecuencia con que aparece cada K-mero en el proteoma. A partir de aqui hay dios posibilidades. Si usamos un valor de k pequeno (k=5) el numero de secuencias posibles relativamente pequeno. De este modo podemos obtener una matriz de frecuencias bastante compacta que usar para calcular una matriz de distancias. Es una primera opcion metodologica. Si usamos un valor de k mas alto (k=20) el numero de secuencias 20-mericas posibles es inmensa, pero podemos eliminar aquellos que esten poco representados en cada genoma y elaborar una base de datos más compacta, para cada genoma. Cruzar las bases de datos de composición de 20-meros nos da una idea importante de la similitud composicional del proteoma en global y nos permite generar una matriz de datos filogenómicos. Este tipo de métodos se ha usado en hongos recientemente (Choi & Kim 2017) <https://www.pnas.org/content/114/35/9391> utilizando un método llamado FFP <https://github.com/jaejinchoi/FFP>. En esta misma linea cabe también mencionar el software ProtSpaM <https://github.com/jschellh/ProtSpaM>.
 
-A simple setup best reciprocal blast hits. All protein coding genes... It gets problematic as the history of the genomes complicates for deeper phylogenetic levels.
-
-4.1.3 Pipelines based on the use of precompiled sets of Orthologous genes.
-The next level is use phylogenomic repositories containg orthologous gene sets in which the evolutionary pathways for each AA in the sequence are modeled using HMM. Global repositories as Ortho MCl etc are good for deep phylogenies but reduce the type of loci to be used to more conserved ones the more distant the relationship between the sample sin our experiment.
-HMMER is used for searching sequence databases for sequence homologs, and for making sequence alignments. It implements methods using probabilistic models called profile hidden Markov models (profile HMMs).
-
-However, this approach is scalable, and researchers have commenced developing themed sets of genes that tend to be single copy orthologs within a subset of organisms at a certain phylogenetic scale. Within the Busco pipeline originally intended to estimate genome completeness several gene sets are provided which contain different number of loci. 300 for fungi...3000 for Pezizomycotina.... Ocnsidering a genome consists of ca. 10.000 genes 1/3 is already a good number of sequence loci to use.
-The developement of focus sets of orthologs, even including positional orthology (syntny) in the equation are clearly the simplest and more robust resource to produce phylogenomic datasets for a wider range of experiments and focal groups. For this reason this approach is the one we will succintly develop in the following toy pipeline
+Como he dicho este tipo de medidas también se puede usar con secuencias de nucleotidos, y tienen muchas aplicaciones potenciales que se salen, en parte al menos del proposito de este curso. Os añado este review por puro vicio <https://academic.oup.com/gigascience/article/7/12/giy125/5140149>, esto será sin duda el futuro del DNA-barcoding.
 
 ## 5. Reconstrucción filogenética con miles de loci
+
+Como punto de partida hay que recordar una serie de conceptos relevantes para entender que son y como funcionan los metodos de reconstruccion filogenetica. Mas o menos refinados, adornados con terminologias mas o menos complejas (superpublicables y megaflipantes), tódos los métodos de reconstruccion gilogenetica se pueden encuadrar entre los metodos matematicos de clustering jerarquico. En ultimo termino tienen como objetivo organizar nuestros datos en un grafo dicótomo (arbol) que nosostros interpretamos como hipotesis de relación evolutiva entre las especies/alelos/genes que introducimos en la matriz de datos.
+
+El punto de partida para todos los métodos es obtener una medida de distancia entre cada observación para poder elaborar el grafo. Esta distancia en el caso de caracteres genéticos se obtine a partir de una matriz en las que las secuencias de nucleotidos o aminoacidos estan alineadas, maximizando la identificacion de homologias en las secuencias. Esto se hace habitualmete mediante el alineamiento multiple de secuencias, y su descripción detallada requeriria un libro propio. Si teneis dudas hay multitud de recursos disponibles para profundizar en los algoritmos paral realizar este tipo de *multiple sequence alignment* tanto en internet como en la literatura.
+
+Los metodos mas sencillos de inferencia filogenénetica realizan la inferencia de la topología en dos pasos. Primero calculan la distancia en base a un modelo estadístico de sustitución –otro tema que requiere in libro propio–, y basado en esa matriz de distancias utilizan distintos algoritmos para calcular una topología (Neighbour joining, UPGMA, etc...). Estos algoritmos obtienen el arbol mas probable basdo en los datos fijando un modelo de sustitucion. Un caso especial son los métodos basados en parsimonia, que interpretan las sustituciones desde un perspectiva eventual, maxima parsimonia genara una estructura estadistica (grafo) que minimiza el numero de diferencias entre secuencias, pero no usa modelos estadisticos de sustitucion.
+
+El siguiente nivel de complejidad en los algoritmos de inferencia filogenética hace uso del concepto de Verosimilitud o *Likelihood* desarollado por Felsenstein en los años 80 y 90 del siglo pasado y evalua la probabilidad de obtener los datos a la luz de una topología y un modelo de sustitución impuesto. Primero usa una matriz de distancias para optimizar la parametrización del modelo y obtener una topología de partida, y la optimiza de modo iterativo hasta obtener el árbol más verosimil, que maximiza la probabilidad de los datos dado un modelo y una topología. Este tipo de aproximación se denomina *Maximum likelihood*.
+
+Dado que estamos optimiozando la probabilidad de los datos, evaluar la solidez de la topología requiere modificar los datos de partida. Para obtener el soporte estadístico de cada topología rse recurre al bootstraping. Se generan  matrices de datos randomizadas en las que las posiciones geneticas se introducen con repeticion en un alineamiento igual de largo que el original y se optimiza la porbabilidad de cada dataset simulado. Al final se recurre a un metodo de consenso para evaluar en cuantos de los arboles simulados se encuentra cada biparticion y esto genera unos valores de soporte estadistico.
+
+El último nivel de complejidad pasa por utilizar métodos de optimización bayesiana, en concreto cadenas de Markov (*Metropolis coupled markov chain montecarlo* para ser más pedante). En estos se lleva a cabo un proceso parecido al de ML, pero topología y parametrización del modelo se optimizan conjuntamente. La optimización Bayesiana tiene grandes ventajas sobre los métodos de ML. Primero no es tan dependiente del punto de partida (el árbol UPGMA por ejemplo), segundo al asumir en la cadena cambios a peor y no solo a seleccionar la mayor verosimilitud, es capaz de evitar optimos locales mejor y es capaz de explorar el espacio paramaetrico de manera mas exhaustiva. Además la evaluación del soporte estadistico parte de árboles basados en obtener una distribución de árboles en principio equiprobables basados en los datos reales y no en un constructo artificial con pseudodatos como se hace con el bootstrapping.
+
+4. Reloj Molecular
+
+5. Árboles multigenicos y árboles de especies
+Supermatrix
+Consensos y supertrees
+Métodos  de reconciliación (multispecies coalescent)
+Métodos de reconciliación (summary)
+Redes
+
+6. Cálculo del soporte topológico
+
+7. Limitaciones computacionales 
 
 De hecho, debido a las limitaciones humanas y computacionales, el análisis de un gran número de loci requiere una serie de simplificaciones y compromisos que dependen en gran medida del tipo de plataforma de secuenciación, de la cobertura genómica y del propósito de la encuesta. Por ejemplo, no se dispone de métodos bayesianos altamente refinados para la prueba de modelos, la coestimación de la filogenia y los parámetros poblacionales, o incluso para hacer inferencias filogenéticas sencillas para todos los tipos de datos y, a menudo, no se adaptan bien a los conjuntos de datos genómicos que limitan su uso.
 
@@ -415,13 +465,14 @@ done
 cd ..
 ```
 
-### 6.7. Concatenar todos los loci y hacer un análisis supermatriz iqtree
+<!---### 6.7. Concatenar todos los loci y hacer un análisis supermatriz iqtree
 
 ```{}
 mkdir ./07_final
 cat ./06_iqtree/*.treefile >> ./07_final/all_trees.tre
 ```
-## 6.8. Calcular un arbol consenso (*mayority rule*) con iqtree
+--->
+## 6.7. Calcular un arbol consenso (*mayority rule*) con iqtree
 La obtención de un consenso se puede hacer muy fácilmente con iqtree, ya que en principio utiliza el mismo algoritmo que al obtener un consenso de los arboles obtenidos usando *bootstrap*. Pero vamos a ver
 ```{}
 iqtree -con all_trees.tre
@@ -444,7 +495,7 @@ table(foo)
 write.trees(trees[unlist(sapply(sapply(trees,`[[`,"tip.label"),length))==10],"menos_trees.tre")
 quit()
 ```
-## 6.9. Anotar el soporte estadístico de la topología
+## 6.8. Anotar el soporte estadístico de la topología
 Vamos a usa el metodo propuesto por Salichos y Rokas (2013) <a>http://www.ncbi.nlm.nih.gov/pubmed/23657258</a> en el que se calculan los valores de *Internode Certainty* (IC) y *Tree Certainty* (TC). El método se describe con más profución en <a>
 http://mbe.oxfordjournals.org/content/early/2014/02/07/molbev.msu061.abstractkeytype=ref&ijkey =I65FuGNx0HzR2Ow</a>. Aunque su  implementación en RAXML (version>=8.2.0) difiere ligeramente de lo publicado al permitir el uso de set de árboles incompletos como se discute aquí: <a>http://dx.doi.org/10.1101/022053</a>.
 Primero debemos volcar todos los arboles obtenidos en iqtree (o raxml) anotados usando bootstrap en un solo archivo
@@ -470,9 +521,13 @@ En realidad los alineamientos que hemos producido se pueden usar como cualquier 
 Nota mental: Incrementar el numero de loci aumenta linearmente los requerimientos informaticos, usar los genes en paralelo nos permite hacer una paralelización trivial (a manubrio) del proceso. Podríamos pensar que concatenar puede simplificar el proceso, especialmente si se reduce el numero de particiones de los modelos de sustitución. Sin embargo la enorme longitud del alineamiento complica mucho los calculos de verosimilitud (likelihood) y es necesario hacer una paralelización no trivial de la computación (se divide el alineamiento en x fragmentos y cada thread se hace cargo de calcular de los valores de una parte, esto es lo que hace Beagle usado con beast2 por ejemplo).
 Por otro lado incrementar el numero de sequencias afecta la computación de manera exponencial, y satura los requerimientos de RAM en muchos casos. Calcular una filogenia con 300+ genes y las 1700 species de hongos que hay secuenciadas parece una ideaza. Pero la realidad es que implica saturar un cluster entero durante un mé (las secuencias de aminoacidos son más lentas de analizar)
 
-### 6.10. Visualización de arboles con iTol.
+## 6.9. Visualización de arboles con iTol.
 
-## 6.9 Limpiar de artefactos las filogenias usando treeshrink
+El final del proceso de estimar una filogenia es gnerar un gráfico que tenga buen aspecto para publicar. Hay muchas opciones posibles, pero quiero llamaros la atención sobre iTol <https://itol.embl.de>. Es una implementación online que produce gráficos de una calidad excepcional y que permite incorporar matrices de datos para enriquecer la visualización. En un contexto filogenómico donde queremos incorporar datos de anotación funcional sobre una filogenia, este programa un buen salvavidas.
+
+Simplemente abrid la página web e importad vuestros árboles. La introducción de datos se puede hacer desde excel (previo pago) o a mano. Yo suelo usar R para obtener una tabla, con el nombre de cada tip y una paleta de colores personalizada en RGB. Pero tiene poco misterio.
+
+### 6.11 Limpiar de artefactos las filogenias usando treeshrink
 Uno de los problemas más habituales que nos podemos encontrar es la unclusión de secuencias que por la razón que sea acumlan mayor número de caracteres diferenciales de los esperable. Esto puede ser real, pero a menudo es debido a errores en el alineamiento o a la presencia de contaminantes o parálogos no identificados.
 Este es un paso importante a la hora de discutir la corrección de las inferencias filogenéticas llevadas a cabo anteriormente, aunque en muchos trabajos se usa un método de filtrado por defecto.
 
@@ -507,11 +562,11 @@ En nuestro caso el arbol de especies y el de genes contienen el mismo número de
 
 ### 6.12. Redes consenso en Dendroscope.
 
-Una alternativa interesam´nt es usar el programa dendroscope <http://dendroscope.org> para obtener redes filogenéticas consenso. Esto será util tanto para detectar problemas como para discutir hibridación o introgresión si este fuese el caso. Además el algoritmo de z-closure permite también trabajar con árboles incompletos.
+Una alternativa interesante es usar el programa dendroscope <http://dendroscope.org> para obtener redes filogenéticas consenso. Esto será util tanto para detectar problemas como para discutir hibridación o introgresión si este fuese el caso. Además el algoritmo de z-closure permite también trabajar con árboles incompletos (supernetwork).
 
-Para trabajar simplemente teneis que ejecutar dendroscope en la máquina virtual o el ordenador que tengais disponible e importar el archivo all_trees.tre. La interfáz gráfica es sencilla y autoexplicativa y ante la duda el manual está aquí <https://ab.inf.uni-tuebingen.de/data/software/dendroscope3/download/manual.pdf>.
+Para trabajar simplemente teneis que ejecutar dendroscope en la máquina virtual o el ordenador que tengais disponible e importar el archivo all_trees.tre. La interfáz gráfica es sencilla y autoexplicativa. Tiene enormes cantidades de opciones para explorar. El manual está aquí <https://ab.inf.uni-tuebingen.de/data/software/dendroscope3/download/manual.pdf>. A por ello.
 
-### 6.11. Comparar topologías usando distancias de Robinson-Foulds.
+### 6.11. Comparar topologías usando distancias Robinson-Foulds.
 
 ```{}
 iqtree -t all_trees.tre -rf_all
@@ -724,4 +779,11 @@ Stanke, M., Schöffmann, O., Morgenstern, B., & Waack, S. (2006). Gene predictio
 
 Zhou, X., Shen, X., Hittinger, C. T., & Rokas, A. (2017). Evaluating fast maximum likelihood-based phylogenetic programs using empirical phylogenomic data. BioRxiv, http://dx.
 
-
+<!---
+(Pizarro et al. 2018; Zhang et al. 2018; Marthey et al. 2008; Huerta-Cepas et al. 2016; Choi and Kim 2017)
+Choi, JaeJin, and Sung-Hou Kim. 2017. “A Genome Tree of Life for the Fungi Kingdom.” Proceedings of the National Academy of Sciences 114 (35): 201711939. https://doi.org/10.1073/pnas.1711939114.
+Huerta-Cepas, Jaime, Damian Szklarczyk, Kristoffer Forslund, Helen Cook, Davide Heller, Mathias C. Walter, Thomas Rattei, et al. 2016. “EGGNOG 4.5: A Hierarchical Orthology Framework with Improved Functional Annotations for Eukaryotic, Prokaryotic and Viral Sequences.” Nucleic Acids Research 44 (D1): D286–93. https://doi.org/10.1093/nar/gkv1248.
+Marthey, Sylvain, Gabriela Aguileta, François Rodolphe, Annie Gendrault, Tatiana Giraud, Elisabeth Fournier, Manuela Lopez-Villavicencio, Angélique Gautier, Marc Henri Lebrun, and Hélène Chiapello. 2008. “FUNYBASE: A FUNgal PhYlogenomic DataBASE.” BMC Bioinformatics 9 (i): 1–10. https://doi.org/10.1186/1471-2105-9-456.
+Pizarro, David, Pradeep K. Divakar, Felix Grewe, Steven D. Leavitt, Jen Pan Huang, Francesco Dal Grande, Imke Schmitt, Mats Wedin, Ana Crespo, and H. Thorsten Lumbsch. 2018. “Phylogenomic Analysis of 2556 Single-Copy Protein-Coding Genes Resolves Most Evolutionary Relationships for the Major Clades in the Most Diverse Group of Lichen-Forming Fungi.” Fungal Diversity 92 (1): 31–41. https://doi.org/10.1007/s13225-018-0407-7.
+Zhang, Chao, Maryam Rabiee, Erfan Sayyari, and Siavash Mirarab. 2018. “ASTRAL-III: Polynomial Time Species Tree Reconstruction from Partially Resolved Gene Trees.” BMC Bioinformatics 19 (Suppl 6): 15–30. https://doi.org/10.1186/s12859-018-2129-y.
+--->
