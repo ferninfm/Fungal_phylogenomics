@@ -19,9 +19,9 @@ output:
 
 ## 1. Introducción
 
-El término filogenómica fue acuñado de manera casi contemporánea para referirse a dos disciplinas científicas diferentes pero que comparten un trasfondo metodológico común: el uso de técnicas de reconstrucción filogenética para analizar datos genómicos. Eisen en el año 1998 fué el primero en utilizar el término para referirse al uso de modelos filogenéticos en la anotación funcional de secuencias proteicas. Por otro lado @OBrien1999 introduce por primera vez el término para referirse al uso de datos genómicos en la reconstrucción de la historia evolutiva de un grupo taxonómico. Ambas disciplinas difieren en cuanto a métodos, objetivos e incluso en el nivel de organización biológica que estudian, pero juntas proporcionan la base conceptual para la genómica comparativa y evolutiva.
+El término filogenómica fue acuñado de manera casi contemporánea para referirse a dos disciplinas científicas diferentes pero que comparten un trasfondo metodológico común: el uso de técnicas de reconstrucción filogenética para analizar datos genómicos. Eisen en el año 1998 fue el primero en utilizar el término para referirse al uso de modelos filogenéticos en la anotación funcional de secuencias proteicas. Por otro lado O'Brien (1999)fue introduce por primera vez el término para referirse al uso de datos genómicos en la reconstrucción de la historia evolutiva de un grupo taxonómico. Ambas disciplinas difieren en cuanto a métodos, objetivos e incluso en el nivel de organización biológica que estudian, pero juntas proporcionan la base conceptual para la genómica comparativa y evolutiva.
 
-El propósito común a todos los estudios filogenéticos es la inferencia de las relaciones evolutivas entre especies. Hay muchos estudios cuyo único objetivo es la obtención de una hipótesis evolutiva, aunque a menudo también se usa la reconstrucción filogenética como base  para modelar procesos más complejos como patrones de diversificación, dinámicas poblacionales, evolución de caracteres, filogeografía, etc. Bajo una visión restringida, la filogenómica se podría entender como una extensión de la filogenética tradicional  para usar ya no muchos loci, sino todos los posibles. Sus premisas y objetivos serían comunes, y sus métodos se habrían reajustado para poder afrontar el nuevo tipo y volumen de datos. Sin embargo, los métodos modernos de secuenciación masiva no sólo proporcionan un enorme número de caracteres genéticos, sino que permiten realizar una descripción detallada de la estructura de los genomas, así como de la función de cada uno de los genes que los conforman. La filogenómica pues, permite estudiar tanto la evolución de las especies como la de sus genomas, y proporciona un marco histórico para la interpretación de los mecanismos ecológicos y moleculares asociados con el proceso evolutivo.
+El propósito común a todos los estudios filogenéticos es la inferencia de las relaciones evolutivas entre especies. Hay muchos estudios cuyo único objetivo es la obtención de una hipótesis evolutiva, aunque a menudo también se usa la reconstrucción filogenética como base  para modelar procesos más complejos como patrones de diversificación, dinámicas poblacionales, evolución de caracteres, filogeografía, etc. Bajo una visión restringida, la filogenómica se podría entender cómo una extensión de la filogenética tradicional  para usar ya no muchos loci, sino todos los posibles. Sus premisas y objetivos serían comunes, y sus métodos se habrían reajustado para poder afrontar el nuevo tipo y volumen de datos. Sin embargo, los métodos modernos de secuenciación masiva no sólo proporcionan un enorme número de caracteres genéticos, sino que permiten realizar una descripción detallada de la estructura de los genomas, así como de la función de cada uno de los genes que los conforman. La filogenómica pues, permite estudiar tanto la evolución de las especies como la de sus genomas, y proporciona un marco histórico para la interpretación de los mecanismos ecológicos y moleculares asociados con el proceso evolutivo.
 
 En definitiva, la filogenómica no es sólo calcular filogenias, sino que proporciona una puerta de acceso al estudio comparativo de los genomas y su evolución molecular. Aunque ello requiere una importante inversión mucho mayor en recursos económicos y humanos.
 
@@ -31,7 +31,7 @@ El objetivo del curso es proporcionar una visión general sobre las necesidades 
 
 La primera actividad es la principal y tiene como objeto desarrollar un ejemplo de *pipeline* filogenómico basado en BUSCO (<https://busco.ezlab.org>), sencillo y poco automatizado. El objetivo es (1) familiarizarse con el uso del terminal de UNIX, (2) desarrollar todos los pasos necesarios para obtener un dataset filogenómico a partir de secuencias genómicas (de nucleótidos) y (3) desarrollar todos los pasos conducentes a la obtención de un árbol filogenómico.
 
-La segunda actividad se centra en utilizar un pipeline filogenómico partiendo de secuencias de proteínas y en aprender a usar containers de docker.
+La segunda actividad se centra en utilizar un pipeline filogenómico partiendo de secuencias de proteínas y en aprender a usar contenedores de docker.
 
 La tercera actividad se centra en las posibilidades abiertas por el módulo de genómica comparativa del pipeline de anotación funcional funannotate (<https://funannotate.readthedocs.io/en/latest/>).
 
@@ -44,7 +44,7 @@ En general un estudio filogenómico va a contener todos o la mayoría de los sig
 2. Ensamblado de los genomas (*de novo* o alineando a una referencia)
 3. Predicción de genes (o loci)
 4. Anotación (Comparación con bases de datos, anotación funcional)
-5. Agrupamiento (*Clustering*) de secuencias génicas
+5. Agrupamiento (*clustering*) de secuencias génicas
 6. Selección de loci (cuando se hace *a priori*)
 7. Alineamiento de secuencias (de nucleótidos o aminoácidos)
 8. Refinamiento del Alineamiento
