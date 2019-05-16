@@ -29,55 +29,64 @@ En definitiva, la filogenómica no es sólo calcular filogenias, sino que propor
 
 El objetivo del curso es proporcionar una visión general sobre las necesidades metodológicas que tienen los estudios filogenómicos. El curso se compone de tres ejercicios prácticos e incluye varias pausas de lectura, que sirven para optimizar el uso de los tiempos de computación, que son relativamente elevados. Aunque suene a meme de Paulo Coelho: “Entender lo que estamos haciendo es tan importante como entender por qué lo estamos haciendo.”
 
-El primer tutorial es la actividad principal. Tiene como objeto desarrollar un *pipeline* filogenómico basado en la aplicación [BUSCO](https://busco.ezlab.org). Es un pipeline sencillo y poco automatizado, pero ejemplifica los distintos pasos necesarios para realizar un estudio filogenómico e ilustra los requerimientos computacionales reales de este tipo de estudios. Los objetivos son: (1) familiarizarse con el uso del terminal de UNIX, (2) desarrollar todos los pasos necesarios para obtener un set de datos filogenómico a partir de ensamblajes genómicos no anotados, (3) probar distintos métodos de reconstrucción filogenética basada en múltiples loci.
+El primer tutorial es la actividad principal. Tiene como objeto desarrollar un *pipeline* filogenómico basado en la aplicación [BUSCO] (https://busco.ezlab.org). Es un pipeline sencillo y poco automatizado, pero ejemplifica los distintos pasos necesarios para realizar un estudio filogenómico e ilustra los requerimientos computacionales reales de este tipo de estudios. Los objetivos son: (1) familiarizarse con el uso del terminal de UNIX, (2) desarrollar todos los pasos necesarios para obtener un set de datos filogenómico a partir de ensamblajes genómicos no anotados, (3) probar distintos métodos de reconstrucción filogenética basada en múltiples loci.
 
-El segundo tutorial se centra en utilizar un pipeline filogenómico en el que se parte de secuencias de proteínas y en el que se hace una identificación de ortólogos *de novo* . Ademas sirve para practicar el uso de contenedores de docker.
+El segundo tutorial se centra en utilizar un pipeline filogenómico en el que se parte de secuencias de proteínas y en el que se hace una identificación de ortólogos *de novo* . Además sirve para practicar el uso de contenedores de docker.
 
-El tercer tutorial se centra en introducir el pipeline de anotación funcional [funannotate](https://funannotate.readthedocs.io/en/latest/) y de las posibilidades de análisis filogenómico que ofrece su módulo de genómica comparativa. Este es un tutorial más abierto, y está centrado en aprender a usar R para procesar los distintos resultados y recursos que funannotate pone en nuestras manos.
+El tercer tutorial se centra en introducir el pipeline de anotación funcional [funannotate] (https://funannotate.readthedocs.io/en/latest/) y de las posibilidades de análisis filogenómico que ofrece su módulo de genómica comparativa. Este es un tutorial más abierto, y está centrado en aprender a usar R para procesar los distintos resultados y recursos que funannotate pone en nuestras manos.
 
 ## 3. Partes de un pipeline: Propuestas metodológicas
 
 Mientras que los protocolos utilizados en estudios filogenéticos están extremadamente estandarizados, en filogenómica no existe un enfoque único, una receta para todo que pueda considerarse como consenso. La filosofía y los métodos utilizados para cada estudio dependen en gran medida del tipo de datos adquiridos, su calidad y cobertura genómica y la extensión filogenética o el propósito del estudio.
 
-En general un estudio filogenómico va a contener todos o la mayoría de los siguientes pasos:
+En general un estudio filogenómico va a requerir muchos de los siguientes pasos:
 1. Secuenciación (del genoma o del transcriptoma, completo o no)
 2. Ensamblado de los genomas (*de novo* o alineando a una referencia)
 3. Refinamiento del ensamblajes.
 4. Predicción de genes (o loci)
 5. Anotación (Comparación con bases de datos, anotación funcional)
-6. Agrupamiento (*clustering*) de secuencias génicas
+6. Agrupamiento (*cluster*) de secuencias génicas
 7. Selección de loci ortólogos (*a priori*)
 8. Alineamiento de secuencias (de nucleótidos o aminoácidos)
 9. Refinamiento del Alineamiento
-10. Reconstrucción filogenética (*Supermatrix* o árboles de genes)
+10. Reconstrucción filogenética (*supermatrix* o árboles de genes)
 11. Selección de loci ortólogos (*de novo*)
 12. Filtrado de topologías
-13. Construcción de un consenso (*Supertree*)
+13. Construcción de un consenso (*supertree*)
 
-Distintos pipelines enfatizan uno u otro paso dependiendo de su enfoque o propósito, pero en general las mayores diferencias aparecene en  os distintos Aunque es cierto 
+Distintos pipelines enfatizan uno u otro elemento dependiendo de su enfoque y su propósito, aunque las mayores diferencias radican en el método usado para identificar ortólogos y al extensión filogenética que se pretende analizar.
 
+## 4. Que son genes ortólogos? 
 
-## 4. Cómo generar una matriz de datos filogenómicos?
+El primer paso es la obtención de un set de datos genéticos que puedan ser analizados. Obtener una matriz de datos filogenética usando secuenciación Sanger es bastante sencillo. Los loci a estudiar han sido seleccionados de antemano y vienen definidos por el par de cebadores o *primers* que se usará para la amplificación mediante PCR. Sin embargo, generar matrices filogenómicas puede resultar muy complejo, en especial cuando se está tratando con organismos alejados de los modelos genómicos tradicionales o cuando la relación filogenética entre ellos es distante.
 
-El primer paso es la obtención de un set de datos que puedan ser analizados. La obtención de una matriz filogenética es sencilla, pues los loci a estudiar están preseleccionados y sólo hace falta secuenciarlos, alinear sus secuencias, y usarlas para estimar uno (o más) árboles filogenéticos usando un conjunto de loci neutrales. Sin embargo, generar matrices filogenómicas puede resultar extremadamente complejo, más cuanto más alejados estén los organismos estudiados entre sí.
+Una de las primeras preguntas intuitivas que un científico proveniente de la sistemática filogenética se plantea es "Ya tengo mis genomas. Y ahora cómo se alinean?". Y si, hay métodos para alinear genomas, desde MAUVE (Darling, Mau, and Perna 2010) y métodos para identificar bloques sinténicos entre genomas como [SyMap](https://academic.oup.com/nar/article/39/10/e68/1310457), [MCScanX](https://academic.oup.com/nar/article/40/7/e49/1202057) o [Sibeliaz]( https://www.biorxiv.org/content/10.1101/548123v1.abstract ); pero que no son lo que necesitamos hacer.
 
-Una de las primeras preguntas intuitivas que un científico proveniente de la sistemática filogenética se se plantea es "Ya tengo mis genomas. Y ahora cómo se alinean?". Y el siguiente paso intuitivo es abrir el navegador y buscar “phylogenomics” y “genome alignment”. Esto causa una confusión importante,pues pasa uno varios dias intentando sacar algo en claro de la multitud de pipelines desarrolladas para procariotas que hay online, y si tiene suerte encontrará un pipeline aparentemente funcional, desarrollado hace menos de diez años que misteriosamente h penas ha sido citado, o se encuentra inmerso en un universo críptico en el que las palabras ortólogo y philoma se suceden sin conseguir saber si es eso lo que queremos hacer o no. Ahora no es tan terrible, pero hace unos pocos años lo más habitual era encontrarse intentando sacar algún tipo de sentido a los métodos de alineación de genomas como MAUVE (Darling, Mau, and Perna 2010), antes de asumir que tener los *contigs* sistemáticamente ordenados  (Rissman et al. 2009) está muy bien, pero que no es para nada lo que queremos hacer.
+En la actualidad, los estudios a nivel genómico son habituales, y es relativamente fácil encontrar un *pipeline* o un software que haga algo parecido a lo que queremos hacer. A pesar de ello, sigue resultando muy difícil tomar decisiones bien informadas para diseñar un estudio filogenómico con anticipación.
 
-Aun cuando los métodos han evolucionado mucho, y es relativamente fácil encontrar un pipeline que hace algo parecido a lo que queremos hacer, sigue resultando muy difícil tomar decisiones bien informadas de cómo diseñar un buen estudio filogenómico. Para empezar hay una importante brecha terminológica entre disciplinas, especialmente la sistemática filogenética y la genómica molecular, estando presente el término filogenómica más presente en la literatura refiriéndose a los métodos filogenéticos de anotación funcional. Para seguir, la multiplicidad de enfoques utilizados a la hora de  generar matrices de datos filogenómicas, y la vehemencia con que en muchos casos se defienden unas sobre otras en las publicaciones, pueden hacer dudar hasta al más rudo bioinformático.
+La brecha terminológica existente entre las disciplinas de la sistemática filogenética y la genómica molecular, también contribuye a crear cierta confusión. Los términos filogenómica y ortólogo por ejemplo, son más habituales en el contexto de la anotación funcional que en su uso como marcadores filogenéticos.
 
-Uno de los conceptos más importantes, cuyo uso puede crear bastante confusión es el concepto de ortólogo. Uno de los axiomas básicos de la reconstrucción filogenética, que emana de la cladística más tradicional es que para establecer relaciones de parentesco evolutivo sólo sirven caracteres (genéticos o no) homólogos, es decir caracteres cuya semejanza (funcional) se deba a que tienen un mismo origen evolutivo (es decir estaban presentes en un ancestro común). Mientras que los caracteres análogos, aquellos cuya semejanza se debe a una adquisición secundaria e independiente (las alas de aves y murciélagos son el ejemplo más obvio), no pueden ser usados para establecer relaciones de parentesco.
+El concepto de ortología, es sin duda fundamental para entender los métodos filogenómicos. Uno de los conceptos básicos de la biología evolutiva es el de analogía y homología. Para establecer relaciones de parentesco evolutivo sólo se pueden utilizar caracteres –morfológicos o genéticos– homólogos, es decir caracteres cuya semejanza –funcional– se deba a que tienen un mismo origen evolutivo, derivan de las presentes en un ancestro común. Los caracteres análogos son aquellos cuya semejanza resulta de una convergencia,  han sido adquiridos de manera secundaria e independiente, y por tanto su uso no informa sobre relaciones de parentesco evolutivo.
 
-Esta idea de homología y analogía es obvia también a nivel genético. Aun cuando dos genes produzcan un enzima que degrade el mismo sustrato, si no derivan de una proteína presente en un ancestro común no pueden ser usados para establecer relaciones de parentesco. Bien. Dentro de los genes (caracteres) homólogos, encontramos dos tipos: Ortólogos y parálogos. Los genes ortólogos son aquellos cuyo origen es causado por el proceso de especiación, es decir aquellos que permiten trazar una línea de herencia unívoca desde un ancestro común. Los genes parálogos son aquellos cuyo origen no es estrictamente el proceso de especiación. Siendo homólogos, porque derivan de un ancestro común (en global) se han originado por duplicación de un gen existente o por captura horizontal. Mientras que la inclusión de parálogos en un árbol filogenético puede ser usado para reflejar la historia evolutiva de ese gen en concreto (útil en anotación funcional por ejemplo), cuando el objetivo es calcular una filogenia a nivel de especie introduce en el modelo una fuente de variación que no es causada por el proceso que queremos modelar (especiación) y por eso no deben ser utilizados. La identificación de genes ortólogos es un campo cetral en genómica comparativa, y quizás la referencia española más importante sea el grupo de Toni Gabaldón <https://www.crg.eu/en/programmes-groups/gabaldon-lab> cuyo proyecto phylome <http://phylomedb.org> es un recurso filogenómico internacionalmente muy relevante.
+Los conceptos de homología y analogía también son aplicables a nivel molecular. Aun cuando dos genes produzcan un enzima que degrade el mismo sustrato, si no derivan de una proteína ancestral común, las diferencias entre ellas no son informativas para establecer relaciones de parentesco.
 
-En ocasiones estos parálogos están presentes en un mismo genoma, facilitando su filtrado. Sin embargo lo más habitual es que los genes presentes en múltiples copias sean limpiados del genoma a lo largo del devenir evolutivo, a menudo después de haber sufrido un proceso de neofuncionalización o de silenciación que a menudo altera importantemente su secuencia de aminoácidos. En este caso, alineamientos de genes que parecen ser ortólogos pueden estar trufados de genes parálogos que son muy difíciles de detectar, de ahí que iniciativas con el *quest for orthologs* <https://questfororthologs.org> (Kuzniar et al. 2008) sean tan importantes.
+Cuando se trata con caracteres genéticos, las duplicaciones de genes hacen que la homología no sea un criterio suficiente. Una duplicación genera dos copias del mismo gen en el mismo genoma que evolucionan siguiendo dos líneas independientes, y pueden estar sujetas a presiones evolutivas completamente opuestas. Los genes originados por una duplicación se denominan parálogos, y los que se generan siguiendo una línea evolutiva lineal, ortólogos (Fitch 1970, 2000). En otras palabras, los genes ortólogos son aquellos cuyas diferencias se originan siguiendo linealmente el proceso de especiación y por tanto permiten trazar una línea de herencia unívoca hasta un ancestro común. 
 
-Para complicar más esta cuestión de los ortólogos, el concepto de ortólogo está ampliamente integrado en el discurso de la genética molecular donde se utiliza a menudo referirse a grupos de proteínas cuya función ha sido asignada basándose en criterios de ortología, como por ejemplo en la identificación de grupos ortólogos como los ***C**lusters of **O**rtologous **G**roups* (<http://clovr.org/docs/clusters-of-orthologous-groups-cogs/>, o en en la base de  datos OrthoMCL <https://orthomcl.org/orthomcl/> de la que deriva el programa BUSCO.
+Cuando el objetivo es entender la historia evolutiva de un gen, la inclusión de ortólogos y parálogos no es negativa, al contrario, permite discutir duplicaciones, procesos de transferencia horizontal de genes, etc… Esto es muy interesante tanto para la anotación funcional, como para modelar la evolución de los genomas, siempre que el nivel de organización de interés sea el genómico.
 
-Y para complicarlo todo aún mucho más, el concepto de ortólogo y parálogo es relativo, así que teniendo una duplicación mantenida en el tiempo, estos dos grupos de genes son parálogos entre ellos, pero los genes dentro de cada grupo son ortólogos. De este modo cuando uno usa un método para identificar genes ortólogos usando varios genomas se puede encontrar con reconstrucciones filogenéticas sorprendentes que espero que veamos en el transcurso de este curso.
+Si el objetivo es calcular una filogenia a nivel de especie, los parálogos introducen una fuente de variación que no es causada por el proceso que queremos modelar, que es el de especiación, y por tanto no deben ser utilizados. 
+
+Cuando los dos genes procedentes de una duplicación están en el mismo genoma, se dice que son parálogos internos (*in-paralogs*). Estos son obviamente fáciles de identificar y filtrar. Los parálogos encontrados en dos o mas genomas se denominan externos o *out-paralogs*, y para su identificación se requiere un contexto filogenético. El problema es que las duplicaciones de genes no suelen mantenerse en los genomas de manera estable. Lo mas habitual es que una de esas copias sea silenciada y limpiada del genoma a lo largo del devenir evolutivo. Cuando los parálogos son externos, y no están presentes en todos los genomas pueden ser interpretados como ortólogos sin serlo. Es frecuente además que el tiempo en que un gen esta duplicado al menos una de las copias sufra modificaciones importantes neofuncionalización o especialización que alteran importantemente su secuencia de aminoácidos.
+
+Para complicar más esta cuestión de los ortólogos, el concepto de ortólogo está ampliamente integrado en el discurso de la genética molecular donde se utiliza habitualmente referido a grupos de proteínas cuya función ha sido asignada basándose en criterios de ortología, como por ejemplo *clusters of ortologous groups* de [COG] (https://www.ncbi.nlm.nih.gov/COG/) o la base de  datos [OrthoMCL](https://orthomcl.org/orthomcl/) de la que deriva el programa BUSCO.
+
+La identificación de genes ortólogos es un campo central en genómica comparativa y anotación funcional. La referencia española más importante es sin duda [Toni Gabaldón](https://www.crg.eu/en/programmes-groups/gabaldon-lab), que toma parte de la iniciativa [*Quest for orthologs*](https://questfororthologs.org) (Kuzniar et al. 2008) y cuyo proyecto [Phylome](http://phylomedb.org) es un recurso filogenómico muy importante.
+
+## 5. Cómo generar una matriz de datos filogenómicos?
 
 Bueno, entonces ¿Cómo obtenemos una matriz de caracteres genéticos ortólogos a partir de nuestros datos genómicos? Pues hay varias opciones cada una con ventajas y desventajas dependiendo de la proximidad filogenética de los organismos estudiados.
 
-### 4.1. Métodos basados en resecuenciación genómica (poblaciones o especies muy cercanas, subgéneros)
+### 5.1. Métodos basados en resecuenciación genómica (poblaciones o especies muy cercanas, subgéneros)
 
 Cuando el objeto de estudio son organismos filogenéticamente muy cercanos, se puede considerar que los genomas guardan una gran similitud estructural y por lo tanto una casi total ortología posicional (si esa es otra manera de verlo: Dewey 2011). En este caso bastaría alinear los reads directamente a un genoma de referencia usando herramientas como BWA (Li and Durbin 2009) o Bowtie2 (Langmead and Salzberg 2012), filtrar las regiones con una heterocigosidad fuera de la distribución esperada para evitar parálogos e inferir SNVs usando programas como Freebayes (Garrison & Marth 2012), Stacks (Catchen 2013) o Pyrad (Eaton 2014) dependiendo del tipo de librerías que hayamos secuenciado, o incluso métodos generales de *variant calling* como los implementados en GATK (McKenna et al. 2010) –CombineGVCFs, GenotypeGVCFs– o samtools (Li et al. 2009). Este tipo de implementaciones también se usan para analizar datos obtenidos mediante RNASeq (De Wit et al. 2012) y poolseq (Schlötterer et al. 2014). Un ejemplo de *pipeline* que usa este tipo de aproximación es RealPhy <https://realphy.unibas.ch/realphy/> que se ha usado por ejemplo para estudiar el hongo liquenizado *Rhizoplaca melanophthalma* (Leavitt et al. 2016). Este tipo de metodologías no las vamos a usar en este curso. Cabe mencionar que están bastante limitadas a la hora de incorporar outgroups que sean suficientemente distantes.
 
@@ -750,6 +759,10 @@ Eddy, S. R. (1998). Profile hidden Markov models. Bioinformatics, 14(9), 755–7
 
 Eisen, J. A. (1998). Phylogenomics : Improving Functional Predictions for Uncharacterized Genes by Evolutionary ? Analysis Phylogenomics : Improving Functional Predictions for Uncharacterized Genes by Evolutionary Analysis. Genome Research, (1997), 163–167. https://doi.org/10.1101/gr.8.3.163
 
+Fitch WM. (1970) Distinguishing homologous from analogous proteins. Systematic Zoology, 19:99-113.
+
+Fitch WM. (2000) Homology a personal view on some of the problems. Trends on Genetics, 16:227-231
+
 Garrison E, Marth G. Haplotype-based variant detection from short-read sequencing. arXiv preprint arXiv:1207.3907 [q-bio.GN] 2012
 
 Huson, D., Mitra, S., & Ruscheweyh, H. (2011). Integrative analysis of environmental sequences using MEGAN4. Genome Research, 21(9), 1552–1560. https://doi.org/10.1101/gr.120618.111.Freely
@@ -819,6 +832,8 @@ Yang, Ziheng. 2001. “Codon-Substitution Models for Detecting Molecular Adaptat
 Yang, Ziheng, Rasmus Nielsen, Nick Goldman, and Anne-mette Krabbe Pedersen. 2000. “Codon-Substitution Models for Heterogeneous Selection Pressure at Amino Acid Sites.”
 Zhang, Chao, Maryam Rabiee, Erfan Sayyari, and Siavash Mirarab. 2018. “ASTRAL-III: Polynomial Time Species Tree Reconstruction from Partially Resolved Gene Trees.” BMC Bioinformatics 19 (Suppl 6): 15–30. https://doi.org/10.1186/s12859-018-2129-y.
 -->
+
+
 
 
 
