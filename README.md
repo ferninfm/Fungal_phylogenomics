@@ -27,33 +27,34 @@ En definitiva, la filogenómica no es sólo calcular filogenias, sino que propor
 
 ## 2. Objetivos del curso
 
-El objetivo del curso es proporcionar una visión general sobre las necesidades metodológicas que tienen los estudios filogenómicos. El curso se compone de tres ejercicios prácticos e incluye varias pausas de lectura, que sirven para optimizar el uso de los tiempos de computación, que son relativamente elevados. Entender lo que estamos haciendo es sin duda tan importante como entender por qué lo estamos haciendo (-Paulo Coelho)
+El objetivo del curso es proporcionar una visión general sobre las necesidades metodológicas que tienen los estudios filogenómicos. El curso se compone de tres ejercicios prácticos e incluye varias pausas de lectura, que sirven para optimizar el uso de los tiempos de computación, que son relativamente elevados. Aunque suene a meme de Paulo Coelho: “Entender lo que estamos haciendo es tan importante como entender por qué lo estamos haciendo.”
 
-La primera actividad es la principal y tiene como objeto desarrollar un ejemplo de *pipeline* filogenómico basado en BUSCO (<https://busco.ezlab.org>), sencillo y poco automatizado. El objetivo es (1) familiarizarse con el uso del terminal de UNIX, (2) desarrollar todos los pasos necesarios para obtener un dataset filogenómico a partir de secuencias genómicas (de nucleótidos) y (3) desarrollar todos los pasos conducentes a la obtención de un árbol filogenómico.
+El primer tutorial es la actividad principal. Tiene como objeto desarrollar un *pipeline* filogenómico basado en la aplicación [BUSCO] (https://busco.ezlab.org). Es un pipeline sencillo y poco automatizado, pero ejemplifica los distintos pasos necesarios para realizar un estudio filogenómico e ilustra los requerimientos computacionales reales de este tipo de estudios. Los objetivos son: (1) familiarizarse con el uso del terminal de UNIX, (2) desarrollar todos los pasos necesarios para obtener un set de datos filogenómico a partir de ensamblajes genómicos no anotados, (3) probar distintos métodos de reconstrucción filogenética basada en múltiples loci.
 
-La segunda actividad se centra en utilizar un pipeline filogenómico partiendo de secuencias de proteínas y en aprender a usar contenedores de docker.
+El segundo tutorial se centra en utilizar un pipeline filogenómico en el que se parte de secuencias de proteínas y en el que se hace una identificación de ortólogos *de novo* . Ademas sirve para practicar el uso de contenedores de docker.
 
-La tercera actividad se centra en las posibilidades abiertas por el módulo de genómica comparativa del pipeline de anotación funcional funannotate (<https://funannotate.readthedocs.io/en/latest/>).
+El tercer tutorial se centra en introducir el pipeline de anotación funcional [funannotate] (https://funannotate.readthedocs.io/en/latest/) y de las posibilidades de análisis filogenómico que ofrece su módulo de genómica comparativa. Este es un tutorial más abierto, y está centrado en aprender a usar R para procesar los distintos resultados y recursos que funannotate pone en nuestras manos.
 
 ## 3. Partes de un pipeline: Propuestas metodológicas
 
 Mientras que los protocolos utilizados en estudios filogenéticos están extremadamente estandarizados, en filogenómica no existe un enfoque único, una receta para todo que pueda considerarse como consenso. La filosofía y los métodos utilizados para cada estudio dependen en gran medida del tipo de datos adquiridos, su calidad y cobertura genómica y la extensión filogenética o el propósito del estudio.
 
 En general un estudio filogenómico va a contener todos o la mayoría de los siguientes pasos:
-1. Secuenciación
+1. Secuenciación (del genoma o del transcriptoma, completo o no)
 2. Ensamblado de los genomas (*de novo* o alineando a una referencia)
-3. Predicción de genes (o loci)
-4. Anotación (Comparación con bases de datos, anotación funcional)
-5. Agrupamiento (*clustering*) de secuencias génicas
-6. Selección de loci (cuando se hace *a priori*)
-7. Alineamiento de secuencias (de nucleótidos o aminoácidos)
-8. Refinamiento del Alineamiento
-9. Reconstrucción filogenética (*Supermatrix* o loci individuales)
-10. Selección de loci (*a posteriori*)
-11. Filtrado de topologías
-12. Construcción de un consenso (*Supertree*)
+3. Refinamiento del ensamblajes.
+4. Predicción de genes (o loci)
+5. Anotación (Comparación con bases de datos, anotación funcional)
+6. Agrupamiento (*clustering*) de secuencias génicas
+7. Selección de loci ortólogos (*a priori*)
+8. Alineamiento de secuencias (de nucleótidos o aminoácidos)
+9. Refinamiento del Alineamiento
+10. Reconstrucción filogenética (*Supermatrix* o árboles de genes)
+11. Selección de loci ortólogos (*de novo*)
+12. Filtrado de topologías
+13. Construcción de un consenso (*Supertree*)
 
-Aunque es cierto 
+Distintos pipelines enfatizan uno u otro paso dependiendo de su enfoque o propósito, pero en general las mayores diferencias aparecene en  os distintos Aunque es cierto 
 
 
 ## 4. Cómo generar una matriz de datos filogenómicos?
@@ -818,5 +819,6 @@ Yang, Ziheng. 2001. “Codon-Substitution Models for Detecting Molecular Adaptat
 Yang, Ziheng, Rasmus Nielsen, Nick Goldman, and Anne-mette Krabbe Pedersen. 2000. “Codon-Substitution Models for Heterogeneous Selection Pressure at Amino Acid Sites.”
 Zhang, Chao, Maryam Rabiee, Erfan Sayyari, and Siavash Mirarab. 2018. “ASTRAL-III: Polynomial Time Species Tree Reconstruction from Partially Resolved Gene Trees.” BMC Bioinformatics 19 (Suppl 6): 15–30. https://doi.org/10.1186/s12859-018-2129-y.
 -->
+
 
 
