@@ -500,6 +500,7 @@ Corremos el script con:
 ```{bash}
 sh run_trimal.sh
 ```
+
 **Atención Propuesta.** Échale un vistazo a los archivos producidos por trimal usando *more* con los archivos fasta y usando el navegador web con los archivos html.
 **Atención Pregunta.** Los archivos html nos ofrecen la posibilidad de decidir si nos conviene usar secuencias de aminoácidos o de nucleótidos. Tu que opinas? .fna o .faa?
 
@@ -515,7 +516,7 @@ La relevancia del modelo de sustitución es un tema complicado y hay muchos cien
 mkdir ./06_iqtree
 nano run_iqtree.sh
 ```
-Seleccionamos los alineamientos de nucleótidos, y corremos iqtree en cada locus.
+Seleccionamos los alineamientos de nucleótidos, y corremos iqtree para cada uno de los genes.
 
 ```{bash}
 #!/bin/bash
@@ -548,7 +549,7 @@ iqtree -con all_trees.tre
 
 **Atención Pregunta!** ¿Funciona? Si funciona puedes continuar al punto 7.8. Si no funciona ¿Porqué no funciona?
 
-**Atención Problemilla!** En muchas ocasiones, por un error o porque elegimos incluir todos los árboles que contienen un porcentaje de especies. O porque hemos usado un programa para limpiar las topologías los consensos no funcionan. Necesitan que todos los árboles tengan los mismos terminales (especies).
+**Atención Problemilla!** En muchas ocasiones, por un error o porque elegimos incluir todos los árboles que contienen un porcentaje de especies, o porque hemos usado un programa para limpiar las topologías los consensos no funcionan. Necesitan que todos los árboles tengan los mismos terminales (especies).
 
 Esto no es siempre realista, puesto que a medida que nos vayamos alejando filogenéticamente e incluyendo especies más distantes el numero de loci que busco será capaz de identificar en todas las especies será menor. 
 
@@ -827,6 +828,8 @@ done
 
 ### 9.2. Usar la comparación genómica incorporada en funannotate
 
+El siguiente paso es hacer una comparación filogenómica usando el modulo compare
+
 ```{bash}
 funannotate outgroup xanthoria_parietina.ascomycota
 ```
@@ -837,7 +840,7 @@ funannotate compare -i X1_annotated  X2_annotated  X3_annotated  X4_annotated  X
 
 ### 9.3. Resumen de los resultados de funannotate
 
-Os he dejado los resultados de funannotate para que os los estudieis. Funannotate genera una enorme cantidad de archivos que se pueden usar para distintos propósitos, pero además nos da una serie de archivos web que contienen todos los datos resumidos. Abre el archivo index.html en tu navegador y a jugar.
+Aqui es donde vamos a empezar. Os he dejado los resultados de funannotate para que os los estudieis. Funannotate genera una enorme cantidad de archivos que se pueden usar para distintos propósitos. Son aproximadamente 50 Gb de datos intermedios y resultados. Por eso he tenido que eliminar la mayor parte. he dejado sin embargo aquellos resultados mas importantes del modulo compare. Faltan muchos resultados basados en la anotación funcional. Pero quise simplificar. El punto de partida es abrir el archivo index.html en tu navegador. Y bueno, a jugar.
 
 **Atención Pregunta** ¿Como son los ensamblajes genómicos? ¿Difieren mucho en tamaño y fragmentación? ¿Cuáles son los mas fragmentados?
 
@@ -860,7 +863,17 @@ Se parece la topología a nuestros consensos? Hay algún genoma divergente? Que 
 
 **Atención Pregunta** ¡Maldición! ¡Esto calcula un árbol filogenómico el solo! Pero ¿que opinas? ¿Los valores de soporte de la topología son altos o bajos? ¿Que significan?¿Crees que se puede mejorar usando lo que ya hemos aprendido?
 
-Algo magnifico de funannotate es que genera todo tipo de resultados. Entre otras cosas si buscáis la carpeta */funannotate_compare/prot_orth/* veréis que funannotate también identifica genes ortólogos basándose en el mejor Blast reciproco. He quitado la mayoría de archivos intermedios para reducir el espacio ocupado en disco, pero he dejado los del genoma X1. Los resultados tabulados están en la carpeta */funannotate_compare/orthology/* donde hay un archivo archivo llamado all_transcripts.fa (que he comprimido) y una tabla llamada orthology_groups.tsv. Esta tabla y el archivo de transcripts contienen todo lo que necesitamos para hacer un pipeline filogenómico refinado como nos gusta. 
+Algo magnifico de funannotate es que genera todo tipo de resultados. Entre otras cosas si buscáis la carpeta */funannotate_compare/prot_orth/* veréis que funannotate también identifica genes ortólogos basándose en el mejor Blast reciproco. He quitado la mayoría de archivos intermedios para reducir el espacio ocupado en disco, pero he dejado los del genoma X1. Los resultados tabulados están en la carpeta */funannotate_compare/orthology/* donde hay un archivo archivo llamado all_transcripts.fa (que he comprimido) y una tabla llamada orthology_groups.tsv. Esta tabla y el archivo de transcripts contienen todo lo que necesitamos para hacer un pipeline filogenómico refinado como nos gusta.
+
+La parte negativa es que es muy dificil saber a ciencia cierta que es lo que estamos haciendo. Es como siempre el problema de los software que funcionan como cajas negras. Lo primero que podemos hacer es abrir la tabla de ortologos y el archivo de transcripts en R. Abrid R y escribid:
+
+'''{r}
+table_orthologs<-read.table("Vuestracarpeta/03_funannotate/funannotate_compare/orthology/orthology_groups.txt",sep="\t")
+
+
+transcripts<-read.dna("VUESTRACARPETA/all_transcripts.fa")
+
+```
 
 
 **Atención, trabajo de fin de master** Abre R y abre la tabal usando read.table(), carga el paquete ape y abre los transcripts con read.dna(). ¿Te ves capaz de elegir los ortólogos presentes en todas las especies y exportarlos con un loop de for () y la función write.dna()? Querido compañero, querida compañera, creo que llego el momento de que escribas tu propio pipeline filogenómico como tu quieras. 
