@@ -305,11 +305,11 @@ cp ./02_Busco/run_Xanpa2_AssemblyScaffolds/single_copy_busco_sequences/* ./03_fa
 #
 for SPECIES in {1..9}
    do 
-       echo "species X$SPECIES"
-	   for BUSCO in $(ls ./03_fastas)
-          do
-		  cat ./02_Busco/run_X${SPECIES}scaffoldsfiltered/single_copy_busco_sequences/$BUSCO >> ./03_fastas/$BUSCO
-		  done
+      echo "species X$SPECIES"
+        for BUSCO in $(ls ./03_fastas)
+    do
+       cat ./02_Busco/run_X${SPECIES}scaffoldsfiltered/single_copy_busco_sequences/$BUSCO >> ./03_fastas/$BUSCO
+    done
    done
 ```
 Así obtenemos un archivo fasta por BUSCO con las secuencias de los distintos genomas sin alinear. Podríamos proseguir así, pero los nombres de las secuencias son extremadamente largos y lo que es peor diferentes para cada locus, lo que generaría problemas a la hora de procesar los alineamientos y los genes. Para renombrar los genes y obtener una idea de cuan completos están los alineamientos de cada locus (BUSCO) he escrito el siguiente script. Se puede personalizar para usar nombres personalizados más complejos que los basados en los nombres preexistentes que he utilizado. Con este script quiero ilustrar como un lenguaje de programación como R puede ser utilizado como un programa independiente pasándole argumentos desde el terminal.
@@ -438,8 +438,8 @@ files=$(ls renamed_*.*)
 cd ..
 for FILE in $files
 do
-	echo $FILE
-	mafft --auto ./03_fastas/$FILE > ./04_alignments/aligned_${FILE}
+   echo $FILE
+   mafft --auto ./03_fastas/$FILE > ./04_alignments/aligned_${FILE}
 done
 ```
 corre el script
@@ -473,8 +473,8 @@ cd ./04_alignments
 files=$(ls *.*)
 for FILE in $files
 do
-    echo $FILE
-    trimal -gappyout -in $FILE -out trimmed_${FILE} -fasta -htmlout visualization_${FILE}.html
+   echo $FILE
+   trimal -gappyout -in $FILE -out trimmed_${FILE} -fasta -htmlout visualization_${FILE}.html
 done
 mv trimmed_* ../05_trimmed
 mv visualization_* ../05_trimmed
@@ -510,8 +510,8 @@ cd ./06_iqtree
 files=$(ls)
 for FILE in $files
 do
-		iqtree -s $FILE -m MFP -o Xanpa2 -bb 1000 -bnni -nt AUTO
-		rm $FILE
+   iqtree -s $FILE -m MFP -o Xanpa2 -bb 1000 -bnni -nt AUTO
+   rm $FILE
 done
 cd ..
 ```
