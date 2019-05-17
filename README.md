@@ -418,7 +418,7 @@ if(length(args)<2)
 Este script requiere introducir un path absoluto y no relativo (./03_fastas), en realidad es algo que debo solucionar. Para abreviar el análisis vamos a seleccionar sólo aquellos loci presentes en todas las muestras. En este ejemplo lo podemos permitir.
 
 ```{bash}
-Rscript rename_busco.r /home/fernando/genomics_course/new/new/03_fastas 10
+Rscript rename_busco.r /VUESTRACARPETAAQUI/03_fastas 10
 ```
 Este script crea una serie de archivos en formato fasta llamados *renamed_*. Siguiendo el estándar de busco *.faa* se refiere a secuencias de aminoácidos y *.fna* de nucleótidos. Sólo los BUSCOS presentes en los 10 genomas van a ser incluidos aunque la decisión depende mucho de cada caso individual. Nosotros seguiremos a partir de aquí usando exclusivamente las secuencias de nucleótidos, pues nuestros organismos están filogenéticamente muy cerca. A nivel supra-familiar es más recomendable usar secuencias de aminoácidos, aunque quizás lo mejor (aunque difícil de automatizar) sería evaluar la alineabilidad de cada locus y usar el nivel más adecuado. De todos modos, Busco utiliza un método poco refinado (relativamente hablando) para anotar el genoma (identificar exones y proponer secuencias de proteínas). A un nivel superior sería mejor partir de anotaciones más completas y complejas para cada genoma como las proporcionadas por maker o funannotate.
 
