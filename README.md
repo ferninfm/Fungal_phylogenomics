@@ -265,7 +265,18 @@ Las carpetas con los resultados del análisis de los BUSCOs han sido comprimidos
 ```{bash}
 cd ../02_busco
 tar -xvzf *.gz
+
+
 ```
+Si por lo que sea no funciona podemos hacer lo siguiente
+
+```{bash}
+for FILE in X1 X2 X3 X4 X5 X6 X7 X8 X9 Xanpa
+do
+tar -xvzf run_${FILE}scaffoldsfiltered.tar.gz
+done
+```
+
 ### 7.2. Evaluar busco
 Lo primero que debemos hacer es evaluar el resultado de las busquedas de BUSCOs para poder inferir que  genomas incluir o no en el análisis. Para ello usamos el programa [multiqc](https://multiqc.info).
 ```{bash}
