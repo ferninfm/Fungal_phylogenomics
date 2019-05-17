@@ -210,7 +210,7 @@ Sus virtudes son al mismo tiempo sus mayores desventajas. Cuando se usan secuenc
 
 **Atención propuesta!** En el repositorio he dejado un ejemplo de HMM así como un par de publicaciones explicativas de lo que son Hidden Markov Models (HMMs, Eddy 1998). El archivo de cada HMM proporciona información estadística sobre la secuencia de aminoácidos de cada grupo ortólogo. Están alineados y proporcionan un consenso estadístico flexible que permite capturar mayor variabilidad y más rápido que una búsqueda directa como Blast.
 
-[Esquema del pipeline basado en BUSCO](https://github.com/ferninfm/Fungal_phylogenomics/blob/master/pipeline_1.png)
+![Esquema del pipeline basado en BUSCO](https://github.com/ferninfm/Fungal_phylogenomics/blob/master/pipeline_1.png)
 
 ### 7.1. Pasos preliminares
 Para reducir el tiempo de computación y hacer el curso un poco más dinámico he decidido realizar varios pasos de antemano.
