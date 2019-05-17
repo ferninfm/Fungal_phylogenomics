@@ -277,16 +277,18 @@ tar -xvzf run_${FILE}scaffoldsfiltered.tar.gz
 done
 ```
 
+***EMPEZAMOS AQUI***
+
 ### 7.2. Evaluar busco
 Lo primero que debemos hacer es evaluar el resultado de las busquedas de BUSCOs para poder inferir que  genomas incluir o no en el análisis. Para ello usamos el programa [multiqc](https://multiqc.info).
+
 ```{bash}
 multiqc ./run*
 ```
+
 **Atención pregunta:**: Hay alguna muestra más incompleta? A priori parece que alguna de ellas sea de peor calidad o más problemáticas?
 
 ### 7.3. Extraer los buscos
-
-***EMPEZAMOS AQUI***
 
 El paso siguiente es extraer las secuencias de los BUSCOs encontrados en los genomas y agregarlos en un archivo fasta por cada BUSCO sobre el que proseguir con el pipeline filogenético.
 Hay multitud de ejemplos online para hace esto. Los scripts más antiguos procesan la tabla de resultados de cada *run* de BUSCO. Tienen ventajas y desventajas. Un ejemplo es el script *extract_buscos_pylo.py* distribuido en <a>https://gitlab.com/ezlab/busco_usecases/blob/master/phylogenomics/readme.md</a.
@@ -312,6 +314,10 @@ for SPECIES in {1..9}
     done
    done
 ```
+
+***Atention please***: La mayoria de errores que estoy viendo se deben a que vais cambiando de directorio y os olvidais de volver al 01_busco. No lo olvideis
+***Atention please 2***: Cuando le digo que haga cat LOQUESEA >> AQUI el simbolo >> implica concatenar. Esto es si el archivo esta escrito ya vais a pegar una y otra vez las secuencias de X1 a X9. Para empezar de cero volved a copiar los archivos del outgroup.
+
 Así obtenemos un archivo fasta por BUSCO con las secuencias de los distintos genomas sin alinear. Podríamos proseguir así, pero los nombres de las secuencias son extremadamente largos y lo que es peor diferentes para cada locus, lo que generaría problemas a la hora de procesar los alineamientos y los genes. Para renombrar los genes y obtener una idea de cuan completos están los alineamientos de cada locus (BUSCO) he escrito el siguiente script. Se puede personalizar para usar nombres personalizados más complejos que los basados en los nombres preexistentes que he utilizado. Con este script quiero ilustrar como un lenguaje de programación como R puede ser utilizado como un programa independiente pasándole argumentos desde el terminal.
 
 ```{bash}
@@ -408,7 +414,7 @@ if(length(args)<2)
   writeLines("#\n#######################################\n# Complete dataset\n","report_completeness.txt")
   write.table(all_fastas_nuc,"report_completeness.txt",sep="\t",quote=FALSE,append=TRUE)
   writeLines("#\n#######################################\n# Reduced dataset\n","report_completeness.txt",append=TRUE)
-  write.table(all_fastas_nuc,"report_completeness.txt",sep="\t",quote=FALSE,append=TRUE)
+  write.table(foo,"report_completeness.txt",sep="\t",quote=FALSE,append=TRUE)
   pdf("completeness_histogram.pdf")
   hist(all_fastas_nuc[,"completeness"],col="blue")
   abline(v=args[2],col="red")
