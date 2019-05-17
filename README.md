@@ -171,11 +171,16 @@ El último nivel de complejidad pasa por utilizar métodos de optimización baye
 4. Reloj Molecular
 
 5. Árboles multigénicos y árboles de especies
-Supermatrix
-Consensos y supertrees
-Métodos  de reconciliación (multispecies coalescent)
-Métodos de reconciliación (summary)
-Redes
+
+Por ahora solo hemos hablado de cómo calcular arboles de genes. Cuando solo se cuenta con un locus y un espécimen por especie se puede plantear que la topología del gen, si es neutral debería informar sobre la filogenia de las especies. Sabemos sin embargo que es importante utilizar multiples líneas de evidencia para poder obtener una topología que sea verdaderamente representativa de la del nivel especifico y no solo la historia evolutiva de cada gen. Sin embargo integrar multiples líneas de evidencia (genes) es complicado.
+
+Los métodos mas tradicionales son los llamados de supermatriz y de superarbol (supermatrix and supertree). Para calcular un árbol de especies basado en una supermatriz se concatenan todos los alineamientos en una sola matriz de datos y se calcula una única topología. Este método funciona a escalas evolutivas muy amplias, donde domina la deriva génica. A pesar de ello se considera que la topología media que produce no es precisa. A pesar de ello se sigue utilizando y es legitimo sus uso cuando se incorporan genes de compartimentos celulares donde no haya recombinación sexual (genomas de bacterias, mitocondrias, cloroplastos… virus)
+
+Una segunda opción es calcular los arboles de cada gen independientemente y tratar de combinarlos en una sola topología. Un método de este tipo es usar arboles consenso, pero estos requieren que todos los arboles tengan el mismo numero de terminales. Cuando no es así el método se complica y es lo que se denominan superarboles. Los métodos para calcular superarboles suelen ser lentos y poco satisfactorios, aunque en la actualidad hay varias implementaciones utilizables. 
+
+Con una filosofía diferente, pero también cercana a la de los superarboles están los métodos de reconciliación. Estos son mas flexibles y descomponen las topologías de los arboles de genes para integrarlas en un árbol de especies compendio *summary*, que habitualmente permite integrar múltiples alelos por cada especie. Hay muchos ejemplos de este tipo de métodos. Algunos como Astral descomponen las topologías en quartetes e infieren una compendio mas o menos complejo. Otros se basan en el *multispecies coalescent* como BEST o *starBeast. Estos últimos son casi exclusivamente métodos bayesianos.
+
+A caballo entre los métodos de consenso están los algoritmos que compuatn redes consenso como los implementados en dendroscope.
 
 6. Cálculo del soporte topológico
 
@@ -509,17 +514,27 @@ La obtención de un consenso se puede hacer muy fácilmente con iqtree, ya que e
 iqtree -con all_trees.tre
 ```
 
-**Atención Pregunta!** Pero porqúe no funciona? Que he hecho mal? Y como voy a enviar a imprimir mi poster mañana?...
+**Atención Pregunta!** ¿Funciona? Si funciona puedes continuar al punto 7.8. Si no funciona ¿Porqué no funciona?
 
-**Atención Propuesta!** Vamos a ver que ocurre si me quedo con aquellos árboles que contengan todas las especies. Para ello vamos a usar el paquete estadistico *ape* implementado en R. Es un interfaz más intuitivo que los que nos proporcionan otros lenguajes como python o perl más enfocados a la automatización de procesos que al análisis exploratorio de datos.
+**Atención Problemilla!** En muchas ocasiones, por un error o porque elegimos incluir todos los árboles que contienen un porcentaje de especies. O porque hemos usado un programa para limpiar las topologías los consensos no funcionan. Necesitan que todos los árboles tengan los mismos terminales (especies).
 
-**Atención Problemilla!** No es nada obvio pero a medida que nos vayamos alejando filogenéticamente e incluyendo especies más distantes el numero de loci que busco será capaz de identificar en todas las especies será menor. Un **consenso** implica que todos los árboles tienen el mismo número de especies.
+Esto no es siempre realista, puesto que a medida que nos vayamos alejando filogenéticamente e incluyendo especies más distantes el numero de loci que busco será capaz de identificar en todas las especies será menor. 
 
-Deberéis abrir R simplemente escribiendo R en el terminal. Despues deberéis correr el siguiente script.
+Una opción es calcular el consenso solo con los arboles completos y usar los otros para anotar el soporte de la topología. Para ello podemos vamos a usar el paquete estadistico *ape* implementado en R. Es un interfaz más intuitivo que los que nos proporcionan otros lenguajes como python o perl más enfocados a la automatización de procesos que al análisis exploratorio de datos.
+
+Para hacer esto deberéis abrir R simplemente escribiendo R en el terminal. Despues podreis correr el siguiente script paso a paso.
 
 ```{r}
 library (ape)
+#
+#Si vienes de 7.7.
+#
 trees<-read.tree("./all_trees.tre")
+#
+#Si vienes de 7.10
+#
+trees<-read.tree("./all_trees_filtered.tre ")
+#
 #
 # Se nos han colado secuencias repetidas?
 #
@@ -537,7 +552,7 @@ write.trees(trees[unlist(sapply(sapply(trees,`[[`,"tip.label"),length))==10],"me
 quit()
 ```
 
-Ahora podemos hacer lo mismo pero con menos arboles
+Ahora podríamos calcular el consenso con menos árboles
 
 ```{}
 iqtree -con menos_trees.tre
@@ -545,26 +560,26 @@ iqtree -con menos_trees.tre
 
 ## 7.8. Anotar el soporte estadístico de la topología.
 
-Vamos a usa el método propuesto por [Salichos y Rokas (2013)](http://www.ncbi.nlm.nih.gov/pubmed/23657258) en el que se calculan los valores de *Internode Certainty* (IC) y *Tree Certainty* (TC). El método se describe con más profundidad en [este trabajo](http://mbe.oxfordjournals.org/content/early/2014/02/07/molbev.msu061.abstractkeytype=ref&ijkey =I65FuGNx0HzR2Ow). Aunque su  implementación en RAXML (version>=8.2.0) difiere ligeramente de lo publicado al permitir el uso de set de árboles incompletos como se discute [aquí]( http://dx.doi.org/10.1101/022053). 
+Para anotar el soporte nodal de la topología vamos a usa el método propuesto por [Salichos y Rokas (2013)](http://www.ncbi.nlm.nih.gov/pubmed/23657258) en el que se calculan los valores de *Internode Certainty* (IC) y *Tree Certainty* (TC). El método se describe con más profundidad en [este trabajo](http://mbe.oxfordjournals.org/content/early/2014/02/07/molbev.msu061.abstractkeytype=ref&ijkey =I65FuGNx0HzR2Ow). Aunque su  implementación en RAXML (version>=8.2.0) difiere ligeramente de lo publicado al permitir el uso de set de árboles incompletos como se discute [aquí]( http://dx.doi.org/10.1101/022053). 
 
 Primero deberemos volcar todos los arboles obtenidos en iqtree (o raxml) anotados usando bootstrap en un solo archivo. Esto lo hemos hecho anteriormente.
 
 Después correremos el programa usando el siguiente script:
 
 ```{}
-raxmlHPC -L MRE -z menos_trees.tre -m GTRCAT -n T1
+raxmlHPC -L MRE -z all_trees.tre -m GTRCAT -n T1
 ```
 
 También podremos calcular el árbol consenso usando una búsqueda exhaustiva con:
 
 ```{}
-raxmlHPC -L MRE -z menos_trees.tre -m GTRCAT -n T1
+raxmlHPC -L MRE -z all_trees.tre -m GTRCAT -n T1
 ```
 
 Podemos usar el consenso que hemos obtenido en iqtree o una topología obtenida concatenando loci (supermatriz) usando el siguiente método
 
 ```{}
-raxmlHPC -f i -t menos_trees.con -z all_trees.tre -m GTRCAT -n T4
+raxmlHPC -f i -t all_trees.con -z all_trees.tre -m GTRCAT -n T4
 ```
 
 ## 7.9. Visualización de arboles con iTol.
@@ -583,11 +598,13 @@ python /usr/local/src/TreeShrink/run_treeshrink.py -t all_trees.tre -o all_trees
 
 **Atención Pregunta!** Cuantas veces se ha eliminado cada especie?
 
-**Atención Propuesta!** Como afecta esto al soporte estadístico? y al consenso? Puedes volver atrás y repetir los pasos anteriores pero sobre el archivo *all_trees_filtered.tre*. Otra opción es seguir adelante y usar Astral con el mismo propósito.
+**Atención Propuesta!** Como afecta esto al soporte estadístico? y al consenso? Puedes volver atrás y repetir los pasos anteriores (7.7 y 7.8) pero sobre el archivo *all_trees_filtered.tre*. Veras que tendrás problemas. Otra opción es seguir adelante y usar Astral con el mismo propósito.
 
-### 7.11. Astral para obtener un superárbol.
+### 7.11. Astral para obtener un árbol compendio.
 
-En sentido estricto un consenso implica procesar árboles que contengan el mismo número de especies. Esto sólo es factible a niveles filogenéticos intermedios, pero a medida que nos desplazamos a nivel de familia u orden el número de genes ortólogos de copia única presentes en todos los genomas es cada vez menor. A nivel de división a penas hay genes ortólogos que estén presentes en todas las muestras. Para procesar árboles incompletos se requieren métodos de inferencia de *superárboles*. Los métodos para calcular superárboles fueron en los años noventa desterrados por los métodos haciendo uso de supermatrices, por ser farragosos de usar y lentos. Aún así, hay varios métodos modernos permiten calcular superárboles, aunque normalmente no los llaman así. Un ejemplo es Astral III <https://github.com/smirarab/ASTRAL>, que bajo el constructo de que es un árbol de coalescente, lo que hace es estimar una topología de especies basada en la descomposición en quartetes.
+En sentido estricto un consenso implica procesar árboles que contengan el mismo número de especies. Esto sólo es factible a niveles filogenéticos intermedios, pero a medida que nos desplazamos a nivel de familia u orden el número de genes ortólogos de copia única presentes en todos los genomas es cada vez menor. A nivel de división a penas hay genes ortólogos que estén presentes en todas las muestras. Para procesar árboles incompletos se requieren métodos de inferencia de superárboles. Los métodos para calcular superárboles fueron en los años noventa desterrados por los métodos haciendo uso de supermatrices, por ser farragosos de usar y lentos. Aún así, hay varios métodos modernos que permiten calcular superárboles, aunque normalmente no los llaman así.
+
+Un ejemplo es [Astral III](https://github.com/smirarab/ASTRAL), que bajo el constructo de que es un árbol de coalescente, lo que hace es estimar una topología de especies basada en la descomposición en quartetes.
 
 Primero calcularemos un árbol de especies compendio (*summary*) basado en la topología más verosímil (ML) de cada gen.
 
@@ -609,7 +626,7 @@ java -jar /usr/local/src/ASTRAL/astral.5.6.3.jar -i ./all_trees.tre -o ./astral_
 
 En nuestro caso el árbol de especies y el de genes contienen el mismo número de entradas. En casos en que tengamos más de un genoma por especie, es donde Astral se vuelve importante al permitir incorporar polimorfismo intraespecífico (Es decir estima un árbol de especies en sentido estricto).
 
-**Atención Propuesta.** Échale un vistazo al manual de astral. Ellos hablan de que su árbol de especies es coherente con conceptos basados en coalescencia (multispecies coalescent). Como lo ves?
+**Atención Propuesta.** Échale un vistazo al manual de astral.
 
 ### 7.12. Redes consenso en Dendroscope.
 
@@ -619,32 +636,43 @@ Para trabajar simplemente tenéis que ejecutar dendroscope en la máquina virtua
 
 ### 7.13. Comparar topologías usando distancias Robinson-Foulds.
 
-Para terminar quiero recordar que se pueden usar distancias entre topologías para estudiar las diferencias entre arboles de genes. Esto puede servir para ver diferencias entre genes a lo largo del genoma.
+Para terminar quiero recordar que se pueden calcular distancias entre topologías usando el método de Robinson-Foulds. Estudiar las diferencias entre arboles de genes puede servir para patrones de coherencia o incoherencia a través del genoma o para detectar topologías no comunes.
+
+Primero puedes usar iqtree para esto.
 
 ```{}
 iqtree -t all_trees.tre -rf_all
 ```
 
-Despues puedes abrir R y probar a interpretar la distribución de distancias
+Despues puedes abrir R y probar a interpretar la distribución de distancias. En R podríamos también añadir otros datos como distancia o familia de proteínas para observar si hay diferencias evolutivas entre distintos clusters funcionales o regiones del genoma.
 
 ```{r}
 rf<-read.table("menos_trees.tre.rfdist",skip=1,row.names=1)
 rf<-as.dist(rf)
-/home/fernando/genomics_course/new/new/02_Busco/run_X1scaffoldsfiltered/full_table_X1scaffoldsfiltered.tsv
+plot(rf)
+library(vegan)
+pcoa_rf<-prcomp(rf)
+ordiplot(pcoa_rf)
 ```
+<!-- # Si te ves con ganas 
+/home/fernando/genomics_course/new/new/02_Busco/run_X1scaffoldsfiltered/full_table_X1scaffoldsfiltered.tsv
+--->
 
 ## 8. Tutorial II.  Un pipeline usando detección de ortólogos a posteriori.
 
 En este tutorial vamos a utilizar un pipeline filogenómico llamado [Orthofinder](https://github.com/davidemms/OrthoFinder). Comparado con el pipeline que acabamos de desarrollar, Orthofinder está muy empaquetado y automatizado. Es contraste con nuestro pipeline, tiene como objetivo principal la extracción de genes ortólogos *de novo* o *a posteriori*. Para esto utiliza un algoritmo de *cluster* primero con el que obtiene grupos de ortólogos, los que previa reconstrucción filogenética son filtrados para seleccionar genes ortólogos.
 
-Además vamos a utilizar este pipeline como introducción a docker <https://www.docker.com>. Docker es un sistema para encapsular un sistema operativo y los ejecutables de un programa de nuestro interés en un contenedor único que puede ser utilizado en cualquier ordenador y cualquier sistema operativo. Docker a menudo soluciona problemas de dependencias –las librerías de Perl suelen ser el horror– y de conflictos de versiones, lo que permite tener un sistema estable y permanente. Tiene sin embargo ciertas desventajas respecto a configurar los programas de modo nativo, en especial cuando se requiere usar bases de datos de manera intensiva. Hay varios repositorios de contenedores de docker dedicados a la bioinformática, entre los cuales el punto de partida quizás sea biocontainers <https://github.com/BioContainers/containers>.
+Además vamos a utilizar este pipeline como introducción a docker <https://www.docker.com>. Docker es un sistema para encapsular un sistema operativo y los ejecutables de un programa de nuestro interés en un contenedor único que puede ser utilizado en cualquier ordenador y cualquier sistema operativo. Docker a menudo soluciona problemas de dependencias –las librerías de Perl suelen ser el horror– y de conflictos de versiones, lo que permite tener un sistema estable y permanente. Tiene sin embargo ciertas desventajas respecto a configurar los programas de modo nativo, en especial cuando se requiere usar bases de datos de manera intensiva. Hay varios repositorios de contenedores de docker dedicados a la bioinformática, entre los cuales el punto de partida quizás sea [biocontainers](https://github.com/BioContainers/containers).
 
 **Atención pregunta:** Este pipeline no es adecuado para el dataset que estamos utilizando, que es el mismo que en el ejercicio anterior. Sabrías decirme por qué?
-**Atención recomendación:** Echaos un vistazo a la descripción del pipeline en su pagina web. Se entiende muy bien
 
-### 8.1. Pasos preliminares
+**Atención recomendación:** Echaos un vistazo a la descripción del pipeline en su pagina web. Se entiende muy bien.
 
-Este pipeline parte de secuencias de proteínas y no de aminoácidos. Requiere por tanto un paso previo de predicción de genes. Para ello he usado funannotate, del que hablaré en el siguiente tutorial. He instalado funannotate usando un ambiente de anaconda siguiendo las instrucciones del manual. No hay que olvidarse de olvidarse de exportar las siguientes variables ambientales.
+### 8.1. Pasos preliminares (Solo para que los sepáis)
+
+Este pipeline parte de secuencias de proteínas y no de aminoácidos. Requiere por tanto un paso previo de predicción de genes. Para ello he usado funannotate, del que hablaré en el siguiente tutorial. He instalado funannotate usando un ambiente de anaconda siguiendo las instrucciones del manual. 
+
+No hay que olvidarse de olvidarse de exportar las siguientes variables ambientales.
 ```{bash}
 export EVM_HOME=/home/fernando/anaconda2/envs/funannotate/opt/evidencemodeler-1.1.1/
 export TRINITYHOME=/home/fernando/anaconda2/envs/funannotate/opt/trinity-2.6.6
@@ -677,7 +705,7 @@ funannotate mask \
 -s ascomycota
 done
 ```
-Prediccion de genes usando todos los niveles de evidencia disponibles (ESTs, etc.) En nuestro caso no tenemos y usamos las proteinas de Xanthoria parietina como única evidencia.
+Predicción de genes usando todos los niveles de evidencia disponibles (ESTs, etc.) En nuestro caso no tenemos y usamos las proteinas de Xanthoria parietina como única evidencia.
 
 ```{bash}
 for FILE in X1 X2 X3 X4 X5 X6 X7 X8 X9
@@ -693,24 +721,25 @@ funannotate predict \
 --cpus 30
 done
 ```
-### 8.2. Usamos el pipeline Orthofinder
 
+### 8.3. Ahora si usamos el pipeline Orthofinder
 
-Al turrón! Lo primero que haremos será instalar el container de docker donde está instalado el pipeline orthofinder.
+Lo primero que haremos será instalar el container de docker donde está instalado el pipeline orthofinder.
 
 ```{bash}
 
 docker pull cmonjeau/orthofinder
 
 ```
-Seguidamente correremos el programa usando el siguente script
+Seguidamente correremos el programa usando el siguente script modificado para vuestro caso particular podeis usar en lugar de VUESTRACARPETA el path completo o ${pwd} para hacer que se corra en la carpeta donde estais
 
 ```{bash}
 mkdir ./02_results
-docker run -it --rm -v "/home/fernando/genomics_course/new/new/02_orthofinder/01_data":/input cmonjeau/orthofinder orthofinder.py -f /input -t 10 -a 10 -S diamond
-docker run -it --rm -v "/home/fernando/genomics_course/new/new/02_orthofinder/02_results":/input cmonjeau/orthofinder trees_for_orthogroups.py /input/ -t 7
+docker run -it --rm -v "VUESTRACARPETA/02_orthofinder/01_data":/input cmonjeau/orthofinder orthofinder.py -f /input -t 10 -a 10 -S diamond
+docker run -it --rm -v "VUESTRACARPETA/02_orthofinder/02_results":/input cmonjeau/orthofinder trees_for_orthogroups.py /input/ -t 7
 ```
-Orthofinder tien varias opciones de alineamiento y reconstrucción filogenética, etc. Hemos utilizado las opciones por defecto con diamond y dendroblast pues son ambos más rápidos. En general, diamond <https://github.com/bbuchfink/diamond> se ha convertido en el nuevo standard para realizar alineaminetos locales, sustituyendo a BLAST que es miles de veces más lento. Hay algunas dudas sobre si los valores reflejados por diamond son equiparables a los de blast original, pero el hecho es que la aceleración que supone ha desterrado el uso de BLAST para comparaciones de aminoacido-aminoacido (blastp) y nucleotido-aminoacido (blastx) en la mayoría de los programas más modernos.
+
+Orthofinder tiene varias opciones de alineamiento y reconstrucción filogenética, etc. Hemos utilizado las opciones por defecto con diamond y dendroblast pues son los más rápidos. En general, [diamond](https://github.com/bbuchfink/diamond) se ha convertido en el nuevo standard para realizar alineaminetos locales, sustituyendo a BLAST que es miles de veces más lento. Hay algunas dudas sobre si los valores reflejados por diamond son equiparables a los de BLAST original, pero el hecho es que la aceleración que supone ha desterrado el uso de BLAST para comparaciones de aminoácido vs. aminoácido (blastp) y nucleótido vs aminoácido (blastx) en la mayoría de los pipelines más modernos.
 
 ```{bash}
 orthofinder -f \
@@ -721,17 +750,19 @@ orthofinder -f \
  -A mafft \
  -p ./tmp
 ````
-**Atención pregunta:** Repasate los archivos de resultados de Orthofinder. Que ocurre con el arbol consenso? Porqué son tan cortas las ramas? (si desactivamos la longitud de las ramas en la visualización del arbol filogenético verás que están ahi). Fijate en cuantos ortólogos de copia única ha identificado. No te resulta extra~õ que sean tan pocos? Fijate en los arboles de la mayoría de grupos ortólogos? por qué tienen tan pocas secuencias? Que puede estar ocurriendo?
+
+**Atención pregunta:** Repásate los archivos de resultados de Orthofinder. Que ocurre con el árbol consenso? Porqué son tan cortas las ramas? (si desactivamos la longitud de las ramas en la visualización del árbol filogenético verás que están ahi). Fíjate en cuantos ortólogos de copia única ha identificado. No te resulta extraño que sean tan pocos? Fíjate en los arboles de la mayoría de grupos ortólogos? por qué tienen tan pocas secuencias? Que puede estar ocurriendo?
 
 ## 9. Tutorial III.  Introducción a funannotate
 
-En este tutorial vamos a utilizar un pipeline filogenómico llamado Orthofinder (<https://github.com/davidemms/OrthoFinder>). Comparado con el pipeline que acabamos de desarrollar, Orthofinder está muy empaquetado y automatizado. Es contraste con nuestro pipeline, tiene como objetivo principal la extracción de genes ortólogos *de novo* o *a posteriori*. Para esto utiliza un algoritmo de *cluster* primero con el que obtiene grupos de ortólogos, los que previa reconstrucción filogenética son filtrados para seleccionar genes ortólogos.
+En este tutorial quiero daros a conocer las posibilidades del programa de anotación funcional funannotate en el contexto de la filogenómica. El tutorial lo desarrollare mas o menos dependiendo de el tiempo que tengamos y como estemos trabajando.
 
+### 9.1. Pasos preliminares
 
-
-Hasta aquí es equivalente (pero más refinado a los que hicimos con augustus para BUSCO. Podríamos partir de las secuencias de genes identificadas usando funannotate como entrada para BUSCO (para hacer filogenómica).
+Los primeros pasos de anotación los añadí como pasos preliminares para orthofinder. Hasta ahí es equivalente, aunque más refinado, a los que hace augustus dentro de BUSCO. De hecho podríamos partir de las secuencias de genes identificadas usando funannotate como entrada para BUSCO (para hacer filogenómica).
 
 Una vez identificados los genes, proseguimos con la anotación funcional. usando *antiSMASH* como primer pipeline, interproscan y finalmente se pone todo en conjunto usando *funannotate annotate*.
+
 ```{bash}
 for FILE in X1 X2 X3 X4 X5 X6 X7 X8 X9
 do
@@ -739,6 +770,7 @@ do
 funannotate remote -i /home/fernando/genomics_course/new/new/03_funannotate/${FILE}_annotated -m antismash -e fernandf@uni-graz.at
 done
 ```
+
 ```{bash}
 for FILE in X1 X2 X3 X4 X5 X6 X7 X8 X9
 do
@@ -750,32 +782,57 @@ funannotate remote -i /home/fernando/genomics_course/new/new/03_funannotate/${FI
 funannotate annotate -i /home/fernando/genomics_course/new/new/03_funannotate/${FILE}_annotated --cpus 30
 done
 ```
+
 **Atención, nota mental!** La anotación completa de un genoma fúngico (ca. 10.000 proteínas) en funannotate requiere unas 24 horas. Yo he usado una maquina con 32 núcleos lógicos, de ahí que haya usado en los scripts los *flags* -c 30 o --cpus 30. Ten en cuenta que esto depende mucho de tu máquina.
 
-### 6.2. Usar la comparación genómica incorporada en funannotate
+### 9.2. Usar la comparación genómica incorporada en funannotate
+
 ```{bash}
 funannotate outgroup xanthoria_parietina.ascomycota
 ```
+
 ```{bash}
 funannotate compare -i X1_annotated  X2_annotated  X3_annotated  X4_annotated  X5_annotated  X6_annotated  X7_annotated  X8_annotated  X9_annotated --outgroup xanthoria_parietina.ascomycota
 ```
 
-#### Resumen de los resultados de funannotate
-o
-#### Uso de COGs para calcular filogenias
+### 9.3. Resumen de los resultados de funannotate
+
+Os he dejado los resultados de funannotate para que os los estudieis. Funannotate genera una enorme cantidad de archivos que se pueden usar para distintos propósitos, pero además nos da una serie de archivos web que contienen todos los datos resumidos. Abre el archivo index.html en tu navegador y a jugar.
+
+**Atención Pregunta** ¿Como son los asemblies genómicos? ¿Difiern mcho en tamaño y fragmentación? ¿Cuáles son los mas fragmentados?
+
+**Atención Pregunta** ¿Contienen todos el mismo numero de proteínas de las distintas familias? ¿Cuáles son los más divergentes?
+
+### 9.4. Pequeña prueba de árbol filogenómico basado en la composición del funcional proteoma.
+
+Vamos a partir de los resultados de la identificación de familias de proteínas [Pfam]( http://pfam.xfam.org) para elaborar un árbol. En nuestro caso bueno no va a ser pero se puede hacer. Vamos a por ello.
+
+Abrid R y escribid
+```{r}
+pfam<-read.table("VUESTRACARPETA/funannotate_compare/pfam/pfam.results.csv",sep=",",quote="\"",row.names=1,header=TRUE)
+library(ape)
+plot(as.phylo(hclust(dist(t(as.matrix(pfam[,1:9]))))))
+```
+
+Se parece la topología a nuestros consensos? Hay algún genoma divergente? Que significan las familias identificadas como sobre-representadas en ese genoma?
+
+### 9.5. Llegamos al final.
+
+**Atención Pregunta** ¡Maldición! ¡Esto calcula un árbol filogenómico el solo! Pero ¿que opinas? ¿Los valores de soporte de la topología son altos o bajos? ¿Que significan?¿Crees que se puede mejorar usando lo que ya hemos aprendido?
+
+Algo magnifico de funannotate es que genera todo tipo de resultados. Entre otras cosas si buscáis la carpeta */funannotate_compare/prot_orth/* veréis que funannotate también identifica genes ortólogos basándose en el mejor Blast reciproco. He quitado la mayoría de archivos intermedios para reducir el espacio ocupado en disco, pero he dejado los del genoma X1. Los resultados tabulados están en la carpeta */funannotate_compare/orthology/* donde hay un archivo archivo llamado all_transcripts.fa (que he comprimido) y una tabla llamada orthology_groups.tsv. Esta tabla y el archivo de transcripts contienen todo lo que necesitamos para hacer un pipeline filogenómico refinado como nos gusta. 
+
+
+**Atención, trabajo de fin de master** Abre R y abre la tabal usando read.table(), carga el paquete ape y abre los transcripts con read.dna(). ¿Te ves capaz de elegir los ortólogos presentes en todas las especies y exportarlos con un loop de for () y la función write.dna()? Querido compañero, querida compañera, creo que llego el momento de que escribas tu propio pipeline filogenómico como tu quieras. 
+
+<!--#### Uso de COGs para calcular filogenias
 o
 #### Modulo incluido en funanotate, problemas y alternativas.
 o
 #### Proceder igual que en el tutorial III
 o
 #### Mapear la información en el genóma
-
-## Integrate functional annotations
-```{r}
-pfam<-read.table("/Users/ferninfm/Desktop/eraseme/funannotate_compare/pfam/pfam.results.csv",sep=",",quote="\"",row.names=1,header=TRUE)
-library(ape)
-plot(as.phylo(hclust(dist(t(as.matrix(pfam[,1:9]))))))
-```
+-->
 
 ## References
 
