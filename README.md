@@ -266,15 +266,17 @@ Las carpetas con los resultados del análisis de los BUSCOs han sido comprimidos
 cd ../02_busco
 tar -xvzf *.gz
 
-
 ```
 Si por lo que sea no funciona podemos hacer lo siguiente
 
 ```{bash}
-for FILE in X1 X2 X3 X4 X5 X6 X7 X8 X9 Xanpa
+for FILE in X1 X2 X3 X4 X5 X6 X7 X8 X9
 do
 tar -xvzf run_${FILE}scaffoldsfiltered.tar.gz
 done
+
+tar -xvzf run_Xanpa2_AssemblyScaffolds.tar.gz
+
 ```
 
 ***EMPEZAMOS AQUI***
