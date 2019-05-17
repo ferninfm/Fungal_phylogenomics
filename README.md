@@ -410,7 +410,7 @@ if(length(args)<2)
   }
   all_fastas_nuc<-t(table(melt(all_fastas_nuc)))
   all_fastas_nuc<-cbind(all_fastas_nuc,completeness=rowSums(all_fastas_nuc))
-  foo<-all_fastas_nuc[all_fastas_nuc[,"completeness"]>=args[2],]
+  foo<-all_fastas_nuc[all_fastas_nuc[,"completeness"]>=as.numeric(args[2]),]
   all_fastas_nuc<-rbind(all_fastas_nuc,representation=colSums(all_fastas_nuc))
   foo<-rbind(foo,representation=colSums(foo))
   writeLines("#\n#######################################\n# Complete dataset\n","report_completeness.txt")
