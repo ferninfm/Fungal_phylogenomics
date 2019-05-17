@@ -314,6 +314,12 @@ for SPECIES in {1..9}
 ```
 Así obtenemos un archivo fasta por BUSCO con las secuencias de los distintos genomas sin alinear. Podríamos proseguir así, pero los nombres de las secuencias son extremadamente largos y lo que es peor diferentes para cada locus, lo que generaría problemas a la hora de procesar los alineamientos y los genes. Para renombrar los genes y obtener una idea de cuan completos están los alineamientos de cada locus (BUSCO) he escrito el siguiente script. Se puede personalizar para usar nombres personalizados más complejos que los basados en los nombres preexistentes que he utilizado. Con este script quiero ilustrar como un lenguaje de programación como R puede ser utilizado como un programa independiente pasándole argumentos desde el terminal.
 
+```{bash}
+nano ./rename_busco.r
+```
+
+Ahora se copia y pega el siguiente programa:
+
 ```{r}
 #!/usr/bin/Rscript
 #---------------------------------------------------#
