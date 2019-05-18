@@ -532,6 +532,12 @@ done
 cd ..
 ```
 
+Corremos el script con:
+
+```{bash}
+sh run_iqtree.sh
+```
+
 <!---### 6.7. Concatenar todos los loci y hacer un análisis supermatriz iqtree
 
 ```{}
