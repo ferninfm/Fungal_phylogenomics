@@ -512,10 +512,20 @@ Hay varios métodos de reconstrucción filogenética que permiten realizar anál
 
 La relevancia del modelo de sustitución es un tema complicado y hay muchos científicos partidarios de invertir meses en hacerlo lo más perfeccionista posible y al mismo tiempo una serie de trabajos que sugieren que tiene una influencia menor en el proceso de inferencia filogenética, llegando a entorpecerlo. Me refiero por ejemplo a este [trabajo](**PAPER CRITICA MODEL TEST**).
 
+Primero concatenamos todos los arboles en un archivo
+
+```{}
+mkdir ./07_final
+cat ./06_iqtree/*.treefile >> ./07_final/all_trees.tre
+```
+
+Luego corremos el programa
+
 ```{bash}
 mkdir ./06_iqtree
 nano run_iqtree.sh
 ```
+
 Seleccionamos los alineamientos de nucleótidos, y corremos iqtree para cada uno de los genes. Fijate que he pedido a iqtree que use *Xanthoria parietina* como Outgroup. Esto falla en algunas ocasiones, en especial cuando se usa RaxML y se obtienen arboles no enraizados. Esto genera problemas y quebraderos de cabeza. Cuando eso sucede la solucion en mi caso es importar los arboles en R con y enraizarlos con la función root del paquete *ape* 
 
 ```{bash}
