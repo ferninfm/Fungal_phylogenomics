@@ -516,7 +516,7 @@ La relevancia del modelo de sustitución es un tema complicado y hay muchos cien
 mkdir ./06_iqtree
 nano run_iqtree.sh
 ```
-Seleccionamos los alineamientos de nucleótidos, y corremos iqtree para cada uno de los genes.
+Seleccionamos los alineamientos de nucleótidos, y corremos iqtree para cada uno de los genes. Fijate que he pedido a iqtree que use *Xanthoria parietina* como Outgroup. Esto falla en algunas ocasiones, en especial cuando se usa RaxML y se obtienen arboles no enraizados. Esto genera problemas y quebraderos de cabeza. Cuando eso sucede la solucion en mi caso es importar los arboles en R con y enraizarlos con la función root del paquete *ape* 
 
 ```{bash}
 #!/bin/bash
@@ -867,16 +867,106 @@ Algo magnifico de funannotate es que genera todo tipo de resultados. Entre otras
 
 La parte negativa es que es muy dificil saber a ciencia cierta que es lo que estamos haciendo. Es como siempre el problema de los software que funcionan como cajas negras. Lo primero que podemos hacer es abrir la tabla de ortologos y el archivo de transcripts en R. Abrid R y escribid:
 
-'''{r}
+```{r}
 table_orthologs<-read.table("Vuestracarpeta/03_funannotate/funannotate_compare/orthology/orthology_groups.txt",sep="\t")
-
-
-transcripts<-read.dna("VUESTRACARPETA/all_transcripts.fa")
-
+head(table_orthologs)
 ```
 
+Podemos investigar la distribucion de los valores de dN/dS, sustituciones no sinónimas dividido po las sustituciones sinónimas. De este modo podemos tener una idea de que loci estan bajo selección positiva. Nay otros dos valores que aparecen como NC, no calculados. Son mejores, pero tardan una eternidad pues usan modelos nulos para interpretar los patrones de sustitución.
+Para librarme de esos valores uso la siguiente triquiñuela:
 
-**Atención, trabajo de fin de master** Abre R y abre la tabal usando read.table(), carga el paquete ape y abre los transcripts con read.dna(). ¿Te ves capaz de elegir los ortólogos presentes en todas las especies y exportarlos con un loop de for () y la función write.dna()? Querido compañero, querida compañera, creo que llego el momento de que escribas tu propio pipeline filogenómico como tu quieras. 
+```{r}
+table_orthologs[,2]<-as.numeric(sapply(strsplit(as.character(table_orthologs[,2]),split=" "),`[`,1))
+#
+# sapply lo que hace es aplicar una funcion a cada valor de una lista. La lista la obtengo convirtiendo los valores de la variable V2 en texto con as.character, y separando los valores de los distintos análisis con strsplit, usando el espacio como separador.
+# la funcion a aplicar es `[` que simplemente significa elegir, y en este caso elegir el primer elemento de la lista
+```
+Despues los puedo representar o estudiar
+```{r}
+# El ortologo 869 debe tenr una secuencia identica de nucleotidos, por eso el valor es NA, lo debo eliminar primero
+foo<-table_orthologs[-869,]
+plot(foo[,2])
+```
+
+```{r}
+# Hay un par de outliers, que representan genes completamente saturados, sin apenas sustituciones no sinonimas
+foo[foo[,2]>10,]
+```
+
+```{r}
+# Como veis son artefactos debidos a la saturacion, los excluyo
+foo<-foo[foo[,2]<10,]
+```
+
+```{r}
+# Ahora si
+boxplot(foo[,2])
+plot(density(foo[,2]))
+```
+
+```{r}
+# Se ve en los gráficos que hay muchos valores atipicos, o outliers, vamos a explorarlos. Cuantas secuencias incluye cada ortologo?
+numero_seqs<-sapply(strsplit(as.character(foo[,5]),split=", "),length)
+boxplot(foo[,2]~numero_seqs)
+```
+
+Es claro que hay un patron, los ortologos que contienen pocas secuencias son los que contienen valores mas altos de dN/dS. Esto claramente no es lo que nos interesa. Vamos a filtrar los ortologos y a usar solo aquellos que tengan 7 o mas secuencias
+
+```{r}
+dim(foo)
+```
+Nos muestra el tamaño de la matriz de datos, es inmensa. Solo hay unos 8-10.000 genes por genoma. Vamos a ver que ocurre si filtro por numero de secuencias
+```{r}
+dim(foo[numero_seqs>7,])
+dim(foo[numero_seqs>8,])
+dim(foo[numero_seqs==9,])
+```
+A priori parece que usando *Best reciprocal blast hit* identificamos mas ortólogos que los que identificamos usando el metodo *a priori* con BUSCO.
+
+Vamos un paso mas alla, en que genomas estan esos genes? Vamos a eliminar duplicados
+
+```{r}
+genomas<-strsplit(as.character(foo[,5]),split=", ")
+genomas<-lapply(genomas,function(x) sapply(x,substr,1,2))
+duplicados<-unlist(lapply(genomas, function(x) sum(duplicated(x))))
+# La distribucion de duplicados
+table(duplicados)
+```
+La mayoria de ortologos no tienen duplicados intragenomicos. Vamos a a hacer el subset final
+
+```{r}
+foo<-foo[duplicados==0&numero_seqs==9,]
+```
+Ahora a ver los transcripts
+
+```{r}
+library(ape)
+transcripts<-read.dna("VUESTRACARPETA/all_transcripts.fa",format="fasta")
+#Reformateo los nombres de los transcripts
+names(transcripts)<-sapply(strsplit(names(transcripts),split=" "),`[`,1)
+#
+genomas<-strsplit(as.character(foo[,5]),split=", ")
+orthologs<-list()
+orthologs<-lapply(genomas,function(x) transcripts[unlist(x)])
+# Rename orthologs
+for (i in 1:length(orthologs))
+{
+names(orthologs[[i]])<-substr(names(orthologs[[i]]),1,2)
+}
+```
+
+Ya estamos ahora elegid una carpte y escribid los ortologos. En realidad me faltaria tener un outgroup, fue un fallo al no incluir Xanthoria parietina en el pipeline, pero la verdad, no sabia. La proxima vez deberiamos incluir un outgroup mas lejano y Xanthoria dentro del dataset.
+```{r}
+for (i in 1:length(orthologs))
+{
+foo_name<-paste("CARPETA/03_funannotate/funannotate_compare/orthology/FFM_ort_",i,".fas",sep="")
+write.dna(orthologs[[i]],foo_name,format="fasta",colsep="",nbcol=-1)
+}
+```
+
+**Atención, trabajo de fin de master** A partir de aquí podriamos volver a empezar desde el principio con el tutorial II, alineando con mafft,refinando con trimal, arboles de genes, consensos.....
+
+***Querido compañero, querida compañera, creo que llego el momento de que escribas tu propio pipeline filogenómico como tu quieras. Buenas noches y buena suerte!***
 
 <!--#### Uso de COGs para calcular filogenias
 o
