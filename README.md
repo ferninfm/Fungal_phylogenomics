@@ -512,15 +512,6 @@ Hay varios métodos de reconstrucción filogenética que permiten realizar anál
 
 La relevancia del modelo de sustitución es un tema complicado y hay muchos científicos partidarios de invertir meses en hacerlo lo más perfeccionista posible y al mismo tiempo una serie de trabajos que sugieren que tiene una influencia menor en el proceso de inferencia filogenética, llegando a entorpecerlo. Me refiero por ejemplo a este [trabajo](**PAPER CRITICA MODEL TEST**).
 
-Primero concatenamos todos los arboles en un archivo
-
-```{}
-mkdir ./07_final
-cat ./06_iqtree/*.treefile >> ./07_final/all_trees.tre
-```
-
-Luego corremos el programa
-
 ```{bash}
 mkdir ./06_iqtree
 nano run_iqtree.sh
@@ -552,6 +543,16 @@ cat ./06_iqtree/*.treefile >> ./07_final/all_trees.tre
 ## 7.7. Calcular un árbol consenso (*majority rule*) con iqtree.
 
 La obtención de un consenso se puede hacer muy fácilmente con iqtree, ya que en principio utiliza el mismo algoritmo que al obtener un consenso de los arboles obtenidos usando *bootstrap*. Pero vamos a ver…
+
+
+Primero concatenamos todos los arboles en un archivo
+
+```{}
+mkdir ./07_final
+cat ./06_iqtree/*.treefile >> ./07_final/all_trees.tre
+```
+
+Luego corremos el programa
 
 ```{}
 iqtree -con all_trees.tre
