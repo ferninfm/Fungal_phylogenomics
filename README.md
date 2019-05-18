@@ -619,7 +619,7 @@ Primero deberemos volcar todos los arboles obtenidos en iqtree (o raxml) anotado
 Después correremos el programa usando el siguiente script:
 
 ```{}
-raxmlHPC -L MRE -z all_trees.tre -m GTRCAT -n T1
+raxmlHPC -L MR -z all_trees.tre -m GTRCAT -n T1
 ```
 
 También podremos calcular el árbol consenso usando una búsqueda exhaustiva con:
