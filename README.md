@@ -598,7 +598,7 @@ table(foo)
 #
 # Subset y escribir sólo los árboles completos
 #
-write.trees(trees[unlist(sapply(sapply(trees,`[[`,"tip.label"),length))==10],"menos_trees.tre")
+write.tree(trees[unlist(sapply(sapply(trees,`[[`,"tip.label"),length))==10],"menos_trees.tre")
 quit()
 ```
 
